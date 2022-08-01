@@ -1,0 +1,220 @@
+#general_div{
+   margin-right: 10px
+}
+
+#div_selector{
+    float: left;
+    margin-top: 1px;
+    margin-right: 50px;
+    
+   
+}
+
+#pb_2{
+    margin-bottom: 3px;
+    padding-top: -1px;
+      
+ }
+ #finder{
+     margin-top: 1%;
+     
+ }
+
+ #selector{
+     width: 320px;
+ }
+
+//descripcíon uso de la App
+
+#descriptionApp{
+    padding: 8px;
+    border-bottom: 1px;
+    border-color: gray;
+    border-style: solid;
+    font-size: 18px;
+    margin-bottom: 10px;
+    
+    
+}
+
+.escala{
+    margin-bottom: 10px;
+}
+
+
+//botones escala de colores:
+
+.inline{
+    display: inline;
+}
+
+.caja{
+float: left;
+height: 16px;
+width: 16px;
+border-radius: 10px;
+clear: both;
+margin-top: 6px;
+margin-right: 6px;
+}
+
+.gris{
+    background-color: #569DB7;
+}
+
+.blanca{
+    background-color: #EA2F26;
+}
+
+.ninguna{
+    background-color: #5BCA2B;
+}
+
+
+input#search {
+    padding-bottom: 0.1em;
+}
+
+label#mat-form-field-label-1 {
+
+    font-size: 16px;
+    
+    margin-top: 2px;
+    
+    }
+
+    .mat-form-field-label-wrapper{
+        font-size: 18px;
+    }
+
+    .mat-select {
+        display: inline-block;
+        width: 100%;
+        outline: none;
+       // padding-bottom: .3em;
+      }
+
+//botón buscador:
+#btn{
+    padding: 15px;
+    font-size: 20px;
+    margin-left: 20px;
+}
+ .px-3{
+     margin-right: 255px;
+ }
+
+ 
+
+.user_selected{
+    color: red;
+}
+
+
+.mat-form-field-appearance-outline .mat-form-field-wrapper {
+   
+    margin-right: 22%;
+   
+  }
+
+  
+
+  .mat-form-field {
+    width: 320px;
+  
+   
+  }
+
+.link{
+    text-decoration:underline;
+}
+
+//media queries
+
+@media (max-width:704px){
+    #div_selector{
+        float: none;
+        margin-right: 0px;
+        margin-top: 20px;
+    }
+
+    input#search {
+        padding-bottom: 0.0em;
+    }
+    #descriptionApp{
+        font-size: 13px;
+    }
+
+    #buscador{
+        margin-top: -20px;
+        margin-bottom: 0px;
+    }
+
+    .caja{
+        height: 8px;
+        width: 8px;
+        margin-top: 5px;
+    }
+
+}
+
+@media (max-width:483px) {
+    #div_selector {
+        float: none;
+        transform: scale(0.8);
+        margin-left: -35px;
+        
+      }
+
+      #buscador{
+        transform: scale(0.8);
+        margin-top: -32px;
+        margin-left: -35px;
+        margin-bottom: 0px;
+    }
+    #descriptionApp{
+        font-size: 14px;
+    }
+    .caja{
+        height: 8px;
+        width: 8px;
+        margin-top: 6px;
+    }
+
+    input#search {
+        padding-bottom: 0.0em;
+    }
+}
+
+
+
+
+
+
+@media (max-width:413px) {
+    #div_selector {
+        float: none;
+        transform: scale(0.8);
+        margin-left: -35px;
+        
+      }
+
+      #buscador{
+        transform: scale(0.8);
+        margin-top: -32px;
+        margin-left: -35px;
+        margin-bottom: 0px;
+    }
+    #descriptionApp{
+        font-size: 11px;
+    }
+    .caja{
+        height: 8px;
+        width: 8px;
+        margin-top: 5px;
+    }
+
+    input#search {
+        padding-bottom: 0.0em;
+    }
+}
