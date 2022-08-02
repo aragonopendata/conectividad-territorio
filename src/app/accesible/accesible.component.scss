@@ -4,7 +4,7 @@
 
 .mat-cell {
   font-size: 12px;
-  }
+}
 
 //   .mat-header-row {
 //     height: auto;
@@ -12,7 +12,7 @@
 
 .mat-header-cell {
   font-size: 14px;
-  }
+}
 
 // th.mat-header-cell{
 //   padding: 8px 8px 8px 8px;
@@ -21,4 +21,26 @@
 
 table.mat-table {
   width: 100%;
+}
+
+::ng-deep .mat-form-field {
+
+  .mat-form-field-wrapper {
+    min-width: 200px;
+  }
+
+  .mat-form-field-infix {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .mat-select {
+    min-width: 100%;
+  }
+
+  .mat-select-value {
+    max-width: 100%;
+    padding-right: 15px;
+  }
+
 }
