@@ -10,12 +10,13 @@ RUN apt update
 RUN apt -y install curl
 
 
-WORKDIR /code/conectividad-territorio-accesible
+WORKDIR /code/conectividad-territorio
 
 RUN git clone https://github.com/aragonopendata/conectividad-territorio.git
-COPY ./environment.ts /code/conectividad-territorio-accesible/conectividad-territorio-accesible/src/environments/environment.ts
+COPY ./environment.ts /code/conectividad-territorio/conectividad-territorio/src/environments/environment.ts
 RUN npm install -g @angular/cli@14.0.2
-WORKDIR /code/conectividad-territorio-accesible/conectividad-territorio-accesible/
+WORKDIR /code/conectividad-territorio/conectividad-territorio/
 RUN npm install
 CMD ng serve --host 0.0.0.0
 
+#CMD tail -f /dev/null
