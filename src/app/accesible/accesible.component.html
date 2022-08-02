@@ -1,12 +1,13 @@
+<div >
 <mat-form-field appearance="fill">
-  <mat-label>Capa</mat-label>
+  <mat-label>Seleccionar capa</mat-label>
   <mat-select [(value)]="selectedLayer" (selectionChange)="onSearch('')">
     <mat-option *ngFor="let layer of layerRelations" [value]="layer.value">
       {{layer.label}}
     </mat-option>
   </mat-select>
 </mat-form-field>
-
+</div>
 
 <!-- test -->
 
