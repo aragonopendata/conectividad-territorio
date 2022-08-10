@@ -56,7 +56,7 @@ export class HeaderComponent implements OnInit {
 
   async onSearch(searchString: string) {
     this.popUpService.closePopUp();
-    this.searchText = `Localizando ${searchString}...`;
+    this.searchText = `Búsqueda: "${searchString}"`;
     this.isError = false;
     this.isDone = false;
     this.isSearching = false;
@@ -86,6 +86,9 @@ export class HeaderComponent implements OnInit {
             self.isDone = true;
             console.log(results[0]);
             self.searchEvent.emit(results[0]);
+        }else {
+          self.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
+          self.isError = true;
         }
     });  
     
