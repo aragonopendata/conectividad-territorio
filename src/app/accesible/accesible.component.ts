@@ -5,6 +5,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {AfterViewInit, ViewChild} from '@angular/core';
 import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
+import { MatSort } from '@angular/material/sort';
 @Component({
   selector: 'app-accesible',
   templateUrl: './accesible.component.html',
@@ -20,6 +21,14 @@ export class AccesibleComponent implements OnInit {
 
   totalLength = 0;
   selectedLayer;
+
+  filterData($event : any){
+    this.dataSource.filter = $event.target.value;
+    this.dataSourceCentros.filter = $event.target.value;
+    this.dataSourceInmobiliarias.filter = $event.target.value;
+    this.dataSourcePoligonos.filter = $event.target.value;
+  }
+
 
 // Añadir aquí cualquier capa nueva y su correspondiente cadena
 public layerRelations: Layer[] = 
@@ -43,6 +52,7 @@ public layerRelations: Layer[] =
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) matSort! : MatSort;
 
   ngAfterViewInit() {
   }
@@ -52,6 +62,7 @@ public layerRelations: Layer[] =
   }
 
   ngOnInit(): void {
+    
    //  this.onSearch("");
   }
   async onSearch(searchString: string) {
@@ -81,10 +92,11 @@ public layerRelations: Layer[] =
           });
           this.allFeatures =jsonObj;
           this.dataSource = new MatTableDataSource(this.allFeatures);
-          this.paginator._intl.itemsPerPageLabel = 'items por página';
+          this.paginator._intl.itemsPerPageLabel = 'Items por página';
           this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.matSort;        
           this.displayedColumns = all_layers_columns[this.selectedLayer];
-
+          
 
           this.totalLength = this.allFeatures.length;
          break; 
@@ -106,7 +118,9 @@ public layerRelations: Layer[] =
          //this.allFeatures =jsonObjEducativo;
           this.dataSourceCentros = new MatTableDataSource(jsonObjEducativo);
           this.dataSourceCentros.paginator = this.paginator;
+          this.paginator._intl.itemsPerPageLabel = 'Items por página';
           this.displayedColumns = all_layers_columns[this.selectedLayer];
+          this.dataSourceCentros.sort = this.matSort;
 
 
           this.totalLength = this.allFeatures.length
@@ -130,7 +144,9 @@ public layerRelations: Layer[] =
          //this.allFeatures =jsonObjEducativo;
           this.dataSourcePoligonos = new MatTableDataSource(jsonObjPoligono);
           this.dataSourcePoligonos.paginator = this.paginator;
+          this.paginator._intl.itemsPerPageLabel = 'Items por página';
           this.displayedColumns = all_layers_columns[this.selectedLayer];
+          this.dataSourcePoligonos.sort = this.matSort;
 
 
           this.totalLength = this.allFeatures.length
@@ -175,9 +191,9 @@ public layerRelations: Layer[] =
          //this.allFeatures =jsonObjEducativo;
           this.dataSourceInmobiliarias = new MatTableDataSource(jsonObjInmobiliaria);
           this.dataSourceInmobiliarias.paginator = this.paginator;
+          this.paginator._intl.itemsPerPageLabel = 'Items por página';
           this.displayedColumns = all_layers_columns[this.selectedLayer];
-
-
+          this.dataSourceInmobiliarias.sort = this.matSort;
           this.totalLength = this.allFeatures.length
         break; 
       }

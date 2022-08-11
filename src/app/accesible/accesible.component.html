@@ -1,68 +1,76 @@
-<div >
-<mat-form-field appearance="fill">
-  <mat-label>Seleccionar capa</mat-label>
-  <mat-select [(value)]="selectedLayer" (selectionChange)="onSearch('')">
-    <mat-option *ngFor="let layer of layerRelations" [value]="layer.value">
-      {{layer.label}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+
+<!--FILTER-->
+<div class="search-container">
+  <mat-form-field class="label" appearance="fill">
+    <mat-label>Capa</mat-label>
+    <mat-select [(value)]="selectedLayer" (selectionChange)="onSearch('')">
+      <mat-option *ngFor="let layer of layerRelations" [value]="layer.value">
+        {{layer.label}}
+      </mat-option>
+    </mat-select>
+    
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <input matInput placeholder="Buscar" autocomplete="off" (keyup)="filterData($event)">
+  </mat-form-field>
 </div>
+
+
 
 <!-- test -->
 
 <div>
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+  <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8"
     *ngIf="selectedLayer == 'nucleos_zbg_2021' || selectedLayer == 'nucleos_zbg_2022'">
     <!-- ['Nucleo','Codigo de la zona','Factor escenario y patrimonio','Factor movilidad','Factor equipamiento y servicio','Factor alojamiento','Factor económico','ISDT100','Area afectada del nucleo','Tipo de zona','Municipio (INE)', 'Año']  -->
     <!-- Position Column -->
 
     <ng-container matColumnDef="nucleo">
-      <th mat-header-cell *matHeaderCellDef> Núcleo </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Núcleo </th>
       <td mat-cell *matCellDef="let element"> {{element.nucleo}} </td>
     </ng-container>
     <ng-container matColumnDef="codigo_zona">
-      <th mat-header-cell *matHeaderCellDef> Código de la zona </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Código de la zona </th>
       <td mat-cell *matCellDef="let element"> {{element.codigo_zona}} </td>
     </ng-container>
     <ng-container matColumnDef="f_escenario_patrimonio">
-      <th mat-header-cell *matHeaderCellDef> Factor escenario y patrimonio </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor escenario y patrimonio </th>
       <td mat-cell *matCellDef="let element"> {{element.f_escenario_patrimonio}} </td>
     </ng-container>
     <ng-container matColumnDef="f_movilidad">
-      <th mat-header-cell *matHeaderCellDef> Factor movilidad </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor movilidad </th>
       <td mat-cell *matCellDef="let element"> {{element.f_movilidad}} </td>
     </ng-container>
     <ng-container matColumnDef="f_equipamiento_servicio">
-      <th mat-header-cell *matHeaderCellDef> Factor equipamiento y servicio </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor equipamiento y servicio </th>
       <td mat-cell *matCellDef="let element"> {{element.f_equipamiento_servicio}} </td>
     </ng-container>
     <ng-container matColumnDef="f_alojamiento">
-      <th mat-header-cell *matHeaderCellDef> Factor alojamiento </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor alojamiento </th>
       <td mat-cell *matCellDef="let element"> {{element.f_alojamiento}} </td>
     </ng-container>
     <ng-container matColumnDef="f_economico">
-      <th mat-header-cell *matHeaderCellDef> Factor económico </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor económico </th>
       <td mat-cell *matCellDef="let element"> {{element.f_economico}} </td>
     </ng-container>
     <ng-container matColumnDef="isdt_100">
-      <th mat-header-cell *matHeaderCellDef> ISDT100 </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> ISDT100 </th>
       <td mat-cell *matCellDef="let element"> {{element.isdt_100}} </td>
     </ng-container>
     <ng-container matColumnDef="por_afec_nucleo_x_zona">
-      <th mat-header-cell *matHeaderCellDef> Área afectada del nucleo </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Área afectada del nucleo </th>
       <td mat-cell *matCellDef="let element"> {{element.por_afec_nucleo_x_zona}} % </td>
     </ng-container>
     <ng-container matColumnDef="tipo_zona">
-      <th mat-header-cell *matHeaderCellDef> Tipo de zona </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Tipo de zona </th>
       <td mat-cell *matCellDef="let element"> {{element.tipo_zona}} </td>
     </ng-container>
     <ng-container matColumnDef="municipio">
-      <th mat-header-cell *matHeaderCellDef> Municipio </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Municipio </th>
       <td mat-cell *matCellDef="let element"> {{element.municipio}} </td>
     </ng-container>
     <ng-container matColumnDef="anio">
-      <th mat-header-cell *matHeaderCellDef> Año </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Año </th>
       <td mat-cell *matCellDef="let element"> {{element.anio}} </td>
     </ng-container>
 
@@ -78,7 +86,7 @@
 
 
 <div>
-  <table mat-table [dataSource]="dataSourceCentros" class="mat-elevation-z8"
+  <table mat-table matSort [dataSource]="dataSourceCentros" class="mat-elevation-z8"
     *ngIf="selectedLayer == 'centros_educativos_zbg_2021' || selectedLayer == 'centros_educativos_zbg_2022' || selectedLayer == 'instalaciones_sanitarias_zbg_2021' || selectedLayer == 'instalaciones_sanitarias_zbg_2022'">
     <!-- ['Nucleo','Codigo de la zona','Factor escenario y patrimonio','Factor movilidad','Factor equipamiento y servicio','Factor alojamiento','Factor económico','ISDT100','Area afectada del nucleo','Tipo de zona','Municipio (INE)', 'Año']  -->
     <!-- Position Column -->
@@ -87,24 +95,24 @@
       <mat-text-column name="codigo_zona"></mat-text-column>  -->
 
     <ng-container matColumnDef="centro">
-      <th mat-header-cell *matHeaderCellDef> Centro </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Centro </th>
       <td mat-cell *matCellDef="let element"> {{element.centro}} </td>
     </ng-container>
     <ng-container matColumnDef="codigo_zona">
-      <th mat-header-cell *matHeaderCellDef> Código de la zona </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Código de la zona </th>
       <td mat-cell *matCellDef="let element"> {{element.codigo_zona}} </td>
     </ng-container>
     <ng-container matColumnDef="tipo_zona">
-      <th mat-header-cell *matHeaderCellDef> Tipo zona </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Tipo zona </th>
       <td mat-cell *matCellDef="let element"> {{element.tipo_zona}} </td>
     </ng-container>
 
     <ng-container matColumnDef="localidad">
-      <th mat-header-cell *matHeaderCellDef> Localidad </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Localidad </th>
       <td mat-cell *matCellDef="let element"> {{element.localidad}} </td>
     </ng-container>
     <ng-container matColumnDef="anio">
-      <th mat-header-cell *matHeaderCellDef> Año </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Año </th>
       <td mat-cell *matCellDef="let element"> {{element.anio}} </td>
     </ng-container>
 
@@ -117,7 +125,7 @@
 </div>
 
 <div>
-  <table mat-table [dataSource]="dataSourcePoligonos" class="mat-elevation-z8"
+  <table mat-table matSort [dataSource]="dataSourcePoligonos" class="mat-elevation-z8"
     *ngIf=" selectedLayer == 'poligonos_zbg_2021' || selectedLayer == 'poligonos_zbg_2022'">
     <!-- ['Nucleo','Codigo de la zona','Factor escenario y patrimonio','Factor movilidad','Factor equipamiento y servicio','Factor alojamiento','Factor económico','ISDT100','Area afectada del nucleo','Tipo de zona','Municipio (INE)', 'Año']  -->
     <!-- Position Column -->
@@ -126,24 +134,24 @@
       <mat-text-column name="codigo_zona"></mat-text-column>  -->
 
     <ng-container matColumnDef="nombre_poligono">
-      <th mat-header-cell *matHeaderCellDef> Nombre polígono </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Nombre polígono </th>
       <td mat-cell *matCellDef="let element"> {{element.nombre_poligono}} </td>
     </ng-container>
     <ng-container matColumnDef="codigo_zona">
-      <th mat-header-cell *matHeaderCellDef> Código de la zona </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Código de la zona </th>
       <td mat-cell *matCellDef="let element"> {{element.codigo_zona}} </td>
     </ng-container>
     <ng-container matColumnDef="tipo_zona">
-      <th mat-header-cell *matHeaderCellDef> Tipo zona </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Tipo zona </th>
       <td mat-cell *matCellDef="let element"> {{element.tipo_zona}} </td>
     </ng-container>
 
     <ng-container matColumnDef="localidad">
-      <th mat-header-cell *matHeaderCellDef> Localidad </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Localidad </th>
       <td mat-cell *matCellDef="let element"> {{element.localidad}} </td>
     </ng-container>
     <ng-container matColumnDef="anio">
-      <th mat-header-cell *matHeaderCellDef> Año </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Año </th>
       <td mat-cell *matCellDef="let element"> {{element.anio}} </td>
     </ng-container>
 
@@ -156,7 +164,7 @@
 </div>
 
 <div>
-  <table mat-table [dataSource]="dataSourceInmobiliarias" class="mat-elevation-z8"
+  <table mat-table matSort [dataSource]="dataSourceInmobiliarias" class="mat-elevation-z8"
     *ngIf=" selectedLayer == 'ui_zbg_2022_x_muni'">
     <!-- ['Nucleo','Codigo de la zona','Factor escenario y patrimonio','Factor movilidad','Factor equipamiento y servicio','Factor alojamiento','Factor económico','ISDT100','Area afectada del nucleo','Tipo de zona','Municipio (INE)', 'Año']  -->
     <!-- Position Column -->
@@ -165,20 +173,20 @@
       <mat-text-column name="codigo_zona"></mat-text-column>  -->
 
     <ng-container matColumnDef="municipio">
-      <th mat-header-cell *matHeaderCellDef> Municipio </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Municipio </th>
       <td mat-cell *matCellDef="let element"> {{element.municipio}} </td>
     </ng-container>
     <ng-container matColumnDef="tipo_zona">
-      <th mat-header-cell *matHeaderCellDef> Tipo zona </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Tipo zona </th>
       <td mat-cell *matCellDef="let element"> {{element.tipo_zona}} </td>
     </ng-container>
     <ng-container matColumnDef="codigo_zona">
-      <th mat-header-cell *matHeaderCellDef> Código de la zona </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Código de la zona </th>
       <td mat-cell *matCellDef="let element"> {{element.codigo_zona}} </td>
     </ng-container>
 
     <ng-container matColumnDef="ui_total">
-      <th mat-header-cell *matHeaderCellDef> Unidades Inmobiliarias Totales
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Unidades Inmobiliarias Totales
       </th>
       <td mat-cell *matCellDef="let element"> {{element.ui_total}} </td>
     </ng-container>
@@ -250,29 +258,29 @@
       <td mat-cell *matCellDef="let element"> {{element.uis_z}} </td>
     </ng-container> -->
     <ng-container matColumnDef="isdt_100">
-      <th mat-header-cell *matHeaderCellDef> ISDT100 </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> ISDT100 </th>
       <td mat-cell *matCellDef="let element"> {{element.isdt_100}} </td>
     </ng-container>
     <ng-container matColumnDef="f_economico">
-      <th mat-header-cell *matHeaderCellDef> Factor económico </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor económico </th>
       <td mat-cell *matCellDef="let element"> {{element.f_economico}} </td>
     </ng-container>
     <ng-container matColumnDef="f_alojamiento">
-      <th mat-header-cell *matHeaderCellDef> Factor alojamiento </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor alojamiento </th>
       <td mat-cell *matCellDef="let element"> {{element.f_alojamiento}} </td>
     </ng-container>
 
     <ng-container matColumnDef="f_equpiamiento_servicio">
-      <th mat-header-cell *matHeaderCellDef> Factor equipamiento y servicio
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor equipamiento y servicio
       </th>
       <td mat-cell *matCellDef="let element"> {{element.f_equpiamiento_servicio}} </td>
     </ng-container>
     <ng-container matColumnDef="f_movilidad">
-      <th mat-header-cell *matHeaderCellDef> Factor movilidad </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor movilidad </th>
       <td mat-cell *matCellDef="let element"> {{element.f_movilidad}} </td>
     </ng-container>
     <ng-container matColumnDef="f_escenario_patrimonio">
-      <th mat-header-cell *matHeaderCellDef> Factor escenario y patrimonio </th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Factor escenario y patrimonio </th>
       <td mat-cell *matCellDef="let element"> {{element.f_escenario_patrimonio}} </td>
     </ng-container>
 
