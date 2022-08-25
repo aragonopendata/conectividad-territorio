@@ -1,27 +1,16 @@
 # AodConectividad
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.10.
+Conectividad a internet y territorio es un servicio basado en datos abiertos que permite conocer la relación entre los datos de conectividad a internet y aspectos sociales, económicos y de infraestructuras en Aragón. Además, cuenta con una versión accesible que ofrece los datos del servicio de Conectividad a internet y territorio en una tabla.
 
-## Development server
+## Requisitos
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+1.- Tener Angular instalado.
+2.- Crear una copia de environment-template.ts denominada environment.ts y completar los campos con los datos necesarios.
 
-## Code scaffolding
+## Despliegue
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Ejecutar `npm install` para la instalación de paquetes.
+Ejecutar `ng serve` para un despliegue en local. 
+Dirigirse a `http://localhost:4200/`. La página se actualizará de forma automática en caso de guardar cualquier cambio en alguno de los ficheros.
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod --base-href /servicios/indicadores/` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+El proyecto cuenta con un Dockerfile en el caso de querer generar una imagen y lanzar un contenedor
