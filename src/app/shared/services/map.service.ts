@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Feature, Map, Overlay, View } from 'ol';
+import { Feature, Overlay, View } from 'ol';
+import Map from 'ol/Map.js';
+import MouseWheelZoom from 'ol/interaction/MouseWheelZoom';
+//const MouseWheelZoom = (<any>require('ol/interaction/MouseWheelZoom')).default;
+import {fromLonLat} from 'ol/proj';
 import { Coordinate } from 'ol/coordinate';
-import { boundingExtent, coordinateRelationship } from 'ol/extent';
+import { boundingExtent, coordinateRelationship, extendCoordinate } from 'ol/extent';
 import { GeoJSON } from 'ol/format';
 import Point from 'ol/geom/Point';
 import TileLayer from 'ol/layer/Tile';
@@ -18,6 +22,8 @@ import { ObjectId } from '../models/object-id.model';
 import { TipoBusqueda } from '../models/tipo-busqueda.enum';
 import { TypeZone2021, TypeZone2022, WFSResponse } from '../models/wfs-response.model';
 import { IgearService } from './igear.service';
+import { ExpectedConditions } from 'protractor';
+import { Interaction } from 'chart.js';
 
 @Injectable({
   providedIn: 'root'
@@ -48,20 +54,38 @@ export class MapService {
         url: environment.urlWMSServer,
         params: {
           LAYERS: environment.wmsLayers,
-          VERSION: environment.wmsVersion
+          VERSION: environment.wmsVersion,
+          
+         
         },
         projection: projection
       })
     });
+
     const olMap = new Map({
       target: target,
-      view: new View(options),
+      controls: [],
+     view: new View(options),
+     
       overlays: [overlay],
     });
 
+//    olMap.getInteractions().forEach(function(interaction) {
+//  if (interaction instanceof ol.interaction.MouseWheelZoom) {
+//    interaction.setActive(false);
+//  }
+//}, this);
     //zoom map
+
     olMap.addLayer(layer);
+    
     olMap.getView().fit(extent);
+//    olMap.getView().setZoom(15);
+   // olMap.getView().setMaxZoom(18);
+ //   olMap.getView().setMinZoom(15);
+    //
+    
+   
     return olMap;
   }
 
@@ -373,6 +397,7 @@ export class MapService {
 
         olMap.addLayer(vectorLayerNucleosUrbanosCerca)
         olMap.addLayer(vectorLayerNucleosUrbanosLejos);
+        olMap.getView().fit(vectorLayerNucleosUrbanosCerca.getSource().getExtent());
     }
 
 
@@ -431,6 +456,7 @@ export class MapService {
 
         olMap.addLayer(vectorLayerUnidadesInmobiliariasCerca)
         olMap.addLayer(vectorLayerUnidadesInmobiliariasLejos);
+        olMap.getView().fit(vectorLayerUnidadesInmobiliariasCerca.getSource().getExtent());
     }
 
     if(featuresIsdt !== undefined && featuresIsdt.length > 0)
@@ -458,12 +484,17 @@ export class MapService {
     if(otherFeatures !== undefined && otherFeatures.length > 0)
     {
         olMap.addLayer(vectorLayer);
+        olMap.getView().fit(vectorLayer.getSource().getExtent());
+        
     }
-
-    olMap.getView().fit(extent);
-    console.log(extent);
-    //olMap.getView().fit(extent, {size: olMap.getSize()}); 
     
+   // olMap.getView().fit(extent);
+//    olMap.getView().setZoom(18);
+//    olMap.getView().setMaxZoom(18);
+    olMap.getView().setMinZoom(15);
+
+
+ 
   }
 
   /**
@@ -490,6 +521,10 @@ export class MapService {
     } else if (tipoBusqueda === TipoBusqueda.LOCALIDAD) {
       service = this.getObjectIdByLocalidad(texto, environment.typedSearchLOCALIDAD);
     }
+
+    
+
+
     return service;
   }
 
@@ -604,7 +639,7 @@ export class MapService {
       .pipe(switchMap(response => {
         let cqlFilter = typename === environment.typenameCP ? `objectid=${ObjectId}` : '';
         for (let resultado of response.resultados) {
-          if (resultado.capa.includes(capa)) {
+          if (resultado.capa.includes(capa) ) {
             for (let feature of resultado.featureCollection.features) {
               const oid = feature.properties.objectid;
               cqlFilter += cqlFilter !== '' ? ` OR objectid=${oid}` : `objectid=${oid}`;

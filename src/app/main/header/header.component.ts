@@ -159,7 +159,7 @@ export class HeaderComponent implements OnInit {
         }
 
         let self = this;
-        await self.mapService.getObjectId("Jaca").subscribe(async objectId => 
+        await self.mapService.getObjectId("Zaragoza").subscribe(async objectId => 
         {
             if (objectId.objectId !== undefined) 
             {
@@ -168,7 +168,7 @@ export class HeaderComponent implements OnInit {
                 for(let layer of self.layerSelection)
                 {
                     console.log(layer);
-                    let result = await self.mapService.getWFSFeaturesAll(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
+                    let result = await self.mapService.getWFSFeatures(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
                     results.push(result);
                 }
 
