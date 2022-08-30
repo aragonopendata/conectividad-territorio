@@ -397,7 +397,11 @@ export class MapService {
 
         olMap.addLayer(vectorLayerNucleosUrbanosCerca)
         olMap.addLayer(vectorLayerNucleosUrbanosLejos);
-        olMap.getView().fit(vectorLayerNucleosUrbanosCerca?.getSource()?.getExtent());
+        if (vectorLayerNucleosUrbanosCerca != null){
+
+          olMap.getView().fit(vectorLayerNucleosUrbanosCerca.getSource().getExtent());
+
+        }
     }
 
 
@@ -456,7 +460,11 @@ export class MapService {
 
         olMap.addLayer(vectorLayerUnidadesInmobiliariasCerca)
         olMap.addLayer(vectorLayerUnidadesInmobiliariasLejos);
-        olMap.getView().fit(vectorLayerUnidadesInmobiliariasCerca?.getSource()?.getExtent());
+        if (vectorLayerUnidadesInmobiliariasCerca != null){
+
+          olMap.getView().fit(vectorLayerUnidadesInmobiliariasCerca.getSource().getExtent());
+
+        }
     }
 
     if(featuresIsdt !== undefined && featuresIsdt.length > 0)
@@ -484,7 +492,12 @@ export class MapService {
     if(otherFeatures !== undefined && otherFeatures.length > 0)
     {
         olMap.addLayer(vectorLayer);
-        olMap.getView().fit(vectorLayer.getSource()?.getExtent());
+        if (vectorLayer != null){
+
+          olMap.getView().fit(vectorLayer.getSource().getExtent());
+
+        }
+
         
     }
     
