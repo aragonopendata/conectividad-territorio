@@ -502,9 +502,9 @@ export class MapService {
     }
     
    // olMap.getView().fit(extent);
-    olMap.getView().setZoom(15);
+    olMap.getView().setZoom(14.5);
 //    olMap.getView().setMaxZoom(18);
-    olMap.getView().setMinZoom(15);
+    olMap.getView().setMinZoom(14.5);
 
 
  
