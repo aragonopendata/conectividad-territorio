@@ -159,32 +159,32 @@ export class HeaderComponent implements OnInit {
         }
 
         let self = this;
-        await self.mapService.getObjectId("Zaragoza").subscribe(async objectId => 
-        {
-            if (objectId.objectId !== undefined) 
-            {
-                let results : WFSResponse[] = [];
-                self.searchText = 'Cargando datos...';
-                for(let layer of self.layerSelection)
-                {
-                    console.log(layer);
-                    let result = await self.mapService.getWFSFeatures(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
-                    results.push(result);
-                }
-
-                let features : any[] = [];
-                for(let item of results)
-                {
-                    Array.prototype.push.apply(features, item.features);
-                }
-                results[0].features = features;
-                results[0].fotalFeatures = results[0].features.length;
-                self.searchText = "Jaca";
-                self.isDone = true;
-                console.log(results[0]);
-                self.searchEvent.emit(results[0]);
-            }
-        });  
+//        await self.mapService.getObjectId("Zaragoza").subscribe(async objectId => 
+//        {
+//            if (objectId.objectId !== undefined) 
+//            {
+//                let results : WFSResponse[] = [];
+//                self.searchText = 'Cargando datos...';
+//                for(let layer of self.layerSelection)
+//                {
+//                    console.log(layer);
+//                    let result = await self.mapService.getWFSFeatures(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
+//                    results.push(result);
+//                }
+//
+//                let features : any[] = [];
+//                for(let item of results)
+//                {
+//                    Array.prototype.push.apply(features, item.features);
+//                }
+//                results[0].features = features;
+//                results[0].fotalFeatures = results[0].features.length;
+//                self.searchText = "Jaca";
+//                self.isDone = true;
+//                console.log(results[0]);
+//                self.searchEvent.emit(results[0]);
+//            }
+//        });  
         /*self.mapService.getObjectId("Jaca").subscribe(
             objectId => {
               if (objectId.objectId !== undefined) {
