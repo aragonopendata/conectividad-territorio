@@ -96,14 +96,14 @@ export class HeaderComponent implements OnInit {
             else{
               this.searchText = "";
               this.isError = true;
-              this.errorStatus = "No se han encontrado resultados para la búqueda "+ searchString +".Por favor, revise su consulta";
+              this.errorStatus = "No se han encontrado datos en las capas seleccionadas para la búsqueda "+ searchString +".";
               this.isDone = true;
             }
         }else {
           let wfsResponse!: WFSResponse;
           this.searchText = "";
           this.isError = true;
-          this.errorStatus = "No se han encontrado resultados para la búqueda "+ searchString +".Por favor, revise su consulta";
+          this.errorStatus = "No se han encontrado resultados para la búsqueda "+ searchString +".Por favor, revise su consulta";
           this.isDone = true;
         }
     });  
