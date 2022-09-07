@@ -32,8 +32,8 @@
    </div>
    
 
-    <!-- Contenedor resultados -->
-    <div id="results" *ngIf="!isSearching">
+    <!-- Contenedor resultados --> 
+    <div id="results" *ngIf="!isSearching && !isError" >
         <div type="button" class="inline-flex items-center px-4 py-2 text-base leading-6 font-medium rounded-md"
             disabled="" *ngIf="!isDone">
             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none"

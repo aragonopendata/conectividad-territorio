@@ -529,8 +529,8 @@ export class MapService {
     } as ObjectId);
     if (tipoBusqueda === TipoBusqueda.CP) {
       service = this.getObjectIdByCP(texto, environment.typedSearchCP);
-    } else if (tipoBusqueda === TipoBusqueda.CALLE) {
-      service = this.getObjectIdByDireccion(texto, environment.typedSearchDIRECCION, muni);
+    // } else if (tipoBusqueda === TipoBusqueda.CALLE) {
+    //   service = this.getObjectIdByDireccion(texto, environment.typedSearchDIRECCION, muni);
     } else if (tipoBusqueda === TipoBusqueda.LOCALIDAD) {
       service = this.getObjectIdByLocalidad(texto, environment.typedSearchLOCALIDAD);
     }

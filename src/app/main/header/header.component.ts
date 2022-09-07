@@ -7,6 +7,7 @@ import { ObjectId } from 'src/app/shared/models/object-id.model';
 import { Feature } from 'ol';
 import { ReturnStatement } from '@angular/compiler';
 import Geometry from 'ol/geom/Geometry';
+import { none } from 'ol/centerconstraint';
 
 @Component({
   selector: 'app-header',
@@ -71,24 +72,39 @@ export class HeaderComponent implements OnInit {
             for(let layer of self.layerSelection)
             {
                 console.log(layer);
+                try {
                 let result = await self.mapService.getWFSFeatures(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
                 results.push(result);
+                }
+                catch{
+                  console.log("Datos no encontrados para ese municipio")
+                }
             }
-
-            let features : any[] = [];
-            for(let item of results)
-            {
-                Array.prototype.push.apply(features, item.features);
+            if (results.length!=0){
+                let features : any[] = [];
+                for(let item of results)
+                {
+                    Array.prototype.push.apply(features, item.features);
+                }
+                results[0].features = features;
+                results[0].fotalFeatures = results[0].features.length;
+                self.searchText = searchString;
+                self.isDone = true;
+                console.log(results[0]);
+                self.searchEvent.emit(results[0]);
             }
-            results[0].features = features;
-            results[0].fotalFeatures = results[0].features.length;
-            self.searchText = searchString;
-            self.isDone = true;
-            console.log(results[0]);
-            self.searchEvent.emit(results[0]);
+            else{
+              this.searchText = "";
+              this.isError = true;
+              this.errorStatus = "No se han encontrado resultados para la búqueda "+ searchString +".Por favor, revise su consulta";
+              this.isDone = true;
+            }
         }else {
-          self.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-          self.isError = true;
+          let wfsResponse!: WFSResponse;
+          this.searchText = "";
+          this.isError = true;
+          this.errorStatus = "No se han encontrado resultados para la búqueda "+ searchString +".Por favor, revise su consulta";
+          this.isDone = true;
         }
     });  
     
