@@ -74,7 +74,8 @@ export class HeaderComponent implements OnInit {
                 console.log(layer);
                 try {
                 let result = await self.mapService.getWFSFeatures(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
-                results.push(result);
+                if (result["totalFeatures"] > 0)
+                  results.push(result);
                 }
                 catch{
                   console.log("Datos no encontrados para ese municipio")
