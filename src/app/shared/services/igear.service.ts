@@ -36,8 +36,12 @@ export class IgearService {
       params: params,
       responseType: 'text'
     };
+
     return this.http.get<string>(environment.urlTypedSearchService, options)
-      .pipe(map(xml => new DOMParser().parseFromString(xml, 'text/xml')));
+      .pipe(map(xml => 
+        {
+        return new DOMParser().parseFromString(xml, 'text/xml')
+      }));
   }
 
 

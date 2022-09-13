@@ -65,7 +65,7 @@ export class HeaderComponent implements OnInit {
     let self = this;
     await self.mapService.getObjectId(searchString).subscribe(async objectId => 
     {
-        if (objectId.objectId !== undefined) 
+        if (objectId != null && objectId.objectId !== undefined) 
         {
             let results : WFSResponse[] = [];
             self.searchText = 'Cargando datos...';

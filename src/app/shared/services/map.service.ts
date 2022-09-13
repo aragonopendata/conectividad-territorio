@@ -602,13 +602,20 @@ export class MapService {
    */
   getObjectIdByLocalidad(texto: string, type: string): Observable<ObjectId> {
     return this.igearService.typedSearchService(texto, type)
-      .pipe(map((res: XMLDocument) => {
-        const objectId: ObjectId = {
-          objectId: res.getElementsByTagName('List')[0].textContent?.split('#')[3],
-          typename: environment.typenameLOCALIDAD
-        }
-        return objectId;
-      }));
+    .pipe(map((res: XMLDocument) => {
+      let results: string[]=  res.getElementsByTagName('List')[0].textContent?.split('\n');
+       for (let i=0;  i<results.length;i++){
+         if (results[i]!="" && results[i].split('#')[1].toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") == texto.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")){
+          const objectId: ObjectId = {
+            objectId: results[i].split('#')[3],
+            typename: environment.typenameLOCALIDAD
+          }
+          return objectId;
+         }
+       }
+      return null;
+    }));
+
   }
 
   /**
