@@ -102,7 +102,7 @@ export class HeaderComponent implements OnInit {
           let wfsResponse!: WFSResponse;
           this.searchText = "";
           this.isError = true;
-          this.errorStatus = "No se ha encontrado el municipio "+ searchString +". Por favor, revise que el nombre del municipio o código postal es correcto.";
+          this.errorStatus = "No se ha encontrado el municipio "+ searchString +". Por favor, revise que el nombre del municipio es completo o que el código postal es correcto.";
           this.isDone = true;
         }
     });  
