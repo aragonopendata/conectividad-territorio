@@ -21,11 +21,11 @@ export class HeaderComponent implements OnInit {
   isSearching: boolean = true;
   isDone: boolean = false;
   isError: boolean = false;
+  
   searchText!: string;
   errorStatus!: string;
   popUpDescription!:string;
 
-   //listOptions: string[];
    listNucleos: string[];
    listCentrosEducativos: string[];
    listInstalacionesSanitarias: string[ ];
@@ -33,8 +33,6 @@ export class HeaderComponent implements OnInit {
    unidadesInmobiliarias: string;
    isdt: string;
    search = false;
-   //selected: string = '0';
-   //viewSelection: string = '';
 
    layerSelection: string[] = [];
   
@@ -97,14 +95,14 @@ export class HeaderComponent implements OnInit {
             else{
               this.searchText = "";
               this.isError = true;
-              this.errorStatus = "No se han encontrado datos en las capas seleccionadas para la búsqueda "+ searchString +".";
+              this.errorStatus = "No se han encontrado datos en las capas seleccionadas para el municipio "+ searchString +".";
               this.isDone = true;
             }
         }else {
           let wfsResponse!: WFSResponse;
           this.searchText = "";
           this.isError = true;
-          this.errorStatus = "No se han encontrado resultados para la búsqueda "+ searchString +".Por favor, revise su consulta";
+          this.errorStatus = "No se ha encontrado el municipio "+ searchString +". Por favor, revise que el nombre del municipio o código postal es correcto.";
           this.isDone = true;
         }
     });  
@@ -138,10 +136,7 @@ export class HeaderComponent implements OnInit {
         [ 
             {label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni', isEnabled: true}
         ]},
-        /*{ optGroup:"Índice Sintético de Desarrollo Territorial", options: 
-        [
-            {label: 'ISDT (2020)', value: 'isdt_municipio'}
-        ]},*/
+       
         
     ];
 
@@ -176,286 +171,5 @@ export class HeaderComponent implements OnInit {
         }
 
         let self = this;
-//        await self.mapService.getObjectId("Zaragoza").subscribe(async objectId => 
-//        {
-//            if (objectId.objectId !== undefined) 
-//            {
-//                let results : WFSResponse[] = [];
-//                self.searchText = 'Cargando datos...';
-//                for(let layer of self.layerSelection)
-//                {
-//                    console.log(layer);
-//                    let result = await self.mapService.getWFSFeatures(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
-//                    results.push(result);
-//                }
-//
-//                let features : any[] = [];
-//                for(let item of results)
-//                {
-//                    Array.prototype.push.apply(features, item.features);
-//                }
-//                results[0].features = features;
-//                results[0].fotalFeatures = results[0].features.length;
-//                self.searchText = "Jaca";
-//                self.isDone = true;
-//                console.log(results[0]);
-//                self.searchEvent.emit(results[0]);
-//            }
-//        });  
-        /*self.mapService.getObjectId("Jaca").subscribe(
-            objectId => {
-              if (objectId.objectId !== undefined) {
-                self.searchText = 'Cargando datos...';
-                self.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, self.layerSelection[0], 1000).subscribe(
-                  wfsResponse => {
-                    console.log(wfsResponse);
-                    console.log("Layer: " + self.layerSelection);
-                    self.searchText = "Jaca";
-                    self.isDone = true;
-                    self.searchEvent.emit(wfsResponse);
-                  })
-              } else {
-                self.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-                self.isError = true;
-              }
-            },
-            error => {
-                self.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-                self.isError = true;
-            });*/
-
-    //this.layerSelection = this.layerRelations[this.viewSelection];
-    
-
-    /*if (this.viewSelection == 'Núcleos urbanos (2021)'){
-      this.layerSelection = 'nucleos_zbg_2021';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                console.log("Layer: " + this.layerSelection);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }else if (this.viewSelection == 'Núcleos urbanos (2022)'){
-      this.layerSelection = 'nucleos_zbg_2022';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }
-    else if (this.viewSelection == 'Unidades inmobiliarias (2022)'){
-      this.layerSelection = 'ui_zbg_2022_x_muni';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }
-    else if (this.viewSelection == 'Centros educativos (2021)'){
-      this.layerSelection = 'centros_educativos_zbg_2021';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }
-    else if (this.viewSelection == 'Centros educativos (2022)'){
-      this.layerSelection = 'centros_educativos_zbg_2022';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }
-    else if (this.viewSelection == 'Instalaciones sanitarias (2021)'){
-      this.layerSelection = 'instalaciones_sanitarias_zbg_2021';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }
-    else if (this.viewSelection == 'Instalaciones sanitarias (2022)'){
-      this.layerSelection = 'instalaciones_sanitarias_zbg_2022';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }
-    else if (this.viewSelection == 'Polígonos industriales (2021)'){
-      this.layerSelection = 'poligonos_zbg_2021';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }
-    else if (this.viewSelection == 'Polígonos industriales (2022)'){
-      this.layerSelection = 'poligonos_zbg_2022';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }
-    else if (this.viewSelection == 'Índice Sintético de Desarrollo Territorial (ISDT) (2020)'){
-      this.layerSelection = 'isdt_municipio';
-      this.mapService.getObjectId("Jaca").subscribe(
-        objectId => {
-          if (objectId.objectId !== undefined) {
-            this.searchText = 'Cargando datos...';
-            this.mapService.getWFSFeaturesAll(objectId.objectId, objectId.typename, this.layerSelection, 1000).subscribe(
-              wfsResponse => {
-                console.log(wfsResponse);
-                this.searchText = "Jaca";
-                this.isDone = true;
-                this.searchEvent.emit(wfsResponse);
-              })
-          } else {
-            this.errorStatus = 'No se han encontrado resultados. Por favor, revise su consulta';
-            this.isError = true;
-          }
-        },
-        error => {
-          this.errorStatus = 'Ha habido un fallo en la consulta. Por favor, intentelo de nuevo';
-          this.isError = true;
-        });
-    }*/
   }
 }
