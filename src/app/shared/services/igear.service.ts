@@ -62,7 +62,7 @@ export class IgearService {
       .set('TYPENAME', typename)
       .set('CQL_FILTER', `OBJECTID=${objectId}`)
       .set('PROPERTYNAME', 'OBJECTID')
-      .set('TYPENAME_CONN', 'DV');
+      .set('TYPENAME_CONN', 'CT');
     return this.http.post<SpatialSearchResults>(environment.urlSpatialSearchService, body)
   }
 
