@@ -671,6 +671,24 @@ export class MapService {
         return this.igearService.sitaWMSGetFeature(capa, cqlFilter);  
       }));
   }
+
+  getWFSFeaturesByCP(ObjectId: string, typename: string, capa: string, distancia: number): Observable<WFSResponse> {
+    return this.igearService.spatialSearchServiceByCP(ObjectId, typename)
+      .pipe(switchMap(response => {
+        let cqlFilter = typename === environment.typenameCP ? `objectid=${ObjectId}` : '';
+        for (let resultado of response.resultados) {
+          if (resultado.capa.includes(capa) ) {
+            for (let feature of resultado.featureCollection.features) {
+              const oid = feature.properties.objectid;
+              cqlFilter += cqlFilter !== '' ? ` OR objectid=${oid}` : `objectid=${oid}`;
+            }
+            console.log(cqlFilter);
+            break;
+          }
+        }
+        return this.igearService.sitaWMSGetFeature(capa, cqlFilter);  
+      }));
+  }
   getWFSFeaturesAll(ObjectId: string, typename: string, capa: string, distancia: number): Observable<WFSResponse> {
     return this.igearService.sitaWMSGetFeatureAll(capa, "0");
   }

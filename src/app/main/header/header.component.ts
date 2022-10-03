@@ -71,7 +71,12 @@ export class HeaderComponent implements OnInit {
             {
                 console.log(layer);
                 try {
-                let result = await self.mapService.getWFSFeatures(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
+                const regex = /^(?:0[1-9]|[1-4]\d|5[0-2])\d{3}$/;
+                var result;
+                if (searchString.match(regex))
+                    result = await self.mapService.getWFSFeaturesByCP(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
+                else
+                    result = await self.mapService.getWFSFeatures(objectId.objectId!, objectId.typename, layer, 1000).toPromise();
                 if (result["totalFeatures"] > 0)
                   results.push(result);
                 }

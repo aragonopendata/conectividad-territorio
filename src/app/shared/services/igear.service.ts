@@ -66,6 +66,17 @@ export class IgearService {
     return this.http.post<SpatialSearchResults>(environment.urlSpatialSearchService, body)
   }
 
+  spatialSearchServiceByCP(objectId: string, typename: string): Observable<SpatialSearchResults> {
+    console.log("spatialsearch");
+    const body = new HttpParams()
+      .set('SERVICE', 'CT')
+      .set('TYPENAME', typename)
+      .set('CQL_FILTER', `OBJECTID=${objectId}`)
+      .set('PROPERTYNAME', 'OBJECTID')
+      .set('TYPENAME_CONN', 'DV');
+    return this.http.post<SpatialSearchResults>(environment.urlSpatialSearchService, body)
+  }
+
   /**
    * 
    * @ngdoc method
