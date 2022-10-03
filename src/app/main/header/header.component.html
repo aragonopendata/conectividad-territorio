@@ -23,7 +23,7 @@
 
     <form class="flex flex-col" *ngIf="isSearching">
         <mat-form-field title="Buscar por código postal o localidad" class="example-full-width" id="form_buscar" appearance="outline">
-          <mat-label  for="search" id="search_label">Buscar por código postal o municipio</mat-label>
+          <mat-label  for="search" id="search_label">Buscar por nombre de municipio</mat-label>
           <input matInput autofocus class="border-4 px-4" name="search" id="search" placeholder="Buscar" type="text"
             spellcheck="false" inputmode="numeric" #searchstring (keyup.enter)="onSearch(searchstring.value)">
         </mat-form-field>
