@@ -168,6 +168,9 @@ export class MapService {
       case 'ui_zbg_2022_x_muni':
         result = this.buildCircleStyle(this.getBuildingUnitStyle((feature as any).values_.tipo_zona))
       break;
+      case 'viviendas_zn_2022_x_muni':
+        result = this.buildCircleStyle(this.getHousingBlackPlacesStyle((feature as any).values_.tipo_zona))
+      break;
       default:
         break;
      }
@@ -276,6 +279,9 @@ export class MapService {
     return result;
    }
 
+   getHousingBlackPlacesStyle(affectedValue): FeatureColorStyle {    
+
+    let result: FeatureColorStyle = {fillColor: "green", strokeColor: "#FFFFFF"};
   
 
   /**
