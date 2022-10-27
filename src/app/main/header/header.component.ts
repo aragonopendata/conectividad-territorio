@@ -32,6 +32,7 @@ export class HeaderComponent implements OnInit {
    listPoligonosIndustriales:string[];
    unidadesInmobiliarias: string;
    isdt: string;
+   viviendas: string;
    search = false;
 
    layerSelection: string[] = [];
@@ -48,6 +49,7 @@ export class HeaderComponent implements OnInit {
         this.listPoligonosIndustriales=['Polígonos industriales (2021)','Polígonos industriales (2022)']
         this.unidadesInmobiliarias = 'Unidades inmobiliarias (2022)';
         this.isdt = 'Índice Sintético de Desarrollo Territorial (ISDT) (2020)'
+        this.viviendas = 'Viviendas zonas negras (2022)'
     }
 
   ngOnInit(): void {
@@ -141,6 +143,10 @@ export class HeaderComponent implements OnInit {
         [ 
             {label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni', isEnabled: true}
         ]},
+        { optGroup:'Viviendas zonas negras', options: 
+        [
+            {label: 'Viviendas zonas negras (2022)', value: 'viviendas_zn_2022_x_muni', isEnabled: true}, 
+        ]}
        
         
     ];
