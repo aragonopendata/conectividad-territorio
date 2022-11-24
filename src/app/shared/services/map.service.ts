@@ -182,31 +182,31 @@ export class MapService {
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
     
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#FFFFFF"};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
 
     if(zoneType === typeZoneEnum.A){
       if(affectedValue <= 20){
-        result =  {fillColor: "#EF8480", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#EF8480", strokeColor: "#000000"};
       }else if (affectedValue > 20 && affectedValue <= 40){
-        result =  {fillColor: "#E94F49", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#E94F49", strokeColor: "#000000"};
       }else if (affectedValue > 40 && affectedValue <= 60){
-        result =  {fillColor: "#DA211B", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#DA211B", strokeColor: "#000000"};
       }else if (affectedValue > 60 && affectedValue <= 80){
-        result =  {fillColor: "#A3191A", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#A3191A", strokeColor: "#000000"};
       }else if (affectedValue > 80 && affectedValue <= 100){
-        result =  {fillColor: "#6D110D", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#6D110D", strokeColor: "#000000"};
       }
     }else if(zoneType === typeZoneEnum.B){
       if(affectedValue <= 20){
-        result =  {fillColor: "#B8D6E9", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#B8D6E9", strokeColor: "#000000"};
       }else if (affectedValue > 20 && affectedValue <= 40){
-        result =  {fillColor: "#9BC5D4", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#9BC5D4", strokeColor: "#000000"};
       }else if (affectedValue > 40 && affectedValue <= 60){
-        result =  {fillColor: "#7EB4C8", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#7EB4C8", strokeColor: "#000000"};
       }else if (affectedValue > 60 && affectedValue <= 80){
-        result =  {fillColor: "#569DB7", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#569DB7", strokeColor: "#000000"};
       }else if (affectedValue > 80 && affectedValue <= 100){
-        result =  {fillColor: "#4991AB", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#4991AB", strokeColor: "#000000"};
       }
     }
 
@@ -217,14 +217,14 @@ export class MapService {
 
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#5DC4E3", circleRadius: 8};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000", circleRadius: 8};
 
     if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#5DC4E3"};
+      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#5DC4E3"};
+      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.NONE){
-      result =  {fillColor: "#5BCA2B", strokeColor: "#5DC4E3"};
+      result =  {fillColor: "#5BCA2B", strokeColor: "#000000"};
     }
 
     return result;
@@ -234,14 +234,14 @@ export class MapService {
 
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#F9A8BB"};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
 
     if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#F9A8BB"};
+      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#F9A8BB"};
+      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.NONE){
-      result =  {fillColor: "#5BCA2B", strokeColor: "#F9A8BB"};
+      result =  {fillColor: "#5BCA2B", strokeColor: "#000000"};
     }
 
     return result;
@@ -251,14 +251,14 @@ export class MapService {
 
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#7D5A3C"};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
 
     if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#7D5A3C"};
+      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#7D5A3C"};
+      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.NONE){
-      result =  {fillColor: "#5BCA2B", strokeColor: "#7D5A3C"};
+      result =  {fillColor: "#5BCA2B", strokeColor: "#000000"};
     }
 
     return result;
@@ -268,12 +268,12 @@ export class MapService {
 
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#FFFFFF"};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
 
     if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#FFFFFF"};
+      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#FFFFFF"};
+      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
     }
 
     return result;
@@ -281,18 +281,18 @@ export class MapService {
 
    getLivingPlaceStyle(affectedValue): FeatureColorStyle {    
 
-    let result: FeatureColorStyle = {fillColor: "#5BCA2B", strokeColor: "#FFFFFF"};
+    let result: FeatureColorStyle = {fillColor: "#5BCA2B", strokeColor: "#000000"};
 /*
       if(affectedValue <= 20){
-        result =  {fillColor: "#EF8480", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#EF8480", strokeColor: "#000000"};
       }else if (affectedValue > 20 && affectedValue <= 40){
-        result =  {fillColor: "#E94F49", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#E94F49", strokeColor: "#000000"};
       }else if (affectedValue > 40 && affectedValue <= 60){
-        result =  {fillColor: "#DA211B", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#DA211B", strokeColor: "#000000"};
       }else if (affectedValue > 60 && affectedValue <= 80){
-        result =  {fillColor: "#A3191A", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#A3191A", strokeColor: "#000000"};
       }else if (affectedValue > 80 && affectedValue <= 100){        
-        result =  {fillColor: "#6D110D", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#6D110D", strokeColor: "#000000"};
     }
 */
     return result;
