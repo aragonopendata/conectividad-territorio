@@ -195,15 +195,6 @@ export class PopupComponent implements OnInit, AfterViewInit, OnChanges {
 
         map.set('Factor escenario y patrimonio', {value: this.getFeatureValue(featureSelect, "f_escenario_patrimonio" ), format: ""} );
       break;
-      case "viviendas_zn_2022_x_muni" :
-        map.set(this.TITLE, {value: "Municipio: " + this.getFeatureValue(featureSelect, "municipio" )+ " (2022)", format: ""});       
-        
-        map.set('Código municipio ine', {value: this.getFeatureValue(featureSelect, "c_muni_ine" ), format: ""} );
-
-        map.set('Viviendas en zona negra', {value: this.getFeatureValue(featureSelect,"viviendas_zonanegra"), format: ""} );
-
-        map.set('Porcentaje de viviendas totales', {value: this.getFeatureValue(featureSelect,"porcentaje_viviendas_zonanegra"), format: "||value|| %"} );
-      break;
       default:
         break;
     }
