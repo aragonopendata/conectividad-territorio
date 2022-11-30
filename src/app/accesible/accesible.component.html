@@ -290,6 +290,40 @@
 
   </table>
 
+  <div>
+    <table mat-table matSort [dataSource]="dataSourceViviendas" class="mat-elevation-z8"
+      *ngIf="selectedLayer == 'viviendas_zn_2022_x_muni'">
+      <!-- ['Nucleo','Codigo de la zona','Factor escenario y patrimonio','Factor movilidad','Factor equipamiento y servicio','Factor alojamiento','Factor económico','ISDT100','Area afectada del nucleo','Tipo de zona','Municipio (INE)', 'Año']  -->
+      <!-- Position Column -->
+  
+      <!-- <mat-text-column name="nucleo"></mat-text-column> 
+        <mat-text-column name="codigo_zona"></mat-text-column>  -->
+  
+      <ng-container matColumnDef="centro">
+        <th mat-header-cell mat-sort-header *matfHeaderCellDef> Código municipio </th>
+        <td mat-cell *matCellDef="let element"> {{element.c_muni_ine}} </td>
+      </ng-container>
+      <ng-container matColumnDef="codigo_zona">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Municipio </th>
+        <td mat-cell *matCellDef="let element"> {{element.municipio}} </td>
+      </ng-container>
+      <ng-container matColumnDef="tipo_zona">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Viviendas </th>
+        <td mat-cell *matCellDef="let element"> {{element.viviendas_zonanegra}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="localidad">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Porcentaje viviendas zona negra </th>
+        <td mat-cell *matCellDef="let element"> {{element.porcentaje_viviendas_zonanegra}} </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  
+    </table>
+  
+  
+  </div>
 
 </div>
 <mat-paginator [length]="totalLength" [pageSize]=10 [pageSizeOptions]="[10]" showFirstLastButtons

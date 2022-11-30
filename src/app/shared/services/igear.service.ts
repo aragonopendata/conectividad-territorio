@@ -67,7 +67,7 @@ export class IgearService {
   }
 
   spatialSearchServiceByCP(objectId: string, typename: string): Observable<SpatialSearchResults> {
-    console.log("spatialsearch");
+    console.log("spatialsearchcp");
     const body = new HttpParams()
       .set('SERVICE', 'CT')
       .set('TYPENAME', typename)
@@ -101,7 +101,7 @@ export class IgearService {
   }
 
   sitaWMSGetFeatureAll(typename: string, cqlFilter: string): Observable<WFSResponse> {
-    console.log("sitaWMSGetFeature")
+    console.log("sitaWMSGetFeatureAll")
     console.log(typename);
     const body = new HttpParams()
       .set('service', 'WFS')

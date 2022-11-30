@@ -168,8 +168,11 @@ export class MapService {
       case 'ui_zbg_2022_x_muni':
         result = this.buildCircleStyle(this.getBuildingUnitStyle((feature as any).values_.tipo_zona))
       break;
+      case 'viviendas_zn_2022_x_muni':
+        result = this.buildCircleStyle(this.getLivingPlaceStyle((feature as any).values_.tipo_zona))
+      break;
       default:
-        break;
+      break;
      }
      return result;
    }
@@ -179,31 +182,31 @@ export class MapService {
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
     
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#FFFFFF"};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
 
     if(zoneType === typeZoneEnum.A){
       if(affectedValue <= 20){
-        result =  {fillColor: "#EF8480", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#EF8480", strokeColor: "#000000"};
       }else if (affectedValue > 20 && affectedValue <= 40){
-        result =  {fillColor: "#E94F49", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#E94F49", strokeColor: "#000000"};
       }else if (affectedValue > 40 && affectedValue <= 60){
-        result =  {fillColor: "#DA211B", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#DA211B", strokeColor: "#000000"};
       }else if (affectedValue > 60 && affectedValue <= 80){
-        result =  {fillColor: "#A3191A", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#A3191A", strokeColor: "#000000"};
       }else if (affectedValue > 80 && affectedValue <= 100){
-        result =  {fillColor: "#6D110D", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#6D110D", strokeColor: "#000000"};
       }
     }else if(zoneType === typeZoneEnum.B){
       if(affectedValue <= 20){
-        result =  {fillColor: "#B8D6E9", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#B8D6E9", strokeColor: "#000000"};
       }else if (affectedValue > 20 && affectedValue <= 40){
-        result =  {fillColor: "#9BC5D4", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#9BC5D4", strokeColor: "#000000"};
       }else if (affectedValue > 40 && affectedValue <= 60){
-        result =  {fillColor: "#7EB4C8", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#7EB4C8", strokeColor: "#000000"};
       }else if (affectedValue > 60 && affectedValue <= 80){
-        result =  {fillColor: "#569DB7", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#569DB7", strokeColor: "#000000"};
       }else if (affectedValue > 80 && affectedValue <= 100){
-        result =  {fillColor: "#4991AB", strokeColor: "#FFFFFF"};
+        result =  {fillColor: "#4991AB", strokeColor: "#000000"};
       }
     }
 
@@ -214,14 +217,14 @@ export class MapService {
 
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#5DC4E3", circleRadius: 8};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000", circleRadius: 8};
 
     if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#5DC4E3"};
+      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#5DC4E3"};
+      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.NONE){
-      result =  {fillColor: "#5BCA2B", strokeColor: "#5DC4E3"};
+      result =  {fillColor: "#5BCA2B", strokeColor: "#000000"};
     }
 
     return result;
@@ -231,14 +234,14 @@ export class MapService {
 
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#F9A8BB"};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
 
     if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#F9A8BB"};
+      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#F9A8BB"};
+      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.NONE){
-      result =  {fillColor: "#5BCA2B", strokeColor: "#F9A8BB"};
+      result =  {fillColor: "#5BCA2B", strokeColor: "#000000"};
     }
 
     return result;
@@ -248,14 +251,14 @@ export class MapService {
 
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#7D5A3C"};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
 
     if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#7D5A3C"};
+      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#7D5A3C"};
+      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.NONE){
-      result =  {fillColor: "#5BCA2B", strokeColor: "#7D5A3C"};
+      result =  {fillColor: "#5BCA2B", strokeColor: "#000000"};
     }
 
     return result;
@@ -265,18 +268,35 @@ export class MapService {
 
     const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#FFFFFF"};
+    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
 
     if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#FFFFFF"};
+      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
     }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#FFFFFF"};
+      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
     }
 
     return result;
    }
 
-  
+   getLivingPlaceStyle(affectedValue): FeatureColorStyle {    
+
+    let result: FeatureColorStyle = {fillColor: "#5BCA2B", strokeColor: "#000000"};
+/*
+      if(affectedValue <= 20){
+        result =  {fillColor: "#EF8480", strokeColor: "#000000"};
+      }else if (affectedValue > 20 && affectedValue <= 40){
+        result =  {fillColor: "#E94F49", strokeColor: "#000000"};
+      }else if (affectedValue > 40 && affectedValue <= 60){
+        result =  {fillColor: "#DA211B", strokeColor: "#000000"};
+      }else if (affectedValue > 60 && affectedValue <= 80){
+        result =  {fillColor: "#A3191A", strokeColor: "#000000"};
+      }else if (affectedValue > 80 && affectedValue <= 100){        
+        result =  {fillColor: "#6D110D", strokeColor: "#000000"};
+    }
+*/
+    return result;
+   }
 
   /**
    * 
@@ -314,9 +334,10 @@ export class MapService {
     let featuresNucleosUrbanos = featuresStyled.filter(item => item.id_.includes('nucleos_zbg_') && item.values_.geometry.flatCoordinates !== undefined);
     let featuresUnidadesInmobiliares = featuresStyled.filter(item => item.id_.includes('ui_zbg_') && item.values_.geometry.flatCoordinates !== undefined);
     let featuresIsdt = featuresStyled.filter(item => item.id_.includes('isdt_municipio') && item.values_.geometry.flatCoordinates !== undefined); 
+    let featuresViviendas = featuresStyled.filter(item => item.id_.includes('viviendas_zn_') && item.values_.geometry.flatCoordinates !== undefined); 
 
     let otherFeatures = featuresStyled.filter(item => !item.id_.includes('ui_zbg_') 
-        && !item.id_.includes('nucleos_zbg_') && !item.id_.includes('isdt_municipio'));
+        && !item.id_.includes('nucleos_zbg_') && !item.id_.includes('isdt_municipio') && !item.id_.includes('viviendas_zn_'));
 
     let vectorLayer = new VectorLayer({
       source: new VectorSource({
@@ -496,17 +517,79 @@ export class MapService {
 
           olMap.getView().fit(vectorLayer.getSource().getExtent());
 
+        }      
+    }
+
+    if(featuresViviendas != undefined && featuresViviendas.length > 0)
+    {
+        let coordinatesAndStyles = featuresViviendas.map(function(item){
+            return {coordinates: item.values_.geometry.flatCoordinates.slice(0, 2), style: item.style_}
+        });
+
+        let newFeatures : Feature[] = [];
+        for(let newFeature of coordinatesAndStyles)
+        {
+            let _f = new Feature({
+                geometry: new Point(newFeature.coordinates)
+            });
+
+            _f.setStyle(newFeature.style)
+            newFeatures.push(_f);
         }
 
-        
-    }
-    
-   // olMap.getView().fit(extent);
-    olMap.getView().setZoom(14.5);
-//    olMap.getView().setMaxZoom(18);
-    olMap.getView().setMinZoom(14.5);
+        let vectorLayerViviendasLejos = new VectorLayer({
+            source: new VectorSource({
+            format: geojsonFormat,
+            features: newFeatures,
+            }),
+            style: new Style({
+            image: new Circle({
+                fill: fill,
+                stroke: stroke,
+                radius: 5,
+            }),
+            fill: fill,
+            stroke: stroke,
+            }),
+            className: className,
+            minResolution: 120
+        });
 
+        let vectorLayerViviendasCerca = new VectorLayer({
+            source: new VectorSource({
+              format: geojsonFormat,
+              features: featuresViviendas,
+            }),
+            style: new Style({
+              image: new Circle({
+                fill: fill,
+                stroke: stroke,
+                radius: 5,
+              }),
+              fill: fill,
+              stroke: stroke,
+            }),
+            className: className,
+            maxResolution: 120
+          });
 
+        olMap.addLayer(vectorLayerViviendasCerca)
+        olMap.addLayer(vectorLayerViviendasLejos);
+        if (vectorLayerViviendasCerca != null){
+
+          olMap.getView().fit(vectorLayerViviendasCerca.getSource().getExtent());
+
+        }
+        // olMap.getView().fit(extent);
+        olMap.getView().setZoom(10.5);
+        // olMap.getView().setMaxZoom(18);
+        olMap.getView().setMinZoom(10.5);
+
+    } else {                   
+        // olMap.getView().fit(extent);
+        olMap.getView().setZoom(14.5);
+        // olMap.getView().setMaxZoom(18);
+        olMap.getView().setMinZoom(14.5);}
  
   }
 
