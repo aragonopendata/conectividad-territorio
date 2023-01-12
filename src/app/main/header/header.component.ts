@@ -123,6 +123,12 @@ export class HeaderComponent implements OnInit {
     public layerRelations =
         [
             {
+                optGroup: 'Viviendas zonas negras', options:
+                    [
+                        { label: 'Viviendas zonas negras (2022)', value: 'viviendas_zn_2022_x_muni', isEnabled: true },
+                    ]
+            },
+            {
                 optGroup: 'Núcleos urbanos', options:
                     [
                         { label: 'Núcleos urbanos (2021)', value: 'nucleos_zbg_2021', isEnabled: true },
@@ -156,12 +162,6 @@ export class HeaderComponent implements OnInit {
                         { label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni', isEnabled: true }
                     ]
             },
-            {
-                optGroup: 'Viviendas zonas negras', options:
-                    [
-                        { label: 'Viviendas zonas negras (2022)', value: 'viviendas_zn_2022_x_muni', isEnabled: true },
-                    ]
-            }
 
 
         ];
