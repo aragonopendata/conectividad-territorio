@@ -202,7 +202,7 @@ export class PopupComponent implements OnInit, AfterViewInit, OnChanges {
 
         map.set('Viviendas en zona negra', {value: this.getFeatureValue(featureSelect,"viviendas_zonanegra"), format: ""} );
 
-        map.set('Porcentaje de viviendas totales', {value: this.getFeatureValue(featureSelect,"porcentaje_viviendas_zonanegra"), format: "||value|| %"} );
+        map.set('Porcentaje del total', {value: this.getFeatureValue(featureSelect,"porcentaje_viviendas_zonanegra"), format: "||value|| %"} );
       break;
 
       default:
