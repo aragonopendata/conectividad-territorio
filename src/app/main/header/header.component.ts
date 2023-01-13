@@ -161,7 +161,7 @@ export class HeaderComponent implements OnInit {
                     [
                         { label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni', isEnabled: true }
                     ]
-            },
+            }
 
 
         ];
