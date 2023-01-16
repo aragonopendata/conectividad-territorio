@@ -51,10 +51,16 @@ export class HeaderComponent implements OnInit {
         this.isdt = 'Índice Sintético de Desarrollo Territorial (ISDT) (2020)'
         this.viviendas = 'Viviendas zonas negras (2022)'
     }
+    selectedLayers : any[];
 
-    ngOnInit(): void {
+
+    ngOnInit() {
+        this.onSearch('Huesca')
     }
 
+    comparer(o1: any, o2: any): boolean {
+        return o1 && o2 ? o1.value === o2.value : o2 === o2;
+    }
 
     async onSearch(searchString: string) {
         this.popUpService.closePopUp();
@@ -115,12 +121,14 @@ export class HeaderComponent implements OnInit {
                 this.errorStatus = "No se ha encontrado el municipio " + searchString + ". Por favor, revise que el nombre del municipio es completo o que el código postal es correcto.";
                 this.isDone = true;
             }
+            console.log(searchString)
+            console.log(this.layerSelection)
         });
 
     }
 
     // Añadir aquí cualquier capa nueva y su correspondiente cadena
-    public layerRelations =
+    public layerRelations: any =
         [
             {
                 optGroup: 'Viviendas zonas negras', options:
@@ -161,7 +169,7 @@ export class HeaderComponent implements OnInit {
                     [
                         { label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni', isEnabled: true }
                     ]
-            }
+            },
 
 
         ];

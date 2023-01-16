@@ -6,7 +6,7 @@
     <form id="form" class="flex flex-col">
         <mat-form-field appearance="outline" id="selector">
             <mat-label> Seleccionar capa</mat-label>
-            <mat-select class="selector" multiple>
+            <mat-select class="selector" multiple [(ngModel)]="selectedLayers" [compareWith]="comparer">
                 <mat-optgroup *ngFor="let elem of layerRelations" [label]="elem.optGroup" >
                     <mat-option *ngFor="let option of elem.options" (onSelectionChange)="capture($event)" [value]="option.value" [disabled]="!option.isEnabled">{{option.label}}</mat-option>   
                 </mat-optgroup>
