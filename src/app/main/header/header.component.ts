@@ -49,7 +49,7 @@ export class HeaderComponent implements OnInit {
         this.listPoligonosIndustriales = ['Polígonos industriales (2021)', 'Polígonos industriales (2022)']
         this.unidadesInmobiliarias = 'Unidades inmobiliarias (2022)';
         this.isdt = 'Índice Sintético de Desarrollo Territorial (ISDT) (2020)'
-        this.viviendas = 'Viviendas zonas negras (2022)'
+        this.viviendas = 'Disponibilidad de cobertura (2022)'
     }
     selectedLayers : any[];
 
@@ -131,9 +131,9 @@ export class HeaderComponent implements OnInit {
     public layerRelations: any =
         [
             {
-                optGroup: 'Viviendas zonas negras', options:
+                optGroup: 'Disponibilidad de cobertura', options:
                     [
-                        { label: 'Viviendas zonas negras (2022)', value: 'viviendas_zn_2022_x_muni', isEnabled: true },
+                        { label: 'Disponibilidad de cobertura (2022)', value: 'viviendas_zn_2022_x_muni', isEnabled: true },
                     ]
             },
             {

@@ -44,7 +44,7 @@ public layerRelations: Layer[] =
         {label: 'Polígonos industriales (2021)', value: 'poligonos_zbg_2021' }, 
         {label: 'Polígonos industriales (2022)', value: 'poligonos_zbg_2022' },
         {label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni'},
-        {label: 'Viviendas zonas negras (2022)', value: 'viviendas_zn_2022_x_muni'}
+        {label: 'Disponibilidad de cobertura (2022)', value: 'viviendas_zn_2022_x_muni'}
     /*{ optGroup:"Índice Sintético de Desarrollo Territorial", options: 
     [
         {label: 'ISDT (2020)', value: 'isdt_municipio'}

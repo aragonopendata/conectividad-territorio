@@ -200,7 +200,7 @@ export class PopupComponent implements OnInit, AfterViewInit, OnChanges {
         
         map.set('Código municipio ine', {value: this.getFeatureValue(featureSelect, "c_muni_ine" ), format: ""} );
 
-        map.set('Viviendas en zona negra', {value: this.getFeatureValue(featureSelect,"viviendas_zonanegra"), format: ""} );
+        map.set('Viviendas con disponibilidad de cobertura', {value: this.getFeatureValue(featureSelect,"viviendas_zonanegra"), format: ""} );
 
         map.set('Porcentaje del total', {value: this.getFeatureValue(featureSelect,"porcentaje_viviendas_zonanegra"), format: "||value|| %"} );
       break;
