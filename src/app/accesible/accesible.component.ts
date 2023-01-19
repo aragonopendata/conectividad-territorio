@@ -18,6 +18,7 @@ export class AccesibleComponent implements OnInit {
   dataSourceCentros = new MatTableDataSource<CentroEducativoElement>();
   dataSourcePoligonos = new MatTableDataSource<PoligonosElement>();
   dataSourceInmobiliarias = new MatTableDataSource<InmobiliariasElement>();
+  dataSourceViviendas = new MatTableDataSource<ViviendasElement>();
 
   totalLength = 0;
   selectedLayer;
@@ -27,6 +28,7 @@ export class AccesibleComponent implements OnInit {
     this.dataSourceCentros.filter = $event.target.value;
     this.dataSourceInmobiliarias.filter = $event.target.value;
     this.dataSourcePoligonos.filter = $event.target.value;
+    this.dataSourceViviendas.filter = $event.target.value;
   }
 
 
@@ -41,7 +43,8 @@ public layerRelations: Layer[] =
         {label: 'Instalaciones sanitarias (2022)', value: 'instalaciones_sanitarias_zbg_2022'},
         {label: 'Polígonos industriales (2021)', value: 'poligonos_zbg_2021' }, 
         {label: 'Polígonos industriales (2022)', value: 'poligonos_zbg_2022' },
-        {label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni'}
+        {label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni'},
+        {label: 'Disponibilidad de cobertura (2022)', value: 'viviendas_zn_2022_x_muni'}
     /*{ optGroup:"Índice Sintético de Desarrollo Territorial", options: 
     [
         {label: 'ISDT (2020)', value: 'isdt_municipio'}
@@ -197,6 +200,30 @@ public layerRelations: Layer[] =
           this.totalLength = this.allFeatures.length
         break; 
       }
+      case "viviendas_zn_2022_x_muni": { 
+        //statements; 
+        var  jsonObjVivienda: ViviendasElement[] = [];
+
+        result.features.forEach(function (value) {
+         var item: ViviendasElement = 
+           {"c_muni_ine": value.properties["c_muni_ine"],
+           "municipio": value.properties["municipio"],
+           "viviendas_zonanegra": value.properties["viviendas_zonanegra"],
+           "porcentaje_viviendas_zonanegra": value.properties["porcentaje_viviendas_zonanegra"]
+           };
+           jsonObjVivienda.push(item);
+         });
+         //this.allFeatures =jsonObjEducativo;
+          this.dataSourceViviendas = new MatTableDataSource(jsonObjVivienda);
+          this.dataSourceViviendas.paginator = this.paginator;
+          this.paginator._intl.itemsPerPageLabel = 'Items por página';
+          this.displayedColumns = all_layers_columns[this.selectedLayer];
+          this.dataSourceViviendas.sort = this.matSort;
+
+
+          this.totalLength = this.allFeatures.length
+        break; 
+      }
       default: { 
          //statements; 
          break; 
@@ -278,6 +305,14 @@ export interface InmobiliariasElement {
   
   }
 
+export interface ViviendasElement {
+  c_muni_ine: string;
+  municipio: string;
+  viviendas_zonanegra: number;
+  porcentaje_viviendas_zonanegra: number;
+
+}
+
 interface Layer {
   value: string;
   label: string;
@@ -295,7 +330,7 @@ let all_layers_columns: {[key: string]: string[]} = {
   "poligonos_zbg_2022": ['nombre_poligono','codigo_zona','tipo_zona','localidad','anio'],
  //"ui_zbg_2022_x_muni": ['municipio','tipo_zona','codigo_zona','ui_total','uis_a','uis_b','uis_c','uis_e','uis_g','uis_i','uis_k','uis_m','uis_o','uis_p','uis_r','uis_t','uis_v','uis_y','uis_j','uis_z','isdt_100','f_economico','f_alojamiento','f_equpiamiento_servicio','f_movilidad','f_escenario_patrimonio'],
   "ui_zbg_2022_x_muni": ['municipio','tipo_zona','codigo_zona','ui_total','isdt_100','f_economico','f_alojamiento','f_equpiamiento_servicio','f_movilidad','f_escenario_patrimonio'],
-
+  "viviendas_zn_2022_x_muni": ['c_muni_ine', 'municipio', 'viviendas_zonanegra', 'porcentaje_viviendas_zonanegra']
   
 }
 
