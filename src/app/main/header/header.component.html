@@ -2,38 +2,41 @@
 
     <div id="div_selector" class="">
 
-        
-    <form id="form" class="flex flex-col">
-        <mat-form-field appearance="outline" id="selector">
-            <mat-label> Seleccionar capa</mat-label>
-            <mat-select class="selector" multiple [(ngModel)]="selectedLayers" [compareWith]="comparer">
-                <mat-optgroup *ngFor="let elem of layerRelations" [label]="elem.optGroup" >
-                    <mat-option *ngFor="let option of elem.options" (onSelectionChange)="capture($event)" [value]="option.value" [disabled]="!option.isEnabled">{{option.label}}</mat-option>   
-                </mat-optgroup>
-            </mat-select>
-        </mat-form-field>  
-    </form>
 
-    
-                                         <!--FINISH SELECTOR-->
+        <form id="form" class="flex flex-col">
+            <mat-form-field appearance="outline" id="selector">
+                <mat-label> Seleccionar capa</mat-label>
+                <mat-select class="selector" multiple [(ngModel)]="selectedLayers" [compareWith]="comparer">
+                    <mat-optgroup *ngFor="let elem of layerRelations" [label]="elem.optGroup">
+                        <mat-option *ngFor="let option of elem.options" (onSelectionChange)="capture($event)"
+                            [value]="option.value" [disabled]="!option.isEnabled">{{option.label}}</mat-option>
+                    </mat-optgroup>
+                </mat-select>
+            </mat-form-field>
+        </form>
+
+
+        <!--FINISH SELECTOR-->
 
     </div>
 
-   <div id="buscador" *ngIf="search == true">
+    <div id="buscador" *ngIf="search == true">
 
-    <form class="flex flex-col" *ngIf="isSearching">
-        <mat-form-field title="Buscar por nombre de municipio" class="example-full-width" id="form_buscar" appearance="outline">
-          <mat-label  for="search" id="search_label">Buscar por nombre de municipio</mat-label>
-          <input matInput autofocus class="border-4 px-4" name="search" id="search" placeholder="Buscar" type="text"
-            spellcheck="false" inputmode="text" #searchstring (keyup.enter)="onSearch(searchstring.value)">
-        </mat-form-field>
-    </form>
+        <form class="flex flex-col" *ngIf="isSearching" (submit)="onSearch(searchstring.value)">
+            <mat-form-field title="Buscar por nombre de municipio" class="example-full-width" id="form_buscar"
+                appearance="outline">
+                <mat-label for="search" id="search_label">Buscar por nombre de municipio</mat-label>
+                <input matInput autofocus class="border-4 px-4" name="search" id="search" placeholder="Buscar"
+                    type="text" spellcheck="false" inputmode="text" #searchstring
+                    (keydown.enter)="onSearch(searchstring.value)">
+            </mat-form-field>
+        </form>
 
-   </div>
-   
+    </div>
 
-    <!-- Contenedor resultados --> 
-    <div id="results" *ngIf="!isSearching && !isError" >
+
+    <!-- Contenedor resultados -->
+    <div id="results" *ngIf="!isSearching && !isError">
         <div type="button" class="inline-flex items-center px-4 py-2 text-base leading-6 font-medium rounded-md"
             disabled="" *ngIf="!isDone">
             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none"
