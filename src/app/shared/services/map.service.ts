@@ -3,7 +3,7 @@ import { Feature, Overlay, View } from 'ol';
 import Map from 'ol/Map.js';
 import MouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 //const MouseWheelZoom = (<any>require('ol/interaction/MouseWheelZoom')).default;
-import {fromLonLat} from 'ol/proj';
+import { fromLonLat } from 'ol/proj';
 import { Coordinate } from 'ol/coordinate';
 import { boundingExtent, coordinateRelationship, extendCoordinate } from 'ol/extent';
 import { GeoJSON } from 'ol/format';
@@ -55,8 +55,8 @@ export class MapService {
         params: {
           LAYERS: environment.wmsLayers,
           VERSION: environment.wmsVersion,
-          
-         
+
+
         },
         projection: projection
       })
@@ -65,31 +65,31 @@ export class MapService {
     const olMap = new Map({
       target: target,
       controls: [],
-     view: new View(options),
-     
+      view: new View(options),
+
       overlays: [overlay],
     });
 
-//    olMap.getInteractions().forEach(function(interaction) {
-//  if (interaction instanceof ol.interaction.MouseWheelZoom) {
-//    interaction.setActive(false);
-//  }
-//}, this);
+    //    olMap.getInteractions().forEach(function(interaction) {
+    //  if (interaction instanceof ol.interaction.MouseWheelZoom) {
+    //    interaction.setActive(false);
+    //  }
+    //}, this);
     //zoom map
 
     olMap.addLayer(layer);
-    
+
     olMap.getView().fit(extent);
-//    olMap.getView().setZoom(15);
-   // olMap.getView().setMaxZoom(18);
- //   olMap.getView().setMinZoom(15);
+    //    olMap.getView().setZoom(15);
+    // olMap.getView().setMaxZoom(18);
+    //   olMap.getView().setMinZoom(15);
     //
-    
-   
+
+
     return olMap;
   }
 
-   buildCircleStyle({ fillColor, strokeColor, strokeWidth = 1.25, circleRadius= 6 }: FeatureColorStyle): Style{
+  buildCircleStyle({ fillColor, strokeColor, strokeWidth = 1.25, circleRadius = 6 }: FeatureColorStyle): Style {
     const fillFeature = new Fill({
       color: fillColor,
     });
@@ -97,206 +97,228 @@ export class MapService {
       color: strokeColor,
       width: strokeWidth,
     });
-     return this.buildStyle(fillFeature, strokeFeature, new Circle({
+    return this.buildStyle(fillFeature, strokeFeature, new Circle({
       fill: fillFeature,
       stroke: strokeFeature,
       radius: circleRadius,
-    }) );
+    }));
   }
-   
-   buildStyle(fill: Fill, stroke: Stroke, image: ImageStyle): Style{
+
+  buildStyle(fill: Fill, stroke: Stroke, image: ImageStyle): Style {
     const result = new Style({
       image,
       fill: fill,
       stroke: stroke,
     });
     return result;
-   }
-                       
-   conformFeatureByLayer(feature, layer): any {
+  }
+
+  conformFeatureByLayer(feature, layer): any {
     let featureProcessed = [...feature];
-    switch(layer){
+    switch (layer) {
       case 'nucleos_zbg_2022':
         featureProcessed = this.conformFeatureByNucleo2022(feature);
-      break;
+        break;
       default:
         break;
-     }
+    }
     return featureProcessed;
   }
 
   conformFeatureByNucleo2022(feature): any {
     //Exclude Geometry points
     return feature.filter(feature => feature.values_.geometry.constructor.name !== 'Point')
-    .map(feature => {
-      if(feature.values_.geometry.constructor.name == 'GeometryCollection'){
-        //Exclude GeometryElement points on GeometryCollection
-        const geometriesProcessed = feature.values_.geometry.geometries_.filter((geometryElement) => geometryElement.constructor.name !== 'Point');
-        feature.values_.geometry.geometries_ = geometriesProcessed;
-      }
-      return feature;
-    });
+      .map(feature => {
+        if (feature.values_.geometry.constructor.name == 'GeometryCollection') {
+          //Exclude GeometryElement points on GeometryCollection
+          const geometriesProcessed = feature.values_.geometry.geometries_.filter((geometryElement) => geometryElement.constructor.name !== 'Point');
+          feature.values_.geometry.geometries_ = geometriesProcessed;
+        }
+        return feature;
+      });
   }
 
-   getFeatureStyledByLayer(feature, layer): Style | null {
-     let result: Style | null = null;
-     switch(layer){
+  getFeatureStyledByLayer(feature, layer): Style | null {
+    let result: Style | null = null;
+    switch (layer) {
       case 'nucleos_zbg_2021':
         result = this.buildCircleStyle(this.getNucleoStyle((feature as any).values_.tipo_zona, (feature as any).values_.por_afec_nuc_x_zona, 2021))
-      break;
+        break;
       case 'nucleos_zbg_2022':
         result = this.buildCircleStyle(this.getNucleoStyle((feature as any).values_.tipo_zona, (feature as any).values_.por_afec_nuc_x_zona))
-      break;
+        break;
       case 'centros_educativos_zbg_2021':
         result = this.buildCircleStyle(this.getEducativeCenterStyle((feature as any).values_.tipo_zona, 2021))
-      break;
+        break;
       case 'centros_educativos_zbg_2022':
         result = this.buildCircleStyle(this.getEducativeCenterStyle((feature as any).values_.tipo_zona))
-      break;
+        break;
       case 'instalaciones_sanitarias_zbg_2021':
         result = this.buildCircleStyle(this.getSanitaryInstallationStyle((feature as any).values_.tipo_zona, 2021))
-      break;
+        break;
       case 'instalaciones_sanitarias_zbg_2022':
         result = this.buildCircleStyle(this.getSanitaryInstallationStyle((feature as any).values_.tipo_zona))
-      break;
+        break;
       case 'poligonos_zbg_2021':
         result = this.buildCircleStyle(this.getIndustrialParkStyle((feature as any).values_.tipo_zona, 2021))
-      break;
+        break;
       case 'poligonos_zbg_2022':
         result = this.buildCircleStyle(this.getIndustrialParkStyle((feature as any).values_.tipo_zona))
-      break;
+        break;
       case 'ui_zbg_2022_x_muni':
         result = this.buildCircleStyle(this.getBuildingUnitStyle((feature as any).values_.tipo_zona))
-      break;
+        break;
       case 'viviendas_zn_2022_x_muni':
         result = this.buildCircleStyle(this.getLivingPlaceStyle((feature as any).values_.tipo_zona))
-      break;
+        break;
+      case 'zonas_cubiertas_2021':
+        result = this.buildCircleStyle(this.getCoveredZonesStyle((feature as any).values_.tipo_zona, 2021))
+        break;
+      case 'zonas_cubiertas_2022':
+        result = this.buildCircleStyle(this.getCoveredZonesStyle((feature as any).values_.tipo_zona))
+        break;
       default:
-      break;
-     }
-     return result;
-   }
+        break;
+    }
+    return result;
+  }
 
-   getNucleoStyle(zoneType, affectedValue, year: number = 2022): FeatureColorStyle {
+  getNucleoStyle(zoneType, affectedValue, year: number = 2022): FeatureColorStyle {
 
-    const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
-    
+    const typeZoneEnum = year === 2022 ? TypeZone2022 : TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
 
-    if(zoneType === typeZoneEnum.A){
-      if(affectedValue <= 20){
-        result =  {fillColor: "#EF8480", strokeColor: "#000000"};
-      }else if (affectedValue > 20 && affectedValue <= 40){
-        result =  {fillColor: "#E94F49", strokeColor: "#000000"};
-      }else if (affectedValue > 40 && affectedValue <= 60){
-        result =  {fillColor: "#DA211B", strokeColor: "#000000"};
-      }else if (affectedValue > 60 && affectedValue <= 80){
-        result =  {fillColor: "#A3191A", strokeColor: "#000000"};
-      }else if (affectedValue > 80 && affectedValue <= 100){
-        result =  {fillColor: "#6D110D", strokeColor: "#000000"};
+    let result: FeatureColorStyle = { fillColor: "blue", strokeColor: "#000000" };
+
+    if (zoneType === typeZoneEnum.A) {
+      if (affectedValue <= 20) {
+        result = { fillColor: "#EF848050", strokeColor: "#000000" };
+      } else if (affectedValue > 20 && affectedValue <= 40) {
+        result = { fillColor: "#E94F4950", strokeColor: "#000000" };
+      } else if (affectedValue > 40 && affectedValue <= 60) {
+        result = { fillColor: "#DA211B50", strokeColor: "#000000" };
+      } else if (affectedValue > 60 && affectedValue <= 80) {
+        result = { fillColor: "#A3191A50", strokeColor: "#000000" };
+      } else if (affectedValue > 80 && affectedValue <= 100) {
+        result = { fillColor: "#6D110D50", strokeColor: "#000000" };
       }
-    }else if(zoneType === typeZoneEnum.B){
-      if(affectedValue <= 20){
-        result =  {fillColor: "#B8D6E9", strokeColor: "#000000"};
-      }else if (affectedValue > 20 && affectedValue <= 40){
-        result =  {fillColor: "#9BC5D4", strokeColor: "#000000"};
-      }else if (affectedValue > 40 && affectedValue <= 60){
-        result =  {fillColor: "#7EB4C8", strokeColor: "#000000"};
-      }else if (affectedValue > 60 && affectedValue <= 80){
-        result =  {fillColor: "#569DB7", strokeColor: "#000000"};
-      }else if (affectedValue > 80 && affectedValue <= 100){
-        result =  {fillColor: "#4991AB", strokeColor: "#000000"};
+    } else if (zoneType === typeZoneEnum.B) {
+      if (affectedValue <= 20) {
+        result = { fillColor: "#B8D6E950", strokeColor: "#000000" };
+      } else if (affectedValue > 20 && affectedValue <= 40) {
+        result = { fillColor: "#9BC5D450", strokeColor: "#000000" };
+      } else if (affectedValue > 40 && affectedValue <= 60) {
+        result = { fillColor: "#7EB4C850", strokeColor: "#000000" };
+      } else if (affectedValue > 60 && affectedValue <= 80) {
+        result = { fillColor: "#569DB750", strokeColor: "#000000" };
+      } else if (affectedValue > 80 && affectedValue <= 100) {
+        result = { fillColor: "#4991AB50", strokeColor: "#000000" };
       }
     }
 
     return result;
-   }
+  }
 
-   getEducativeCenterStyle(zoneType, year: number = 2022): FeatureColorStyle {
+  getEducativeCenterStyle(zoneType, year: number = 2022): FeatureColorStyle {
 
-    const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
+    const typeZoneEnum = year === 2022 ? TypeZone2022 : TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000", circleRadius: 8};
+    let result: FeatureColorStyle = { fillColor: "blue", strokeColor: "#000000", circleRadius: 8 };
 
-    if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
-    }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
-    }else if(zoneType === typeZoneEnum.NONE){
-      result =  {fillColor: "#5BCA2B", strokeColor: "#000000"};
+    if (zoneType === typeZoneEnum.A) {
+      result = { fillColor: "#E4312A", strokeColor: "#000000" };
+    } else if (zoneType === typeZoneEnum.B) {
+      result = { fillColor: "#569DB7", strokeColor: "#000000" };
+    } else if (zoneType === typeZoneEnum.NONE) {
+      result = { fillColor: "#5BCA2B", strokeColor: "#000000" };
     }
 
     return result;
-   }
+  }
 
-   getSanitaryInstallationStyle(zoneType, year: number = 2022): FeatureColorStyle {
+  getSanitaryInstallationStyle(zoneType, year: number = 2022): FeatureColorStyle {
 
-    const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
+    const typeZoneEnum = year === 2022 ? TypeZone2022 : TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
+    let result: FeatureColorStyle = { fillColor: "blue", strokeColor: "#000000" };
 
-    if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
-    }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
-    }else if(zoneType === typeZoneEnum.NONE){
-      result =  {fillColor: "#5BCA2B", strokeColor: "#000000"};
+    if (zoneType === typeZoneEnum.A) {
+      result = { fillColor: "#E4312A", strokeColor: "#000000" };
+    } else if (zoneType === typeZoneEnum.B) {
+      result = { fillColor: "#569DB7", strokeColor: "#000000" };
+    } else if (zoneType === typeZoneEnum.NONE) {
+      result = { fillColor: "#5BCA2B", strokeColor: "#000000" };
     }
 
     return result;
-   }
+  }
 
-   getIndustrialParkStyle(zoneType, year: number = 2022): FeatureColorStyle {
+  getIndustrialParkStyle(zoneType, year: number = 2022): FeatureColorStyle {
 
-    const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
+    const typeZoneEnum = year === 2022 ? TypeZone2022 : TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
+    let result: FeatureColorStyle = { fillColor: "blue", strokeColor: "#000000" };
 
-    if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
-    }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
-    }else if(zoneType === typeZoneEnum.NONE){
-      result =  {fillColor: "#5BCA2B", strokeColor: "#000000"};
+    if (zoneType === typeZoneEnum.A) {
+      result = { fillColor: "#E4312A", strokeColor: "#000000" };
+    } else if (zoneType === typeZoneEnum.B) {
+      result = { fillColor: "#569DB7", strokeColor: "#000000" };
+    } else if (zoneType === typeZoneEnum.NONE) {
+      result = { fillColor: "#5BCA2B", strokeColor: "#000000" };
     }
 
     return result;
-   }
+  }
 
-   getBuildingUnitStyle(zoneType, year: number = 2022): FeatureColorStyle {
+  getBuildingUnitStyle(zoneType, year: number = 2022): FeatureColorStyle {
 
-    const typeZoneEnum = year === 2022 ? TypeZone2022: TypeZone2021;
+    const typeZoneEnum = year === 2022 ? TypeZone2022 : TypeZone2021;
 
-    let result: FeatureColorStyle = {fillColor: "blue", strokeColor: "#000000"};
+    let result: FeatureColorStyle = { fillColor: "blue", strokeColor: "#000000" };
 
-    if(zoneType === typeZoneEnum.A){
-      result =  {fillColor: "#E4312A", strokeColor: "#000000"};
-    }else if(zoneType === typeZoneEnum.B){
-      result =  {fillColor: "#569DB7", strokeColor: "#000000"};
+    if (zoneType === typeZoneEnum.A) {
+      result = { fillColor: "#E4312A50", strokeColor: "#000000" };
+    } else if (zoneType === typeZoneEnum.B) {
+      result = { fillColor: "#569DB750", strokeColor: "#000000" };
     }
 
     return result;
-   }
+  }
 
-   getLivingPlaceStyle(affectedValue): FeatureColorStyle {    
+  getLivingPlaceStyle(affectedValue): FeatureColorStyle {
 
-    let result: FeatureColorStyle = {fillColor: "#5BCA2B", strokeColor: "#000000"};
-/*
-      if(affectedValue <= 20){
-        result =  {fillColor: "#EF8480", strokeColor: "#000000"};
-      }else if (affectedValue > 20 && affectedValue <= 40){
-        result =  {fillColor: "#E94F49", strokeColor: "#000000"};
-      }else if (affectedValue > 40 && affectedValue <= 60){
-        result =  {fillColor: "#DA211B", strokeColor: "#000000"};
-      }else if (affectedValue > 60 && affectedValue <= 80){
-        result =  {fillColor: "#A3191A", strokeColor: "#000000"};
-      }else if (affectedValue > 80 && affectedValue <= 100){        
-        result =  {fillColor: "#6D110D", strokeColor: "#000000"};
-    }
-*/
+    let result: FeatureColorStyle = { fillColor: "#5BCA2B50", strokeColor: "#000000" };
+    /*
+          if(affectedValue <= 20){
+            result =  {fillColor: "#EF8480", strokeColor: "#000000"};
+          }else if (affectedValue > 20 && affectedValue <= 40){
+            result =  {fillColor: "#E94F49", strokeColor: "#000000"};
+          }else if (affectedValue > 40 && affectedValue <= 60){
+            result =  {fillColor: "#DA211B", strokeColor: "#000000"};
+          }else if (affectedValue > 60 && affectedValue <= 80){
+            result =  {fillColor: "#A3191A", strokeColor: "#000000"};
+          }else if (affectedValue > 80 && affectedValue <= 100){        
+            result =  {fillColor: "#6D110D", strokeColor: "#000000"};
+        }
+    */
     return result;
-   }
+  }
+  getCoveredZonesStyle(zoneType, year: number = 2022): FeatureColorStyle {
+
+    const typeZoneEnum = year === 2022 ? TypeZone2022 : TypeZone2021;
+
+    let result: FeatureColorStyle = { fillColor: "blue", strokeColor: "#000000" };
+
+    if (zoneType === typeZoneEnum.A) {
+      result = { fillColor: "#E4312A50", strokeColor: "#000000" };
+    } else if (zoneType === typeZoneEnum.B) {
+      result = { fillColor: "#6EC2F750", strokeColor: "#000000" };
+    } else if (zoneType === typeZoneEnum.NONE) {
+      result = { fillColor: "#5BCA2B50", strokeColor: "#000000" };
+    }
+
+    return result;
+  }
 
   /**
    * 
@@ -323,21 +345,22 @@ export class MapService {
       color: '#3399CC',
       width: 1.25,
     });
-    
-    const featuresStyled = this.conformFeatureByLayer(features,layer).map(feature => {
-        const layer: string = (feature as any).id_.split('.')[0];
-        const featureStyle = this.getFeatureStyledByLayer(feature, layer);
-        featureStyle && feature.setStyle(featureStyle);
-        return feature;
+
+    const featuresStyled = this.conformFeatureByLayer(features, layer).map(feature => {
+      const layer: string = (feature as any).id_.split('.')[0];
+      const featureStyle = this.getFeatureStyledByLayer(feature, layer);
+      featureStyle && feature.setStyle(featureStyle);
+      return feature;
     });
 
     let featuresNucleosUrbanos = featuresStyled.filter(item => item.id_.includes('nucleos_zbg_') && item.values_.geometry.flatCoordinates !== undefined);
     let featuresUnidadesInmobiliares = featuresStyled.filter(item => item.id_.includes('ui_zbg_') && item.values_.geometry.flatCoordinates !== undefined);
-    let featuresIsdt = featuresStyled.filter(item => item.id_.includes('isdt_municipio') && item.values_.geometry.flatCoordinates !== undefined); 
-    let featuresViviendas = featuresStyled.filter(item => item.id_.includes('viviendas_zn_') && item.values_.geometry.flatCoordinates !== undefined); 
+    let featuresIsdt = featuresStyled.filter(item => item.id_.includes('isdt_municipio') && item.values_.geometry.flatCoordinates !== undefined);
+    let featuresViviendas = featuresStyled.filter(item => item.id_.includes('viviendas_zn_') && item.values_.geometry.flatCoordinates !== undefined);
+    let featuresCoberturas = featuresStyled.filter(item => item.id_.includes('zonas_cubiertas_') && item.values_.geometry.flatCoordinates !== undefined);
 
-    let otherFeatures = featuresStyled.filter(item => !item.id_.includes('ui_zbg_') 
-        && !item.id_.includes('nucleos_zbg_') && !item.id_.includes('isdt_municipio') && !item.id_.includes('viviendas_zn_'));
+    let otherFeatures = featuresStyled.filter(item => !item.id_.includes('ui_zbg_')
+      && !item.id_.includes('nucleos_zbg_') && !item.id_.includes('isdt_municipio') && !item.id_.includes('viviendas_zn_') && !item.id_.includes('zonas_cubiertas_'));
 
     let vectorLayer = new VectorLayer({
       source: new VectorSource({
@@ -358,240 +381,297 @@ export class MapService {
 
 
     //zoom map 
-    
+
     olMap.getLayers().getArray().filter(layer => layer.getClassName() === className)
       .forEach(layer => olMap.removeLayer(layer));
 
 
-    if(featuresNucleosUrbanos !== undefined && featuresNucleosUrbanos.length > 0)
-    {
-        let coordinatesAndStyles = featuresNucleosUrbanos.map(function(item){
-            return {coordinates: item.values_.geometry.flatCoordinates.slice(0, 2), style: item.style_}
+    if (featuresNucleosUrbanos !== undefined && featuresNucleosUrbanos.length > 0) {
+      let coordinatesAndStyles = featuresNucleosUrbanos.map(function (item) {
+        return { coordinates: item.values_.geometry.flatCoordinates.slice(0, 2), style: item.style_ }
+      });
+
+      let newFeatures: Feature[] = [];
+      for (let newFeature of coordinatesAndStyles) {
+        let _f = new Feature({
+          geometry: new Point(newFeature.coordinates)
         });
 
-        let newFeatures : Feature[] = [];
-        for(let newFeature of coordinatesAndStyles)
-        {
-            let _f = new Feature({
-                geometry: new Point(newFeature.coordinates)
-            });
+        _f.setStyle(newFeature.style)
+        newFeatures.push(_f);
+      }
 
-            _f.setStyle(newFeature.style)
-            newFeatures.push(_f);
-        }
-
-        let vectorLayerNucleosUrbanosLejos = new VectorLayer({
-            source: new VectorSource({
-            format: geojsonFormat,
-            features: newFeatures,
-            }),
-            style: new Style({
-            image: new Circle({
-                fill: fill,
-                stroke: stroke,
-                radius: 5,
-            }),
+      let vectorLayerNucleosUrbanosLejos = new VectorLayer({
+        source: new VectorSource({
+          format: geojsonFormat,
+          features: newFeatures,
+        }),
+        style: new Style({
+          image: new Circle({
             fill: fill,
             stroke: stroke,
-            }),
-            className: className,
-            minResolution: 30
-        });
+            radius: 5,
+          }),
+          fill: fill,
+          stroke: stroke,
+        }),
+        className: className,
+        minResolution: 30
+      });
 
-        let vectorLayerNucleosUrbanosCerca = new VectorLayer({
-            source: new VectorSource({
-              format: geojsonFormat,
-              features: featuresNucleosUrbanos,
-            }),
-            style: new Style({
-              image: new Circle({
-                fill: fill,
-                stroke: stroke,
-                radius: 5,
-              }),
-              fill: fill,
-              stroke: stroke,
-            }),
-            className: className,
-            maxResolution: 40
-          });
+      let vectorLayerNucleosUrbanosCerca = new VectorLayer({
+        source: new VectorSource({
+          format: geojsonFormat,
+          features: featuresNucleosUrbanos,
+        }),
+        style: new Style({
+          image: new Circle({
+            fill: fill,
+            stroke: stroke,
+            radius: 5,
+          }),
+          fill: fill,
+          stroke: stroke,
+        }),
+        className: className,
+        maxResolution: 40
+      });
 
-        olMap.addLayer(vectorLayerNucleosUrbanosCerca)
-        olMap.addLayer(vectorLayerNucleosUrbanosLejos);
-        if (vectorLayerNucleosUrbanosCerca != null){
+      olMap.addLayer(vectorLayerNucleosUrbanosCerca)
+      olMap.addLayer(vectorLayerNucleosUrbanosLejos);
+      if (vectorLayerNucleosUrbanosCerca != null) {
 
-          olMap.getView().fit(vectorLayerNucleosUrbanosCerca.getSource().getExtent());
+        olMap.getView().fit(vectorLayerNucleosUrbanosCerca.getSource().getExtent());
 
-        }
+      }
     }
 
 
-    if(featuresUnidadesInmobiliares != undefined && featuresUnidadesInmobiliares.length > 0)
-    {
-        let coordinatesAndStyles = featuresUnidadesInmobiliares.map(function(item){
-            return {coordinates: item.values_.geometry.flatCoordinates.slice(0, 2), style: item.style_}
+    if (featuresUnidadesInmobiliares != undefined && featuresUnidadesInmobiliares.length > 0) {
+      let coordinatesAndStyles = featuresUnidadesInmobiliares.map(function (item) {
+        return { coordinates: item.values_.geometry.flatCoordinates.slice(0, 2), style: item.style_ }
+      });
+
+      let newFeatures: Feature[] = [];
+      for (let newFeature of coordinatesAndStyles) {
+        let _f = new Feature({
+          geometry: new Point(newFeature.coordinates)
         });
 
-        let newFeatures : Feature[] = [];
-        for(let newFeature of coordinatesAndStyles)
-        {
-            let _f = new Feature({
-                geometry: new Point(newFeature.coordinates)
-            });
+        _f.setStyle(newFeature.style)
+        newFeatures.push(_f);
+      }
 
-            _f.setStyle(newFeature.style)
-            newFeatures.push(_f);
-        }
-
-        let vectorLayerUnidadesInmobiliariasLejos = new VectorLayer({
-            source: new VectorSource({
-            format: geojsonFormat,
-            features: newFeatures,
-            }),
-            style: new Style({
-            image: new Circle({
-                fill: fill,
-                stroke: stroke,
-                radius: 5,
-            }),
+      let vectorLayerUnidadesInmobiliariasLejos = new VectorLayer({
+        source: new VectorSource({
+          format: geojsonFormat,
+          features: newFeatures,
+        }),
+        style: new Style({
+          image: new Circle({
             fill: fill,
             stroke: stroke,
-            }),
-            className: className,
-            minResolution: 30
-        });
+            radius: 5,
+          }),
+          fill: fill,
+          stroke: stroke,
+        }),
+        className: className,
+        minResolution: 30
+      });
 
-        let vectorLayerUnidadesInmobiliariasCerca = new VectorLayer({
-            source: new VectorSource({
-              format: geojsonFormat,
-              features: featuresUnidadesInmobiliares,
-            }),
-            style: new Style({
-              image: new Circle({
-                fill: fill,
-                stroke: stroke,
-                radius: 5,
-              }),
-              fill: fill,
-              stroke: stroke,
-            }),
-            className: className,
-            maxResolution: 40
-          });
-
-        olMap.addLayer(vectorLayerUnidadesInmobiliariasCerca)
-        olMap.addLayer(vectorLayerUnidadesInmobiliariasLejos);
-        if (vectorLayerUnidadesInmobiliariasCerca != null){
-
-          olMap.getView().fit(vectorLayerUnidadesInmobiliariasCerca.getSource().getExtent());
-
-        }
-    }
-
-    if(featuresIsdt !== undefined && featuresIsdt.length > 0)
-    {
-        let vectorLayerIsdt = new VectorLayer({
-            source: new VectorSource({
-            format: geojsonFormat,
-            features: featuresIsdt,
-            }),
-            style: new Style({
-            image: new Circle({
-                fill: fill,
-                stroke: stroke,
-                radius: 5,
-            }),
+      let vectorLayerUnidadesInmobiliariasCerca = new VectorLayer({
+        source: new VectorSource({
+          format: geojsonFormat,
+          features: featuresUnidadesInmobiliares,
+        }),
+        style: new Style({
+          image: new Circle({
             fill: fill,
             stroke: stroke,
-            }),
-            className: className
-        });
-        vectorLayerIsdt.setZIndex(-5);
-        olMap.addLayer(vectorLayerIsdt);
+            radius: 5,
+          }),
+          fill: fill,
+          stroke: stroke,
+        }),
+        className: className,
+        maxResolution: 40
+      });
+
+      olMap.addLayer(vectorLayerUnidadesInmobiliariasCerca)
+      olMap.addLayer(vectorLayerUnidadesInmobiliariasLejos);
+      if (vectorLayerUnidadesInmobiliariasCerca != null) {
+
+        olMap.getView().fit(vectorLayerUnidadesInmobiliariasCerca.getSource().getExtent());
+
+      }
     }
 
-    if(otherFeatures !== undefined && otherFeatures.length > 0)
-    {
-        olMap.addLayer(vectorLayer);
-        if (vectorLayer != null){
-
-          olMap.getView().fit(vectorLayer.getSource().getExtent());
-
-        }      
-    }
-
-    if(featuresViviendas != undefined && featuresViviendas.length > 0)
-    {
-        let coordinatesAndStyles = featuresViviendas.map(function(item){
-            return {coordinates: item.values_.geometry.flatCoordinates.slice(0, 2), style: item.style_}
-        });
-
-        let newFeatures : Feature[] = [];
-        for(let newFeature of coordinatesAndStyles)
-        {
-            let _f = new Feature({
-                geometry: new Point(newFeature.coordinates)
-            });
-
-            _f.setStyle(newFeature.style)
-            newFeatures.push(_f);
-        }
-
-        let vectorLayerViviendasLejos = new VectorLayer({
-            source: new VectorSource({
-            format: geojsonFormat,
-            features: newFeatures,
-            }),
-            style: new Style({
-            image: new Circle({
-                fill: fill,
-                stroke: stroke,
-                radius: 5,
-            }),
+    if (featuresIsdt !== undefined && featuresIsdt.length > 0) {
+      let vectorLayerIsdt = new VectorLayer({
+        source: new VectorSource({
+          format: geojsonFormat,
+          features: featuresIsdt,
+        }),
+        style: new Style({
+          image: new Circle({
             fill: fill,
             stroke: stroke,
-            }),
-            className: className,
-            minResolution: 120
+            radius: 5,
+          }),
+          fill: fill,
+          stroke: stroke,
+        }),
+        className: className
+      });
+      vectorLayerIsdt.setZIndex(-5);
+      olMap.addLayer(vectorLayerIsdt);
+    }
+
+    if (otherFeatures !== undefined && otherFeatures.length > 0) {
+      olMap.addLayer(vectorLayer);
+      if (vectorLayer != null) {
+
+        olMap.getView().fit(vectorLayer.getSource().getExtent());
+
+      }
+    }
+
+    if (featuresCoberturas != undefined && featuresCoberturas.length > 0) {
+      let coordinatesAndStyles = featuresCoberturas.map(function (item) {
+        return { coordinates: item.values_.geometry.flatCoordinates.slice(0, 2), style: item.style_ }
+      });
+
+      let newFeatures: Feature[] = [];
+      for (let newFeature of coordinatesAndStyles) {
+        let _f = new Feature({
+          geometry: new Point(newFeature.coordinates)
         });
 
-        let vectorLayerViviendasCerca = new VectorLayer({
-            source: new VectorSource({
-              format: geojsonFormat,
-              features: featuresViviendas,
-            }),
-            style: new Style({
-              image: new Circle({
-                fill: fill,
-                stroke: stroke,
-                radius: 5,
-              }),
-              fill: fill,
-              stroke: stroke,
-            }),
-            className: className,
-            maxResolution: 120
-          });
+        _f.setStyle(newFeature.style)
+        newFeatures.push(_f);
+      }
 
-        olMap.addLayer(vectorLayerViviendasCerca)
-        olMap.addLayer(vectorLayerViviendasLejos);
-        if (vectorLayerViviendasCerca != null){
+      let vectorLayerCoberturasLejos = new VectorLayer({
+        source: new VectorSource({
+          format: geojsonFormat,
+          features: newFeatures,
+        }),
+        style: new Style({
+          image: new Circle({
+            fill: fill,
+            stroke: stroke,
+            radius: 5,
+          }),
+          fill: fill,
+          stroke: stroke,
+        }),
+        className: className,
+        minResolution: 120
+      });
 
-          olMap.getView().fit(vectorLayerViviendasCerca.getSource().getExtent());
+      let vectorLayerCoberturasCerca = new VectorLayer({
+        source: new VectorSource({
+          format: geojsonFormat,
+          features: featuresCoberturas,
+        }),
+        style: new Style({
+          image: new Circle({
+            fill: fill,
+            stroke: stroke,
+            radius: 5,
+          }),
+          fill: fill,
+          stroke: stroke,
+        }),
+        className: className,
+        maxResolution: 120
+      });
 
-        }
-        // olMap.getView().fit(extent);
-        olMap.getView().setZoom(10.5);
-        // olMap.getView().setMaxZoom(18);
-        olMap.getView().setMinZoom(10.5);
+      olMap.addLayer(vectorLayerCoberturasCerca)
+      olMap.addLayer(vectorLayerCoberturasLejos);
+      if (vectorLayerCoberturasCerca != null) {
 
-    } else {                   
-        // olMap.getView().fit(extent);
-        olMap.getView().setZoom(14.5);
-        // olMap.getView().setMaxZoom(18);
-        olMap.getView().setMinZoom(14.5);}
- 
+        olMap.getView().fit(vectorLayerCoberturasCerca.getSource().getExtent());
+
+      }
+      // olMap.getView().fit(extent);
+      olMap.getView().setZoom(12);
+      // olMap.getView().setMaxZoom(18);
+      olMap.getView().setMinZoom(12);
+    }
+
+    if (featuresViviendas != undefined && featuresViviendas.length > 0) {
+      let coordinatesAndStyles = featuresViviendas.map(function (item) {
+        return { coordinates: item.values_.geometry.flatCoordinates.slice(0, 2), style: item.style_ }
+      });
+
+      let newFeatures: Feature[] = [];
+      for (let newFeature of coordinatesAndStyles) {
+        let _f = new Feature({
+          geometry: new Point(newFeature.coordinates)
+        });
+
+        _f.setStyle(newFeature.style)
+        newFeatures.push(_f);
+      }
+
+      let vectorLayerViviendasLejos = new VectorLayer({
+        source: new VectorSource({
+          format: geojsonFormat,
+          features: newFeatures,
+        }),
+        style: new Style({
+          image: new Circle({
+            fill: fill,
+            stroke: stroke,
+            radius: 5,
+          }),
+          fill: fill,
+          stroke: stroke,
+        }),
+        className: className,
+        minResolution: 120
+      });
+
+      let vectorLayerViviendasCerca = new VectorLayer({
+        source: new VectorSource({
+          format: geojsonFormat,
+          features: featuresViviendas,
+        }),
+        style: new Style({
+          image: new Circle({
+            fill: fill,
+            stroke: stroke,
+            radius: 5,
+          }),
+          fill: fill,
+          stroke: stroke,
+        }),
+        className: className,
+        maxResolution: 120
+      });
+
+      olMap.addLayer(vectorLayerViviendasCerca)
+      olMap.addLayer(vectorLayerViviendasLejos);
+      if (vectorLayerViviendasCerca != null) {
+
+        olMap.getView().fit(vectorLayerViviendasCerca.getSource().getExtent());
+
+      }
+      // olMap.getView().fit(extent);
+      olMap.getView().setZoom(11);
+      // olMap.getView().setMaxZoom(18);
+      olMap.getView().setMinZoom(11);
+    } else if (otherFeatures !== undefined && otherFeatures.length > 0) {
+      // olMap.getView().fit(extent);
+      olMap.getView().setZoom(14.5);
+      // olMap.getView().setMaxZoom(18);
+      olMap.getView().setMinZoom(14.5);
+    }
+
   }
+
 
   /**
    * 
@@ -612,14 +692,11 @@ export class MapService {
     } as ObjectId);
     if (tipoBusqueda === TipoBusqueda.CP) {
       service = this.getObjectIdByCP(texto, environment.typedSearchCP);
-    // } else if (tipoBusqueda === TipoBusqueda.CALLE) {
-    //   service = this.getObjectIdByDireccion(texto, environment.typedSearchDIRECCION, muni);
+      // } else if (tipoBusqueda === TipoBusqueda.CALLE) {
+      //   service = this.getObjectIdByDireccion(texto, environment.typedSearchDIRECCION, muni);
     } else if (tipoBusqueda === TipoBusqueda.LOCALIDAD) {
       service = this.getObjectIdByLocalidad(texto, environment.typedSearchLOCALIDAD);
     }
-
-    
-
 
     return service;
   }
@@ -685,19 +762,19 @@ export class MapService {
    */
   getObjectIdByLocalidad(texto: string, type: string): Observable<ObjectId> {
     return this.igearService.typedSearchService(texto, type)
-    .pipe(map((res: XMLDocument) => {
-      let results: string[]=  res.getElementsByTagName('List')[0].textContent?.split('\n');
-       for (let i=0;  i<results.length;i++){
-         if (results[i]!="" && results[i].split('#')[1].toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") == texto.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")){
-          const objectId: ObjectId = {
-            objectId: results[i].split('#')[3],
-            typename: environment.typenameLOCALIDAD
+      .pipe(map((res: XMLDocument) => {
+        let results: string[] = res.getElementsByTagName('List')[0].textContent?.split('\n');
+        for (let i = 0; i < results.length; i++) {
+          if (results[i] != "" && results[i].split('#')[1].toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") == texto.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) {
+            const objectId: ObjectId = {
+              objectId: results[i].split('#')[3],
+              typename: environment.typenameLOCALIDAD
+            }
+            return objectId;
           }
-          return objectId;
-         }
-       }
-      return null;
-    }));
+        }
+        return null;
+      }));
 
   }
 
@@ -742,7 +819,7 @@ export class MapService {
       .pipe(switchMap(response => {
         let cqlFilter = typename === environment.typenameCP ? `objectid=${ObjectId}` : '';
         for (let resultado of response.resultados) {
-          if (resultado.capa.includes(capa) ) {
+          if (resultado.capa.includes(capa)) {
             for (let feature of resultado.featureCollection.features) {
               const oid = feature.properties.objectid;
               cqlFilter += cqlFilter !== '' ? ` OR objectid=${oid}` : `objectid=${oid}`;
@@ -751,7 +828,7 @@ export class MapService {
             break;
           }
         }
-        return this.igearService.sitaWMSGetFeature(capa, cqlFilter);  
+        return this.igearService.sitaWMSGetFeature(capa, cqlFilter);
       }));
   }
 
@@ -760,7 +837,7 @@ export class MapService {
       .pipe(switchMap(response => {
         let cqlFilter = typename === environment.typenameCP ? `objectid=${ObjectId}` : '';
         for (let resultado of response.resultados) {
-          if (resultado.capa.includes(capa) ) {
+          if (resultado.capa.includes(capa)) {
             for (let feature of resultado.featureCollection.features) {
               const oid = feature.properties.objectid;
               cqlFilter += cqlFilter !== '' ? ` OR objectid=${oid}` : `objectid=${oid}`;
@@ -769,7 +846,7 @@ export class MapService {
             break;
           }
         }
-        return this.igearService.sitaWMSGetFeature(capa, cqlFilter);  
+        return this.igearService.sitaWMSGetFeature(capa, cqlFilter);
       }));
   }
   getWFSFeaturesAll(ObjectId: string, typename: string, capa: string, distancia: number): Observable<WFSResponse> {
@@ -792,7 +869,7 @@ export class MapService {
           bbox[1][0] = coordinate[0] > bbox[1][0] ? coordinate[0] | 0 : bbox[1][0];
           bbox[0][1] = coordinate[1] < bbox[0][1] ? coordinate[1] | 0 : bbox[0][1];
           bbox[1][1] = coordinate[1] > bbox[1][1] ? coordinate[1] | 0 : bbox[1][1];
-          
+
         }
       }
     }
