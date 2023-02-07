@@ -34,6 +34,7 @@ export class HeaderComponent implements OnInit {
     unidadesInmobiliarias: string;
     isdt: string;
     viviendas: string;
+    listCoberturas: string[];
     search = false;
 
     layerSelection: string[] = [];
@@ -50,8 +51,9 @@ export class HeaderComponent implements OnInit {
         this.unidadesInmobiliarias = 'Unidades inmobiliarias (2022)';
         this.isdt = 'Índice Sintético de Desarrollo Territorial (ISDT) (2020)'
         this.viviendas = 'Disponibilidad de cobertura (2022)'
+        this.listCoberturas = ['Cobertura prevista (2023)', 'Cobertura prevista (2024)']
     }
-    selectedLayers : any[];
+    selectedLayers: any[];
 
 
     ngOnInit() {
@@ -87,6 +89,8 @@ export class HeaderComponent implements OnInit {
                         if (result["totalFeatures"] > 0)
                             results.push(result);
                         if (layer == "viviendas_zn_2022_x_muni")
+                            result.features = result.features.filter(obj => (obj.properties.municipio.toLowerCase() == searchString.toLowerCase()))
+                        else if (layer == "zonas_cubiertas_2021")
                             result.features = result.features.filter(obj => (obj.properties.municipio.toLowerCase() == searchString.toLowerCase()))
                         else if (layer == "nucleos_zbg_2021" || layer == "nucleos_zbg_2022")
                             result.features = result.features.filter(obj => (obj.properties.d_muni_ine.toLowerCase() == searchString.toLowerCase()))
@@ -168,6 +172,13 @@ export class HeaderComponent implements OnInit {
                 optGroup: 'Unidades inmobiliarias', options:
                     [
                         { label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni', isEnabled: true }
+                    ]
+            },
+            {
+                optGroup: 'Cobertura prevista', options:
+                    [
+                        { label: 'Cobertura prevista (2023)', value: 'zonas_cubiertas_2021', isEnabled: true },
+                        { label: 'Cobertura prevista (2024)', value: 'zonas_cubiertas_2022', isEnabled: true },
                     ]
             },
 

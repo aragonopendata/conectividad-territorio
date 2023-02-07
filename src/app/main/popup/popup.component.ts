@@ -204,6 +204,28 @@ export class PopupComponent implements OnInit, AfterViewInit, OnChanges {
 
         map.set('Porcentaje del total', {value: this.getFeatureValue(featureSelect,"porcentaje_viviendas_zonanegra"), format: "||value|| %"} );
       break;
+      case "zonas_cubiertas_2021" :
+        map.set(this.TITLE, {value: "Cobertura prevista en: " + this.getFeatureValue(featureSelect, "municipio" )+ " (2023)", format: ""});       
+        
+        map.set('Municipio', {value: this.getFeatureValue(featureSelect, "municipio" ), format: ""} );
+
+        map.set('Código municipio ine', {value: this.getFeatureValue(featureSelect, "codigo_mun" ), format: ""} );
+
+        map.set('Tipo de zona', {value: this.getFeatureValue(featureSelect,"tipo_zona"), format: ""} );
+
+        map.set('Actuación de', {value: this.getFeatureValue(featureSelect,"razon_social"), format: ""} );
+      break;
+      case "zonas_cubiertas_2022" :
+        map.set(this.TITLE, {value: "Cobertura prevista en: " + this.getFeatureValue(featureSelect, "municipio" )+ " (2024)", format: ""});       
+        
+        map.set('Municipio', {value: this.getFeatureValue(featureSelect, "municipio" ), format: ""} );
+
+        map.set('Código municipio ine', {value: this.getFeatureValue(featureSelect, "codigo_mun" ), format: ""} );
+
+        map.set('Tipo de zona', {value: this.getFeatureValue(featureSelect,"tipo_zona"), format: ""} );
+
+        map.set('Actuación de', {value: this.getFeatureValue(featureSelect,"razon_social"), format: ""} );
+      break;
 
       default:
         break;
