@@ -61,6 +61,18 @@ export class MapService {
         projection: projection
       })
     });
+    const layer2 = new TileLayer({
+      source: new TileWMS({
+        url: environment.urlWMSServer2,
+        params: {
+          LAYERS: environment.wmsLayers2,
+          VERSION: environment.wmsVersion,
+
+
+        },
+        projection: projection
+      })
+    });
 
     const olMap = new Map({
       target: target,
@@ -78,6 +90,7 @@ export class MapService {
     //zoom map
 
     olMap.addLayer(layer);
+    olMap.addLayer(layer2);
 
     olMap.getView().fit(extent);
     //    olMap.getView().setZoom(15);
@@ -287,7 +300,7 @@ export class MapService {
 
   getLivingPlaceStyle(affectedValue): FeatureColorStyle {
 
-    let result: FeatureColorStyle = { fillColor: "#5BCA2B50", strokeColor: "#000000" };
+    let result: FeatureColorStyle = { fillColor: "#196B1D50", strokeColor: "#000000" };
     /*
           if(affectedValue <= 20){
             result =  {fillColor: "#EF8480", strokeColor: "#000000"};
@@ -310,9 +323,9 @@ export class MapService {
     let result: FeatureColorStyle = { fillColor: "blue", strokeColor: "#000000" };
 
     if (zoneType === typeZoneEnum.A) {
-      result = { fillColor: "#E4312A50", strokeColor: "#000000" };
+      result = { fillColor: "#30D13850", strokeColor: "#000000" };
     } else if (zoneType === typeZoneEnum.B) {
-      result = { fillColor: "#6EC2F750", strokeColor: "#000000" };
+      result = { fillColor: "#27AB2E50", strokeColor: "#000000" };
     } else if (zoneType === typeZoneEnum.NONE) {
       result = { fillColor: "#5BCA2B50", strokeColor: "#000000" };
     }

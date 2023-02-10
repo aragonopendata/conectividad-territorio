@@ -9,7 +9,7 @@
                 <mat-select class="selector" multiple [(ngModel)]="selectedLayers" [compareWith]="comparer">
                     <mat-optgroup *ngFor="let elem of layerRelations" [label]="elem.optGroup">
                         <mat-option *ngFor="let option of elem.options" (onSelectionChange)="capture($event)"
-                            [value]="option.value" [disabled]="!option.isEnabled">{{option.label}}</mat-option>
+                            [value]="option.value">{{option.label}}</mat-option>
                     </mat-optgroup>
                 </mat-select>
             </mat-form-field>

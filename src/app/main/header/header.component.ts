@@ -137,48 +137,48 @@ export class HeaderComponent implements OnInit {
             {
                 optGroup: 'Disponibilidad de cobertura', options:
                     [
-                        { label: 'Disponibilidad de cobertura (2022)', value: 'viviendas_zn_2022_x_muni', isEnabled: true },
+                        { label: 'Disponibilidad de cobertura (2022)', value: 'viviendas_zn_2022_x_muni'},
                     ]
             },
             {
                 optGroup: 'Núcleos urbanos', options:
                     [
-                        { label: 'Núcleos urbanos (2021)', value: 'nucleos_zbg_2021', isEnabled: true },
-                        { label: 'Núcleos urbanos (2022)', value: 'nucleos_zbg_2022', isEnabled: true }
+                        { label: 'Núcleos urbanos (2021)', value: 'nucleos_zbg_2021' },
+                        { label: 'Núcleos urbanos (2022)', value: 'nucleos_zbg_2022' }
                     ]
             },
             {
                 optGroup: 'Centros educativos', options:
                     [
-                        { label: 'Centros educativos (2021)', value: 'centros_educativos_zbg_2021', isEnabled: true },
-                        { label: 'Centros educativos (2022)', value: 'centros_educativos_zbg_2022', isEnabled: true }
+                        { label: 'Centros educativos (2021)', value: 'centros_educativos_zbg_2021' },
+                        { label: 'Centros educativos (2022)', value: 'centros_educativos_zbg_2022' }
                     ]
             },
             {
                 optGroup: 'Instalaciones Sanitarias', options:
                     [
-                        { label: 'Instalaciones sanitarias (2021)', value: 'instalaciones_sanitarias_zbg_2021', isEnabled: true },
-                        { label: 'Instalaciones sanitarias (2022)', value: 'instalaciones_sanitarias_zbg_2022', isEnabled: true }
+                        { label: 'Instalaciones sanitarias (2021)', value: 'instalaciones_sanitarias_zbg_2021' },
+                        { label: 'Instalaciones sanitarias (2022)', value: 'instalaciones_sanitarias_zbg_2022' }
                     ]
             },
             {
                 optGroup: 'Polígonos Industriales', options:
                     [
-                        { label: 'Polígonos industriales (2021)', value: 'poligonos_zbg_2021', isEnabled: true },
-                        { label: 'Polígonos industriales (2022)', value: 'poligonos_zbg_2022', isEnabled: true }
+                        { label: 'Polígonos industriales (2021)', value: 'poligonos_zbg_2021' },
+                        { label: 'Polígonos industriales (2022)', value: 'poligonos_zbg_2022'}
                     ]
             },
             {
                 optGroup: 'Unidades inmobiliarias', options:
                     [
-                        { label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni', isEnabled: true }
+                        { label: 'Unidades inmobiliarias (2022)', value: 'ui_zbg_2022_x_muni' }
                     ]
             },
             {
                 optGroup: 'Cobertura prevista', options:
                     [
-                        { label: 'Cobertura prevista (2023)', value: 'zonas_cubiertas_2021', isEnabled: true },
-                        { label: 'Cobertura prevista (2024)', value: 'zonas_cubiertas_2022', isEnabled: true },
+                        { label: 'Cobertura prevista (2023)', value: 'zonas_cubiertas_2021' },
+                        { label: 'Cobertura prevista (2024)', value: 'zonas_cubiertas_2022' },
                     ]
             },
 
