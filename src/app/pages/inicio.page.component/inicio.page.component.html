@@ -1,0 +1,206 @@
+
+    <main id="content" class="container mx-auto px-base">
+
+      <!--
+      <h2 class="c-h2" id="conectividad">Conectividad a Internet es un servicio que permite conocer la cobertura y calidad de la conexión a Internet en el territorio aragonés  </h2>
+  
+     
+      <p>El servicio aporta datos sobre la cobertura y la calidad de la conexión a Internet en el territorio de Aragón. 
+        Estos datos se basan en el estudio de zonas blancas y grises publicados por la Secretaría de Estado de Telecomunicaciones e Infraestructuras Digitales 
+        y en los datos aportados por el proyecto de análisis de la calidad de la cobertura de acceso a internet en Aragón, mediante un trabajo de campo inicial 
+        y la colaboración, de manera anónima, de usuarios y usuarias. Si deseas colaborar, puedes hacerlo ejecutando un test de velocidad.
+        Si lo deseas, puede visitar la versión accesible de este servicio.</p>
+      -->
+        <h3 class="c-h3" style="padding-top: 10px;">Entidad Territorial</h3>
+
+        <desy-select id="municipio2" name="municipio" [items]="municipios" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
+
+        <div class="grid lg:grid-cols-12 grid-cols-4 gap-xl">
+          <ng-container *ngFor="let d of datos_municipio; let i = index">
+            <ng-container *ngIf="i % 3 == 0">
+              <div class="lg:col-span-2"></div>
+              <div class="lg:col-span-2 col-span-4">
+                <span class="h-12 flex items-center justify-end fit-content"><li class="contenedor-medidas"><div class="medidas">{{d.value}}</div> {{d.label}}</li></span>
+              </div>
+              <div class="lg:col-span-1"></div>
+
+              <div class="lg:col-span-2 col-span-4">
+                <span class="h-12 flex items-center justify-end fit-content" *ngIf="i + 1 < datos_municipio.length"><li class="contenedor-medidas"><div class="medidas">{{datos_municipio[i+1].value}}</div> {{datos_municipio[i+1].label}}</li></span>
+              </div>
+              <div class="lg:col-span-1"></div>
+              <div class="lg:col-span-2 col-span-4">
+                <span class="h-12 flex items-center justify-end fit-content" *ngIf="i + 2 < datos_municipio.length"><li class="contenedor-medidas"><div class="medidas">{{datos_municipio[i+2].value}}</div> {{datos_municipio[i+2].label}}</li></span>
+              </div>
+              <div class="lg:col-span-2"></div>
+            </ng-container>
+
+
+          </ng-container>
+
+          
+        </div>
+
+        <h1 class="c-h1">Mapa</h1>
+
+        <h3 class="c-h3">Entidad Territorial</h3>
+        <desy-select id="municipio2" name="municipio" [items]="municipios" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
+
+
+
+        <div id="toc" class="rotate-north ol-unselectable ol-control" 
+        style="background-color:white; display: flex;border-radius: 10px;">
+          
+          <button id="button_toc" (click)="modalService.open('modal-1')" style="opacity: 0.7;"></button>
+          <div id="toc_expanded" style="display: block;padding-left: 10px;padding-bottom: 10px;padding-right: 10px;">
+            <h3 class="c-h3">Tabla de contenidos</h3>
+            <!--<desy-select id="municipio2" name="municipio" [items]="items" [(ngModel)]="municipio"></desy-select>-->
+ 
+            <div>Capa consultable:</div>
+
+            <desy-select [items]="items_capas_mapa"
+              style="margin: 0px;padding-left: 10px;" 
+              [(ngModel)]="this.mapService.queryableLayer" [classes]="'max_width_280'" (change)="changeQueryable()"></desy-select>
+            <hr style="margin-top: 10px;margin-bottom: 10px;" class="max_width_280"/>
+            <ul style="overflow-y: scroll; height: 330px; width: 330px;">
+              <li *ngFor="let index of this.tocService.capas_anadidas" style="display: flex;align-items: baseline;">
+                <input type="checkbox" id="cbox1" [attr.checked]="this.tocService.capas[index].visible=='t' ? '' : null"
+                (change)="this.setVisibleLayer(index,$event)"/> 
+                <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
+                  <div style="min-width: 170px;">{{this.tocService.capas[index].titulo}}</div>
+
+                  
+
+                  <desy-select *ngIf="this.tocService.capas[index].anyos!=null" 
+                  [items]="items_anyos[index]"
+                    style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index,$event)"
+                    [(ngModel)]="this.tocService.capas[index].anyo_defecto"></desy-select>
+                </div>
+              </li>
+            </ul>
+
+
+
+          </div>
+          
+
+        </div>
+
+          <jw-modal id="modal-1">
+            <div style="background-color:white; display: flex;border-radius: 10px;">
+              
+              <div id="toc_expanded" style="display: block;padding-left: 10px;padding-bottom: 10px;padding-right: 10px; max-width: 60vw;">
+                <h3 class="c-h3">Tabla de contenidos</h3>
+                <!--<desy-select id="municipio2" name="municipio" [items]="items" [(ngModel)]="municipio"></desy-select>-->
+     
+                <div>Capa consultable:</div>
+    
+                <desy-select [items]="items_capas_mapa"
+                  style="margin: 0px;padding-left: 10px;" 
+                  [(ngModel)]="this.mapService.queryableLayer" (change)="changeQueryable()"  [classes]="'max_width_50_per'"></desy-select>
+                <hr style="margin-top: 10px;margin-bottom: 10px;" />
+                <ul style="overflow-y: scroll; height: 330px; ">
+                  <li *ngFor="let index of this.tocService.capas_anadidas" style="display: flex;align-items: baseline;">
+                    <input type="checkbox" id="cbox1" checked
+                    (change)="this.setVisibleLayer(index,$event)"/> 
+                    <div style="padding-left: 10px;display: flex;align-items: baseline;">
+                      <div >{{this.tocService.capas[index].titulo}}</div>
+
+                      <desy-select *ngIf="this.tocService.capas[index].anyos!=null" 
+                      [items]="items_anyos[index]"
+                        style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index,$event)"
+                        [(ngModel)]="this.tocService.capas[index].anyo_defecto"></desy-select>
+                    </div>
+                  </li>
+                </ul>
+    
+    
+    
+              </div>
+              
+    
+            </div>
+        </jw-modal>
+
+        <jw-modal id="aviso_escala">
+          La capa seleccionada no se puede consultar a la escala actual
+          
+
+        </jw-modal>
+        
+        <div id="map" class="imgCenter map">
+
+          
+        </div>
+
+        <div class="grid lg:grid-cols-10 grid-cols-4 gap-xl" style="padding-top: 30px;">
+              <div class="lg:col-span-1"></div>
+              <div class="lg:col-span-3 col-span-4">
+                <span class="h-12 flex items-center justify-center fit-content">
+                  <img src="assets/calidad.jpg">  
+                </span>
+
+                  
+              </div>
+              <div class="lg:col-span-1"></div>
+
+              <div class="lg:col-span-1"></div>
+              <div class="lg:col-span-3 col-span-4">
+                <span class="h-12 flex items-center justify-center fit-content">
+                  <img src="assets/cobertura.jpg">   
+                </span>
+                  
+              </div>
+              <div class="lg:col-span-1"></div>
+
+
+
+          
+        </div>
+
+
+
+      
+
+        <h1 class="c-h1" style="padding-top: 20px;">Datos</h1>
+
+        <div style="display: flex;flex-wrap: wrap; padding-bottom: 10px;">
+          <desy-select
+          [items]="items_capas" (change)="changeCapa()" [classes]="'max_width_280'"
+            [(ngModel)]="this.currentCapa"  ></desy-select>
+
+          <desy-select *ngIf="showFiltros" id="municipio2" name="municipio" [items]="municipios" 
+          style="margin: 0px;padding-left: 10px;" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
+
+          <desy-select [items]="items_anyos[this.currentCapa]"
+          style="margin: 0px;padding-left: 10px;" (change)="changeAnyo()"
+          [(ngModel)]="this.currentAnyo"></desy-select>
+        </div>
+
+
+          <div *ngIf="rows.length>0">
+            <desy-table id="table" [wrapper]="wrapper" 
+            [head]="labels"
+            [rows]="this.rows.slice((this.page-1)*10, (this.page-1)*10 + 10)">
+            </desy-table>
+  
+            <desy-pagination 
+              [itemsPerPage]="10" [totalItems]="totalItems" [hasSelect]="true" [hasNext]="page<(totalItems/10)" [hasPrevious]="page!=1" 
+              [idPrefix]="'selector'" previousText="Anterior" nextText="Siguiente" [(currentPage)]="page">
+            </desy-pagination>
+          </div>
+
+          <div *ngIf="rows.length==0" style="text-align: center;">
+              No hay datos disponibles
+          </div>
+          <div class="overlay" id="overlay"></div>
+
+          <!--
+        <h1 class="c-h1" style="padding-top: 20px;">Metodología y aclaraciones</h1>
+        <p>Se consideran zonas con disponibilidad de cobertura aquellas que dispongan de cobertura igual o superior a 100 Mbps con varios proveedores o, partes del territorio donde no es exigible el servicio por no haber viviendas u otras unidades inmobiliarias. Téngase en cuenta que los centros educativos, instalaciones sanitarias, viviendas... etc con esta caracterización no implica que dispongan de una conexión mayor de 100 Mbps, su conexión dependerá de sus servicios disponibles y contratados.
+          Puedes consultar información detallada del procedimiento de toma de datos colaborativos.</p>
+
+          
+
+          -->
+
+    </main>

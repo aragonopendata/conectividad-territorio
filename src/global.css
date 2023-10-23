@@ -1,0 +1,279 @@
+
+.iconContainer > svg {
+  height: 48px;
+  width: 48px;
+}
+.c-button > svg {
+  height: 24px;
+  width: 24px;
+  margin-left: 5px;
+  margin-top: auto;
+}
+.c-button > svg > path{
+  fill: #0873a5;
+}
+
+.iconContainer > svg > path {
+  fill: #0873a5;
+}
+
+.iconLink {
+  height: 30px;
+  padding-left: 5px;
+}
+
+span.c-select {
+   display: none;
+}
+select.c-select {
+  padding-bottom: 2px;
+  padding-top: 2px;
+}
+
+
+#button_toc{
+  background: white url(/lib/IDEAragon/themes/default/images/layers.png)
+  center center/cover no-repeat !important;
+}
+.rotate-north {
+  top: 65px;
+  left: .5em;
+}
+.ol-touch .rotate-north {
+  top: 80px;
+}
+
+.fit-content{
+  height: fit-content;
+}
+.clickable {
+  cursor: pointer;
+}
+
+.thumbnail{
+  width:100px;
+  min-width:100px;
+}
+
+.map {
+   height: 35rem;
+   width: auto;
+}
+
+.description{
+  width: 100%;
+  word-break: break-all;
+}
+.video{
+  width: 100%;
+  height: 25rem;
+}
+.pie {
+  font-size: 13px;
+  font-style: italic;
+}
+
+
+#footer {
+	/*height: 20px;*/
+	text-align: left;
+	/*color: #B4B3AE;*/
+	font-size: 12px;
+	line-height:14px;
+	font-weight: bold;
+	/*position: relative;
+	top: 50px;*/
+	z-index:3;
+}
+
+#footer ul {list-style:none; float:left; /*background-color: #332F21;*/ }
+#footerZone { padding: 15px; }
+#footer li {float:left; margin-right:10px; }
+#footer li.logoGA_footer { float:right; }
+#footer li a{text-decoration:none; /*color:#B4B3AE;*/}
+#footer li a:hover{/*color:#FFFFFF;*/ }
+
+.tippy-content{
+  width: max-content;
+}
+
+.ol-attribution{
+  display: flex !important;
+}
+
+@media screen and (min-width:1024px) {
+  .first{
+    order: -1 !important;
+  }
+}
+
+desy-header-subnav2 > p{
+  border-collapse: unset !important;
+  border-width: 0px !important;
+}
+
+
+.activo {
+  background-color: #d6eaf0;
+}
+.activo > a > desy-item {
+  background-color: #d6eaf0;
+}
+
+
+.margin_top{
+  margin-top: 20px;
+}
+
+.margin_left{
+ margin-left: 5px;
+}
+
+.ancho_100{
+  width: 100%;
+}
+.c-table{
+  width: 100% !important;
+}
+.max_width_350{
+  max-width: 350px;
+}
+.max_width_280{
+  max-width: 280px;
+}
+.max_width_50_per{
+  max-width: 50vw;
+}
+.jw-modal{
+  
+  padding: 0px !important
+}
+
+.center {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+
+
+.ancho_50{
+  width: 50%;
+}
+.sin_bordes{
+ border-collapse: unset !important;
+ border-width: 0px !important;
+}
+
+.overlay{
+  background: white;
+  border-radius: 10px;
+  padding: 2px
+}
+
+
+
+.displayContents{
+ display: contents;
+}
+
+.displayInlineFlex{
+ display: inline-flex;
+}
+
+.displayFlex{
+ display: flex;
+}
+
+.displayBlock{
+ display: block;
+}
+
+.imgCenter{
+ display: block;
+ margin-left: auto;
+ margin-right: auto;
+}
+.max-height{
+ max-height: 25rem;
+ width: auto;
+}
+
+.padding{
+ padding: 10px;
+}
+
+.lightBlue > span{
+ background: #d6eaf0;
+}
+
+.margin_bottom{
+ margin-bottom: 5px !important;
+}
+
+
+.carrusel{
+ display: block !important;
+ margin-left: auto;
+ margin-right: auto;
+
+ width: auto !important;
+ min-height: 28rem !important;
+ max-height: 35rem !important;
+}
+
+.carrusel >div>div>div>img{
+ object-fit: contain !important;
+}
+
+.notDisabled{
+ background-color: unset !important;
+ opacity: 1 !important;
+ cursor: pointer !important;
+}
+
+.encabezado_tabla{
+  --tw-text-opacity: 1 !important;
+  color: rgb(31 35 49 / var(--tw-text-opacity)) !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  line-height: 1.25 !important;
+}
+
+#ejemplos >thead >tr {
+  border-collapse: unset !important;
+  border-width: 0px !important;
+}
+.no_padding_bottom{
+  padding-bottom: 0px;
+}
+.mini_margin{
+  margin: 2px;
+}
+
+#subnav1 > p {
+  display: block !important;
+}
+#subnav2 > p {
+  border-collapse: unset !important;
+  border-width: 0px !important;
+}
+
+desy-collapsible >div>h3 >button{
+  background: white !important;
+  --tw-shadow: inset 0 -2px 0 0 white !important;
+}
+
+.item_busqueda {
+ cursor: pointer;
+}
+
+
+#tabla_comp > tbody > tr >td {
+  text-align: center;
+}
+
+#tabla_comp > thead > tr >th {
+  text-align: center;
+}

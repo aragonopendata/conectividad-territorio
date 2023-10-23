@@ -1,14 +1,10 @@
 module.exports = {
-  purge: {
-    enabled: true,
-    content: ['./src/**/*.{html,ts}']
-  },
-  darkMode: false, // or 'media' or 'class'
-  theme: {
-    extend: {},
-  },
-  variants: {
-    extend: {},
-  },
-  plugins: [],
-}
+  presets: [
+    require('desy-html/config/tailwind.config.js')
+  ],
+  content: [
+    './node_modules/desy-angular/**/*.js',
+    './src/**/*.html',
+    './src/**/*.ts'
+  ]
+};
