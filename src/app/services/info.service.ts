@@ -49,7 +49,6 @@ export class InfoService {
 		type: 'GET',
 		async: false, //para asegurar que se puede consultar la info
 		success: data => {
-			console.log(data)
 			this.parseQueryableLayers(data);
 		},
 		error: function(data, textStatus, errorThrown) {

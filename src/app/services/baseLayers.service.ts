@@ -27,8 +27,6 @@ export class BaseLayerService {
             type: 'GET',
             async: false, //para asegurar que se inicializa la gui de la lista de capas
             success:	data => {
-                console.log(data)
-
                 this.fondos_wms=data.fondosWMS;
                 var visible_pk;
                 for (var i=0; i<data.grupos.length;i++){

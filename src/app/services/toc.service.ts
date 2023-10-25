@@ -56,6 +56,8 @@ export class TOCService {
 
   queryable: any[] = [];
 
+  featureLayer;
+
 /**
  * Elimina los acentos de una cadena
  * @param entry cadena de texto
@@ -158,8 +160,6 @@ get_class_css(titulo) {
 		type: 'GET',
 		async: false, //para asegurar que se inicializa la gui de la lista de capas
 		success: (data) => {
-			console.log(data)
-			console.log("Parseando")
 			this.parseTOC(data, '', '')
 
 		},
@@ -185,7 +185,6 @@ addLayer(index, visible) {
 	var es_visible = (visible != null ? visible : capa.visible);
 	var buttonTitle = capa.type == "wfs" ? "Ver filtros" : "Ver leyenda";
 
-	console.log("capa: "+index)
 	this.capas_anadidas.push(index)
 	if(visible){
 		this.capas_visibles.push(index);
@@ -307,24 +306,64 @@ removeInteractiveLayer(){
 	this.mapService.interactiveLayers = new Array();
 }
 
-addInteractiveLayer(url,layer,campos){
+addFeature(data){
+
+	var vectorSource = new VectorSource({
+		features: new GeoJSON().readFeatures(data)
+	  });
+	  var extent = vectorSource.getExtent();
+
+	  var fillColor = 'rgba(255, 255, 255,0.01)';
+	  var fill = new Fill({
+		color: fillColor
+	  });
+	  var strokeColor = 'rgba(0, 0, 0,1)';
+	  var stroke = new Stroke({
+		color:strokeColor,
+		width: 3
+	  });
+
+	  var wfs_layer = new VectorLayer({
+		source: vectorSource,
+		style: new Style({
+		  stroke: stroke,
+		  fill: fill
+		}),
+	  });
+	  this.featureLayer = wfs_layer;
+
+	  this.mapService.map.addLayer(wfs_layer);
+	  this.mapService.map.getView().fit(extent);
+}
+
+removeFeature(){
+	if(this.featureLayer){
+		this.mapService.map.removeLayer(this.featureLayer);
+	}
+	
+}
+
+addInteractiveLayer(url,layer,campos,anyo){
 	var projection = new Projection({code:"EPSG:25830"});
-	console.log(url+'?service=WFS&' +
-	'version=1.0.0&request=GetFeature&typename='+layer +
-	'&outputFormat=application/json&srsname=EPSG:25830')
+
+
+	var time = "";
+	if(anyo){
+		time = "&TIME="+anyo
+	}
 	var vectorSource = new VectorSource({
 		format: new GeoJSON({dataProjection: projection, featureProjection:projection}) ,
 		url: function(extent) {
 			var serviceURL=url;
 			return serviceURL+'?service=WFS&' +
-			'version=1.0.0&request=GetFeature&typename='+layer +
+			'version=1.0.0&request=GetFeature&typename='+layer +time+
 			'&outputFormat=application/json&srsname=EPSG:25830&bbox=' + extent.join(',') + ',EPSG:25830'
 			;
 		},
 		strategy: bbox
 	});
 	vectorSource.on('addfeature',function(ev){
-		ev.feature!.set("layer", layer);
+		ev.feature!.set("layer", layer+"_interactive");
 		ev.feature!.set("atributos",campos);
 	});
 	var fillColor = 'rgba(255, 255, 255,0.01)';
@@ -348,15 +387,15 @@ addInteractiveLayer(url,layer,campos){
 		}),
 
 	});
+	
 	this.mapService.map.addLayer(wfs_layer);
 	return wfs_layer;
 }
-changeInfoLayer(index){
+changeInfoLayer(index, anyo){
 	this.removeInteractiveLayer();
 	if (index!="-1"){
 		var escala_info = this.capas[index].escala_info;
 		var escala = Math.round(this.mapService.map.getView().getResolution()!*this.mapService.DOTS_PER_M);
-		console.log(escala)
 		if (escala > escala_info){
 			//this.modalService.open("aviso_escala")
 			this.modalService.open('aviso_escala')
@@ -394,7 +433,7 @@ changeInfoLayer(index){
 					}
 				}
 				else{
-					this.mapService.interactiveLayers.push(this.addInteractiveLayer(this.server+this.capas[index].url,layerName,campos));
+					this.mapService.interactiveLayers.push(this.addInteractiveLayer(this.server+this.capas[index].url,layerName,campos,anyo));
 				}
 			}
 		}
@@ -534,10 +573,8 @@ getOLLayer(campo, layerIdx) {
 setVisibleLayer(layer, visible) {
 	layer.setVisible(visible);
 	if(visible){
-		console.log(layer.get("pk"))
 		this.capas_visibles.push(layer.get("pk"));
 	}else{
-		console.log(layer.get("pk"))
 		var index = this.capas_visibles.indexOf(layer.get("pk"));
 		if (index !== -1) {
 			this.capas_visibles = this.capas_visibles.splice(index, 1);

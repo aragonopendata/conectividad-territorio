@@ -99,7 +99,7 @@ export class MapService {
 
     var aragon =new Image({
       source: new ImageWMS({
-        params: {'LAYERS': "Municipio_t2m,Comarca_t2m,Provincia_t2m,LimAragon",'VERSION':'1.1.1','FORMAT':'image/png','TRANSPARENT':'TRUE'},
+        params: {'LAYERS': "LimAragon",'VERSION':'1.1.1','FORMAT':'image/png','TRANSPARENT':'TRUE'},
         url: "https://icearagon.aragon.es/Visor2D?service=WMS&version=1.1.0&request=GetMap",
         projection: this.map_projection
       })
@@ -107,7 +107,7 @@ export class MapService {
 
 
     
-    //layers.push(aragon)
+    layers.push(aragon)
 
 
 
@@ -155,6 +155,12 @@ export class MapService {
 
 addEvents(tocService){
 
+  
+
+  this.map.on('pointerclick', evt => {
+    this.overlay(evt)
+  });
+
   this.map.on('pointermove', evt => {
     this.overlay(evt)
   });
@@ -191,13 +197,11 @@ overlay(evt){
       selectControl.getFeatures().clear();
       selectControl.getFeatures().push(feature);
       //showEditionForm(feature);
-      console.log("EDITABLE")
       return feature;
     }
     else if ( isFirstOne) {
       isFirstOne = false;
       //singleClickAction(feature);
-      console.log("isFirstOne")
       return null;
     }
   }
@@ -207,7 +211,6 @@ overlay(evt){
       if (feature.getGeometry()!.getType()!='Point') {
         selectControl.getFeatures().clear();
         selectControl.getFeatures().push(feature);
-        console.log("featurePopup")
       }
       return feature;
     }
@@ -220,8 +223,6 @@ overlay(evt){
       if (campos) {
         mostrarPopup=true;
         var camposVis = Object.keys(campos);
-        console.log("CAMPOS")
-        console.log(campos)
         for (var i=0; i<camposVis.length; i++) {
           if (feature.getProperties()[camposVis[i]]) {
             var _value = feature.getProperties()[camposVis[i]];
@@ -239,7 +240,6 @@ overlay(evt){
 
 
     if (mostrarPopup) {
-      console.log("mostrarPopup")
       var positioning = ''
       if(evt.pixel[1] > window.screen.height/2){
         positioning = 'bottom-';
@@ -277,6 +277,8 @@ overlay(evt){
   //overlay.getElement().className = feature ? 'summary' : 'none';*/
   document.body.style.cursor = feature ? 'pointer' : '';
 }
+
+
 
 
 }

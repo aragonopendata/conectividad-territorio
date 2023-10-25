@@ -63,7 +63,7 @@
             <hr style="margin-top: 10px;margin-bottom: 10px;" class="max_width_280"/>
             <ul style="overflow-y: scroll; height: 330px; width: 330px;">
               <li *ngFor="let index of this.tocService.capas_anadidas" style="display: flex;align-items: baseline;">
-                <input type="checkbox" id="cbox1" [attr.checked]="this.tocService.capas[index].visible=='t' ? '' : null"
+                <input type="checkbox" [id]="'input_'+index" [attr.checked]="this.tocService.capas[index].visible=='t' ? '' : null"
                 (change)="this.setVisibleLayer(index,$event)"/> 
                 <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
                   <div style="min-width: 170px;">{{this.tocService.capas[index].titulo}}</div>
@@ -100,7 +100,7 @@
                 <hr style="margin-top: 10px;margin-bottom: 10px;" />
                 <ul style="overflow-y: scroll; height: 330px; ">
                   <li *ngFor="let index of this.tocService.capas_anadidas" style="display: flex;align-items: baseline;">
-                    <input type="checkbox" id="cbox1" checked
+                    <input type="checkbox"  [id]="'input_'+index" [attr.checked]="this.tocService.capas[index].visible=='t' ? '' : null"
                     (change)="this.setVisibleLayer(index,$event)"/> 
                     <div style="padding-left: 10px;display: flex;align-items: baseline;">
                       <div >{{this.tocService.capas[index].titulo}}</div>
@@ -168,10 +168,10 @@
           [items]="items_capas" (change)="changeCapa()" [classes]="'max_width_280'"
             [(ngModel)]="this.currentCapa"  ></desy-select>
 
-          <desy-select *ngIf="showFiltros" id="municipio2" name="municipio" [items]="municipios" 
+          <desy-select *ngIf="showMunicipio" id="municipio2" name="municipio" [items]="municipios" 
           style="margin: 0px;padding-left: 10px;" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
 
-          <desy-select [items]="items_anyos[this.currentCapa]"
+          <desy-select [items]="items_anyos[this.currentCapa]" *ngIf="showAnyo"
           style="margin: 0px;padding-left: 10px;" (change)="changeAnyo()"
           [(ngModel)]="this.currentAnyo"></desy-select>
         </div>
