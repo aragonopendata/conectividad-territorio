@@ -317,7 +317,7 @@ addFeature(data){
 	  var fill = new Fill({
 		color: fillColor
 	  });
-	  var strokeColor = 'rgba(0, 0, 0,1)';
+	  var strokeColor = 'rgba(245, 206, 66,1)';
 	  var stroke = new Stroke({
 		color:strokeColor,
 		width: 3
