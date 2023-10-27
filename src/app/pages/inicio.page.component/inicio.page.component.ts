@@ -79,6 +79,8 @@ aragon = true;
 
 public accesible = false;
 
+public init = true;
+
 constructor(public tocService: TOCService, public mapService: MapService, public modalService:ModalService, 
   public baseLayerService: BaseLayerService, public infoService: InfoService,public _sanitizer:DomSanitizer,){
 
@@ -112,8 +114,7 @@ constructor(public tocService: TOCService, public mapService: MapService, public
 
 
     //Se prepara la tabla junto con las opciones por defecto del select
-    this.currentCapa = this.items_capas.find(el => el).value;
-    this.getTableData(this.tocService.capas[this.currentCapa].layers)
+    this.currentCapa = this.items_capas.find(el => el.value.includes("1053")).value;
     this.changeMunicipio();
     this.changeCapa();
 
@@ -124,6 +125,8 @@ constructor(public tocService: TOCService, public mapService: MapService, public
       this.tocService.changeInfoLayer(c,this.tocService.capas[c].anyo_defecto);
     })
 
+
+    this.init = false;
     //Se abre el toc en pantallas grandes
     setTimeout(() => {
       if(screen.width<1024){
@@ -208,8 +211,10 @@ constructor(public tocService: TOCService, public mapService: MapService, public
 
 
         this.getData(ine);
-        this.getTableData(this.tocService.capas[this.currentCapa].layers,ine,this.currentAnyo)
-        //this.tocService.changeInfoLayer(this.currentCapa)
+        if(this.accesible && !this.init){
+          this.getTableData(this.tocService.capas[this.currentCapa].layers,ine,this.currentAnyo)
+        }
+        
       }
     } 
     this.aragon = false;
@@ -377,7 +382,10 @@ constructor(public tocService: TOCService, public mapService: MapService, public
       anyo=this.currentAnyo
     }
 
-    this.getTableData(capa.layers,ine,anyo)
+    if(this.accesible){
+      this.getTableData(capa.layers,ine,anyo)
+    }
+    
   }
 
   setVisibleLayer(layerIdx, event) {
