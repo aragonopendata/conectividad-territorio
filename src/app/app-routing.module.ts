@@ -5,6 +5,7 @@ import { InicioPageModule } from './pages/inicio.page.component/inicio.page.comp
 const routes: Routes = [
   
   { path: 'inicio', loadChildren: './pages/inicio.page.component/inicio.page.component.module#InicioPageModule' },
+  { path: 'accesible', loadChildren: './pages/inicio.page.component/inicio.page.component.module#InicioPageModule' },
   { path: '**', redirectTo: 'inicio' },
 ];
 

@@ -206,6 +206,9 @@ addLayer(index, visible) {
 		//$("#layer_" + capa.pk).trigger("create");	// needed to show icons
 	}
 
+
+	this.setLayerTime(olLayer, capa.anyo_defecto);
+	
 	//this.addLegend(olLayer);
 
 
@@ -289,22 +292,30 @@ removeQueryableLayer(layer){
 	$("#info_layer_opt_"+index).remove();*/
 }
 
-removeInteractiveLayer(){
+removeInteractiveLayer(layer?){
+
 	for (var i=0; i<this.mapService.interactiveLayers.length ;i++){
-		if (this.mapService.interactiveLayers[i].get("keepLayer")){
-			var layer = this.mapService.interactiveLayers[i];
-			var features = layer.getSource().getFeatures();
-			for (var i=0; i<features.length;i++){
-				var feature = features[i];
-				feature.set("atributos",null);
+		if(layer){
+			if(layer==this.mapService.interactiveLayers[i].values_.layer){
+				this.mapService.map.removeLayer(this.mapService.interactiveLayers[i]);
 			}
-		}
-		else{
+		}else{
 			this.mapService.map.removeLayer(this.mapService.interactiveLayers[i]);
 		}
 	}
-	this.mapService.interactiveLayers = new Array();
+	if(layer){
+
+		
+		this.mapService.interactiveLayers = this.mapService.interactiveLayers.filter(el =>{
+			return el.values_.layer!=layer;
+		})
+	}else{
+		this.mapService.interactiveLayers = new Array();
+	}
+	
 }
+
+
 
 addFeature(data){
 
@@ -343,30 +354,28 @@ removeFeature(){
 	
 }
 
-addInteractiveLayer(url,layer,campos,anyo){
+addInteractiveLayer(url,layer,campos,anyo,campo_anyo,titulo){
 	var projection = new Projection({code:"EPSG:25830"});
 
 
 	var time = "";
-	if(anyo){
-		time = "&TIME="+anyo
+	if(anyo && campo_anyo){
+		time = "&CQL_FILTER="+campo_anyo+"="+anyo+""
 	}
+
 	var vectorSource = new VectorSource({
 		format: new GeoJSON({dataProjection: projection, featureProjection:projection}) ,
-		url: function(extent) {
-			var serviceURL=url;
-			return serviceURL+'?service=WFS&' +
+		url: url+'?service=WFS&' +
 			'version=1.0.0&request=GetFeature&typename='+layer +time+
-			'&outputFormat=application/json&srsname=EPSG:25830&bbox=' + extent.join(',') + ',EPSG:25830'
-			;
-		},
-		strategy: bbox
+			'&outputFormat=application/json&srsname=EPSG:25830'
 	});
+	
 	vectorSource.on('addfeature',function(ev){
 		ev.feature!.set("layer", layer+"_interactive");
 		ev.feature!.set("atributos",campos);
+		ev.feature!.set('titulo', titulo);
 	});
-	var fillColor = 'rgba(255, 255, 255,0.01)';
+	var fillColor = 'rgba(255, 255, 255,0)';
 	var fill = new Fill({
 		color: fillColor
 	});
@@ -387,16 +396,19 @@ addInteractiveLayer(url,layer,campos,anyo){
 		}),
 
 	});
+	wfs_layer.set('layer', layer);
+	
 	
 	this.mapService.map.addLayer(wfs_layer);
 	return wfs_layer;
 }
 changeInfoLayer(index, anyo){
-	this.removeInteractiveLayer();
+	
 	if (index!="-1"){
+		this.removeInteractiveLayer(this.capas[index].layers);
 		var escala_info = this.capas[index].escala_info;
 		var escala = Math.round(this.mapService.map.getView().getResolution()!*this.mapService.DOTS_PER_M);
-		if (escala > escala_info){
+		if (false){
 			//this.modalService.open("aviso_escala")
 			this.modalService.open('aviso_escala')
 			//creaVentanaAviso("La capa seleccionada no se puede consultar a la escala actual (disponible a partir de 1:"+escala_info+")",false,"tocDialog");
@@ -433,7 +445,7 @@ changeInfoLayer(index, anyo){
 					}
 				}
 				else{
-					this.mapService.interactiveLayers.push(this.addInteractiveLayer(this.server+this.capas[index].url,layerName,campos,anyo));
+					this.mapService.interactiveLayers.push(this.addInteractiveLayer(this.server+this.capas[index].url,layerName,campos,anyo,this.capas[index].campo_anyo,this.capas[index].titulo));
 				}
 			}
 		}

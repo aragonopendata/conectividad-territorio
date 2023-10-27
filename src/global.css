@@ -135,6 +135,13 @@ desy-header-subnav2 > p{
 .c-table{
   width: 100% !important;
 }
+.resaltado{
+  font-weight: bold;
+}
+
+.container {
+  max-width: 100%;
+}
 .max_width_350{
   max-width: 350px;
 }

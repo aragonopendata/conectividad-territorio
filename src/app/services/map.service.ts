@@ -219,10 +219,13 @@ overlay(evt){
     var textoHtmlAMostrar = '<a href="#" onclick="closePopup()" id="popup-closer" class="ol-popup-closer">';
 
       var campos = feature.get("atributos");
+      var titulo = feature.get("titulo");
 
       if (campos) {
         mostrarPopup=true;
         var camposVis = Object.keys(campos);
+
+        textoHtmlAMostrar+='<div data-ex-content=".label" style="text-align: center;"><span><strong style="font-weight: bolder;">'+titulo+'</strong></span></div>';
         for (var i=0; i<camposVis.length; i++) {
           if (feature.getProperties()[camposVis[i]]) {
             var _value = feature.getProperties()[camposVis[i]];

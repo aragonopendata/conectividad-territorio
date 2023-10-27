@@ -77,12 +77,19 @@ public showAnyo = false;
 public showMunicipio = false;
 aragon = true;
 
+public accesible = false;
+
 constructor(public tocService: TOCService, public mapService: MapService, public modalService:ModalService, 
-  public baseLayerService: BaseLayerService, public infoService: InfoService){
+  public baseLayerService: BaseLayerService, public infoService: InfoService,public _sanitizer:DomSanitizer,){
 
 }
 
   ngOnInit() {
+
+    if(window.location.href.includes('accesible')){
+      this.accesible = true;
+    }
+
 
     this.mapService.initMap();
     this.infoService.initQueryableLayers();
@@ -90,6 +97,7 @@ constructor(public tocService: TOCService, public mapService: MapService, public
     
     this.getMunicipios();
 
+    //Se preparan las opciones de los select
     this.items_capas = this.parseCapas();
     this.items_capas_mapa = this.parseCapas();
     this.items_capas_mapa.unshift({
@@ -97,18 +105,26 @@ constructor(public tocService: TOCService, public mapService: MapService, public
       text: "-- NINGUNA --",
       selected: true
      })
-    this.currentCapa = this.items_capas.find(el => el).value;
-    this.getTableData(this.tocService.capas[this.currentCapa].layers)
-
-    this.tocService.capas_anadidas.forEach(capa => {
+     this.tocService.capas_anadidas.forEach(capa => {
       this.items_anyos[capa]=this.parseAnyos(this.tocService.capas[capa].anyos)
     })
-    //this.parseQueryable();
+
+
+
+    //Se prepara la tabla junto con las opciones por defecto del select
+    this.currentCapa = this.items_capas.find(el => el).value;
+    this.getTableData(this.tocService.capas[this.currentCapa].layers)
     this.changeMunicipio();
     this.changeCapa();
+
+
+    //Se preparan los queriableLayers
     this.mapService.addEvents(this.tocService)
+    this.tocService.capas_visibles.forEach(c =>{
+      this.tocService.changeInfoLayer(c,this.tocService.capas[c].anyo_defecto);
+    })
 
-
+    //Se abre el toc en pantallas grandes
     setTimeout(() => {
       if(screen.width<1024){
         $("#toc_expanded").css( {"display":"none"} )
@@ -215,7 +231,7 @@ constructor(public tocService: TOCService, public mapService: MapService, public
           }
         }
       }
-      this.tocService.changeInfoLayer(this.mapService.queryableLayer,this.tocService.capas[this.mapService.queryableLayer].anyo_defecto);
+      //this.tocService.changeInfoLayer(this.mapService.queryableLayer,this.tocService.capas[this.mapService.queryableLayer].anyo_defecto);
     }
     
   }
@@ -235,9 +251,6 @@ constructor(public tocService: TOCService, public mapService: MapService, public
       type: 'GET',
       async: false, 
       success: (data: any) => {
-        data = data.sort((a,b) => {
-          return a.orden<b.orden
-        })
         this.datos_municipio = data;
         
       },
@@ -368,15 +381,23 @@ constructor(public tocService: TOCService, public mapService: MapService, public
   }
 
   setVisibleLayer(layerIdx, event) {
+    if(event.currentTarget.checked){
+      this.tocService.changeInfoLayer(layerIdx,this.tocService.capas[layerIdx].anyo_defecto);
+    }else{
+      this.tocService.removeInteractiveLayer(this.tocService.capas[layerIdx].layers);
+    }
+    
     this.tocService.setVisibleLayer(this.tocService.getOLLayer("idx", layerIdx),event.currentTarget.checked)
   }
 
 
   setLayerTime(layerIdx, event) {
-    if(this.mapService.queryableLayer==layerIdx){
-      this.tocService.removeInteractiveLayer();
-      this.tocService.changeInfoLayer(this.mapService.queryableLayer,this.tocService.capas[this.mapService.queryableLayer].anyo_defecto);
-    }
+
+    var el: HTMLInputElement = document.getElementById("input_"+layerIdx) as HTMLInputElement;
+    el.checked = true;
+    this.tocService.setVisibleLayer(this.tocService.getOLLayer("idx", layerIdx),true)
+    this.tocService.removeInteractiveLayer(this.tocService.capas[layerIdx].layers);
+    this.tocService.changeInfoLayer(layerIdx,this.tocService.capas[layerIdx].anyo_defecto);
     this.tocService.setLayerTime(this.tocService.getOLLayer("idx", layerIdx),this.tocService.capas[layerIdx].anyo_defecto)
   }
 
