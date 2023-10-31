@@ -373,7 +373,11 @@ addInteractiveLayer(url,layer,campos,anyo,campo_anyo,titulo){
 	vectorSource.on('addfeature',function(ev){
 		ev.feature!.set("layer", layer+"_interactive");
 		ev.feature!.set("atributos",campos);
-		ev.feature!.set('titulo', titulo);
+		if(anyo){
+			ev.feature!.set('titulo', titulo+" ("+anyo+")");
+		}else{
+			ev.feature!.set('titulo', titulo);
+		}
 	});
 	var fillColor = 'rgba(255, 255, 255,0)';
 	var fill = new Fill({

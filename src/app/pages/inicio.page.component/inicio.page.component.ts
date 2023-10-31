@@ -133,6 +133,7 @@ constructor(public tocService: TOCService, public mapService: MapService, public
         $("#toc_expanded").css( {"display":"none"} )
         $("#toc").css( {"background-color":"hsla(0,0%,100%,.4)"} )
       }
+
    }, 300);
 
   }
@@ -192,6 +193,11 @@ constructor(public tocService: TOCService, public mapService: MapService, public
           var bbox_aragon = [571580, 4400803, 812351,
             4840039];
             this.mapService.map.getView().fit(bbox_aragon);
+            
+            setTimeout(() =>{
+              this.mapService.map.getView().setMinZoom(this.mapService.map.getView().getZoom());
+             
+          },1000);
         }else{
           $.ajax({
             url:    this.municipios[i].wfs+"&outputFormat=application%2Fjson&srsname=EPSG:25830",

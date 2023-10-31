@@ -16,8 +16,6 @@ export class InfoService {
 		
 	}
 
-
-
 	queryableLayers = {};
 	extraQueryableLayers = {};
 	queryableLayersOnlyIfVisible = {};
