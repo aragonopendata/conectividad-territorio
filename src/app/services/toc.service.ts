@@ -35,7 +35,7 @@ export class TOCService {
   capas_anadidas: any[] = [];
   capas_visibles: any[] = [];
 
-  server = "https://idearagondes.aragon.es";
+  //server = "https://idearagondes.aragon.es";
   toc_group;
   capas : any[]= [];
   grupos : any[]=[];
@@ -223,7 +223,7 @@ addLayer(index, visible) {
 
 addWMSLayer(index, layer_visible) {
 	var caption = this.capas[index].titulo;
-	var url = (this.capas[index].url.indexOf("http") == 0 ? this.capas[index].url : this.server + this.capas[index].url);
+	var url = this.capas[index].url ;
 	var layers = this.capas[index].layers;
 	var styles = (this.capas[index].styles?this.capas[index].styles:"");
 
@@ -449,7 +449,7 @@ changeInfoLayer(index, anyo){
 					}
 				}
 				else{
-					this.mapService.interactiveLayers.push(this.addInteractiveLayer(this.server+this.capas[index].url,layerName,campos,anyo,this.capas[index].campo_anyo,this.capas[index].titulo));
+					this.mapService.interactiveLayers.push(this.addInteractiveLayer(this.capas[index].url,layerName,campos,anyo,this.capas[index].campo_anyo,this.capas[index].titulo));
 				}
 			}
 		}
