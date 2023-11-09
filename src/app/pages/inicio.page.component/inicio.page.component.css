@@ -1,0 +1,44 @@
+.ancho{
+    width: 100%;
+    display: inline-flex;
+}
+
+
+.sin_bordes{
+    border-collapse: unset;
+    border-width: 0px;
+ }
+
+ ul > li {
+    border-width: 0px !important;
+ }
+
+ [hidden] {
+    display: none !important;
+  }
+
+
+span > .contenedor-medidas{
+  height: fit-content;
+}
+.contenedor-medidas{
+   text-align: center;
+   color: #00475c;
+   list-style-type: none;
+   width: 100%;
+   
+}
+
+.medidas{
+
+ 
+   display: block;
+   font-size: 40px;
+   font-weight: bold;
+  
+   margin-bottom: 20px;
+   transition: all 0.3s;
+   position: relative;
+ }
+
+

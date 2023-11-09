@@ -1,0 +1,132 @@
+
+    <main id="content" class="container mx-auto px-base">
+
+        <div [hidden]="accesible">
+
+        <h3 class="c-h3" style="padding-top: 10px;">Entidad Territorial</h3>
+
+        <desy-select id="municipio2" name="municipio" [items]="municipios" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
+
+
+        <ul style="list-style-type: disc; padding: 10px;">
+          <li *ngFor="let d of datos_municipio">
+              <div class="iconContainer" [innerHTML]="_sanitizer.bypassSecurityTrustHtml(d)"></div>
+          </li>
+        </ul>
+
+
+        <div id="toc" class="rotate-north ol-unselectable ol-control" 
+        style="background-color:white; display: flex;border-radius: 10px;">
+          
+          <button id="button_toc" (click)="modalService.open('modal-1')" style="opacity: 0.7;"></button>
+          <div id="toc_expanded" style="display: block;padding-left: 10px;padding-bottom: 10px;padding-right: 10px;">
+            <h3 class="c-h3">Tabla de contenidos</h3>
+            <!--<desy-select id="municipio2" name="municipio" [items]="items" [(ngModel)]="municipio"></desy-select>-->
+
+            <ul style="overflow-y: scroll; height: 410px; width: 330px;">
+              <li *ngFor="let index of this.tocService.capas_anadidas" style="display: flex;align-items: baseline;">
+                <input type="checkbox" [id]="'input_'+index" [attr.checked]="this.tocService.capas[index].visible=='t' ? '' : null"
+                (change)="this.setVisibleLayer(index,$event)"/> 
+                <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
+                  <div style="min-width: 170px;">{{this.tocService.capas[index].titulo}}</div>
+
+                  
+
+                  <desy-select *ngIf="this.tocService.capas[index].anyos!=null" 
+                  [items]="items_anyos[index]"
+                    style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index,$event)"
+                    [(ngModel)]="this.tocService.capas[index].anyo_defecto"></desy-select>
+                </div>
+              </li>
+            </ul>
+
+
+
+          </div>
+          
+
+        </div>
+
+          <jw-modal id="modal-1">
+            <div style="background-color:white; display: flex;border-radius: 10px;">
+              
+              <div id="toc_expanded" style="display: block;padding-left: 10px;padding-bottom: 10px;padding-right: 10px; max-width: 60vw;">
+                <h3 class="c-h3">Tabla de contenidos</h3>
+                <!--<desy-select id="municipio2" name="municipio" [items]="items" [(ngModel)]="municipio"></desy-select>-->
+
+                <ul style="overflow-y: scroll; height: 330px; ">
+                  <li *ngFor="let index of this.tocService.capas_anadidas" style="display: flex;align-items: baseline;">
+                    <input type="checkbox"  [id]="'input_'+index" [attr.checked]="this.tocService.capas[index].visible=='t' ? '' : null"
+                    (change)="this.setVisibleLayer(index,$event)"/> 
+                    <div style="padding-left: 10px;display: flex;align-items: baseline;">
+                      <div >{{this.tocService.capas[index].titulo}}</div>
+
+                      <desy-select *ngIf="this.tocService.capas[index].anyos!=null" 
+                      [items]="items_anyos[index]"
+                        style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index,$event)"
+                        [(ngModel)]="this.tocService.capas[index].anyo_defecto"></desy-select>
+                    </div>
+                  </li>
+                </ul>
+    
+    
+    
+              </div>
+              
+    
+            </div>
+        </jw-modal>
+
+        <jw-modal id="aviso_escala">
+          La capa seleccionada no se puede consultar a la escala actual
+          
+
+        </jw-modal>
+        
+        <div id="map" class="imgCenter map">
+
+          
+        </div>
+
+
+      </div> 
+
+      <div [hidden]="!accesible">
+
+        <div style="display: flex;flex-wrap: wrap; padding-bottom: 10px;">
+          <desy-select
+          [items]="items_capas" (change)="changeCapa()" [classes]="'max_width_280'"
+            [(ngModel)]="this.currentCapa"  ></desy-select>
+
+          <desy-select *ngIf="showMunicipio" id="municipio2" name="municipio" [items]="municipios" 
+          style="margin: 0px;padding-left: 10px;" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
+
+          <desy-select [items]="items_anyos[this.currentCapa]" *ngIf="showAnyo"
+          style="margin: 0px;padding-left: 10px;" (change)="changeAnyo()"
+          [(ngModel)]="this.currentAnyo"></desy-select>
+        </div>
+
+        <div *ngIf="rows.length>0">
+          <desy-table id="table" [wrapper]="wrapper" 
+          [head]="labels"
+          [rows]="this.rows.slice((this.page-1)*10, (this.page-1)*10 + 10)">
+          </desy-table>
+
+          <desy-pagination 
+            [itemsPerPage]="10" [totalItems]="totalItems" [hasSelect]="true" [hasNext]="page<(totalItems/10)" [hasPrevious]="page!=1" 
+            [idPrefix]="'selector'" previousText="Anterior" nextText="Siguiente" [(currentPage)]="page">
+          </desy-pagination>
+        </div>
+
+        <div *ngIf="rows.length==0" style="text-align: center;">
+          No hay datos disponibles
+      </div>
+      </div>
+
+
+
+
+          <div class="overlay" id="overlay"></div>
+
+
+    </main>
