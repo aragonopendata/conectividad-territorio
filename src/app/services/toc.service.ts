@@ -105,7 +105,8 @@ get_class_css(titulo) {
 		
 
 
-		this.addLayer(pk_current_capa, listaCapas[i].visible=="t");
+		var ollayer = this.addLayer(pk_current_capa, listaCapas[i].visible=="t");
+		ollayer.setZIndex(listaCapas.length-i+1);
 	}
 }
 
@@ -206,7 +207,7 @@ addLayer(index, visible) {
 		//$("#layer_" + capa.pk).trigger("create");	// needed to show icons
 	}
 
-
+	
 	this.setLayerTime(olLayer, capa.anyo_defecto);
 	
 	//this.addLegend(olLayer);
