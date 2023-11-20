@@ -190,24 +190,7 @@ overlay(evt){
   document.body.style.cursor =  '';
   let isFirstOne = true;
   var feature = this.map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-    
-  
-  if (evt.type === 'singleclick'){
-    if (feature.get("editable") ){
-      selectControl.getFeatures().clear();
-      selectControl.getFeatures().push(feature);
-      //showEditionForm(feature);
-      return feature;
-    }
-    else if ( isFirstOne) {
-      isFirstOne = false;
-      //singleClickAction(feature);
-      return null;
-    }
-  }
-    
-
-    if (featurePopup && (featurePopup==feature)) {
+     if (featurePopup && (featurePopup==feature)) {
       if (feature.getGeometry()!.getType()!='Point') {
         selectControl.getFeatures().clear();
         selectControl.getFeatures().push(feature);
@@ -216,7 +199,7 @@ overlay(evt){
     }
 
     var mostrarPopup=false;
-    var textoHtmlAMostrar = '<a href="#" onclick="closePopup()" id="popup-closer" class="ol-popup-closer">';
+    var textoHtmlAMostrar = '';
 
       var campos = feature.get("atributos");
       var titulo = feature.get("titulo");
