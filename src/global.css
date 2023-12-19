@@ -305,3 +305,6 @@ desy-collapsible >div>h3 >button{
 	}	
 }
 
+.c-form-group {
+	max-width:100%;	
+}
