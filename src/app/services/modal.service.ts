@@ -29,7 +29,7 @@ export class ModalService {
         }
 
         if(id=="modal-1"){
-            if(screen.width<1024){
+            if(screen.width<=500){
                 modal.open();
             }else{
                 if($("#toc_expanded").css( "display" )=="none"){

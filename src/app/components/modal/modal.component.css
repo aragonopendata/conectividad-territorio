@@ -24,6 +24,17 @@ jw-modal {
         padding: 20px;
         background: #fff;
     }
+
+	@media ( max-width :500px) {
+		 .jw-modal {
+	        padding: 0;
+	    }
+	    
+	     .jw-modal-body {
+        	padding: 5px;
+        	background: #fff;
+    	}
+	}
 }
 
 body.jw-modal-open {
