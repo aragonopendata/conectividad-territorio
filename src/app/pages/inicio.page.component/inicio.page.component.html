@@ -50,11 +50,11 @@
           <jw-modal id="modal-1">
             <div style="background-color:white; display: flex;border-radius: 10px;">
               
-              <div id="toc_expanded" style="display: block;padding-left: 10px;padding-bottom: 10px;padding-right: 10px; max-width: 60vw;">
+              <div id="toc_expanded">
                 <h3 class="c-h3">Tabla de contenidos</h3>
                 <!--<desy-select id="municipio2" name="municipio" [items]="items" [(ngModel)]="municipio"></desy-select>-->
 
-                <ul style="overflow-y: scroll; height: 330px; ">
+                <ul id="toc_layers">
                   <li *ngFor="let index of this.tocService.capas_anadidas" style="display: flex;align-items: baseline;">
                     <input type="checkbox"  [id]="'input_'+index" [attr.checked]="this.tocService.capas[index].visible=='t' ? '' : null"
                     (change)="this.setVisibleLayer(index,$event)"/> 

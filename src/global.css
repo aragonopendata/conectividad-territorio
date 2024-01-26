@@ -28,6 +28,7 @@ span.c-select {
 select.c-select {
   padding-bottom: 2px;
   padding-top: 2px;
+  max-width:100%;
 }
 
 
@@ -150,10 +151,6 @@ desy-header-subnav2 > p{
 }
 .max_width_50_per{
   max-width: 50vw;
-}
-.jw-modal{
-  
-  padding: 0px !important
 }
 
 .center {
@@ -283,4 +280,31 @@ desy-collapsible >div>h3 >button{
 
 #tabla_comp > thead > tr >th {
   text-align: center;
+}
+
+#toc_expanded {
+    display: block;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    max-width: 60vw;
+}
+#toc_layers{
+	overflow-y: scroll;
+	 height: 330px; 
+}	
+
+@media ( max-width :500px) {
+	#toc_expanded {
+        max-width: 100%;
+	}
+	#toc_layers{
+		overflow-y: scroll;
+	 	height: auto;
+	 	max-height:80vh; 
+	}	
+}
+
+.c-form-group {
+	max-width:100%;	
 }
