@@ -8,11 +8,12 @@
         <desy-select id="municipio2" name="municipio" [items]="municipios" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
 
 
-        <ul style="list-style-type: disc; padding: 10px;">
-          <li *ngFor="let d of datos_municipio">
-              <div class="iconContainer" [innerHTML]="_sanitizer.bypassSecurityTrustHtml(d)"></div>
-          </li>
-        </ul>
+        <table id="tabla_datos" style="list-style-type: disc; padding: 10px;">
+        <tr><th style="border:none"></th><th>Red fija</th><th>Red móvil</th></tr>
+          <tr *ngFor="let d of datos_municipio" [innerHTML]="_sanitizer.bypassSecurityTrustHtml(d)">
+            
+          </tr>
+        </table>
 
 
         <div id="toc" class="rotate-north ol-unselectable ol-control" 
@@ -21,21 +22,42 @@
           <button id="button_toc" (click)="modalService.open('modal-1')" style="opacity: 0.7;"></button>
           <div id="toc_expanded" style="display: block;padding-left: 10px;padding-bottom: 10px;padding-right: 10px;">
             <h3 class="c-h3">Tabla de contenidos</h3>
-            <!--<desy-select id="municipio2" name="municipio" [items]="items" [(ngModel)]="municipio"></desy-select>-->
-
+<!--        <desy-select #tipoRed name="name" [(ngModel)]="grupo" (change)="changeTipoRed(tipoRed.value)">
+              <desy-option *ngFor="let grupo of this.gruposClean" [value]="grupo.pk">{{grupo.titulo}} </desy-option>
+            </desy-select> 
             <ul style="overflow-y: scroll; height: 410px; width: 330px;">
-              <li *ngFor="let index of this.tocService.capas_anadidas" style="display: flex;align-items: baseline;">
-                <input type="checkbox" [id]="'input_'+index" [attr.checked]="this.tocService.capas[index].visible=='t' ? '' : null"
-                (change)="this.setVisibleLayer(index,$event)"/> 
-                <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
-                  <div style="min-width: 170px;">{{this.tocService.capas[index].titulo}}</div>
+                <li *ngFor="let index of this.capasWMSSeleccionadas" style="display: flex;align-items: baseline;">
+                  <input type="checkbox" [id]="'input_'+index" [attr.checked]="index.visible=='t' ? '' : null"
+                  (change)="this.setVisibleLayer(index.pk,$event)"/> 
+                  <div style="min-width: 170px;">{{index.titulo}}</div>
+                </li>
+            </ul> -->
 
+             <ul style="overflow-y: scroll; height: 410px; width: 330px;">
+              <ul id="toc_redes">
+                <li >
+                  <input type="checkbox" checked id="red_14" (change)="this.changeTipoRed(14)"/> 
                   
-
-                  <desy-select *ngIf="this.tocService.capas[index].anyos!=null" 
-                  [items]="items_anyos[index]"
-                    style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index,$event)"
-                    [(ngModel)]="this.tocService.capas[index].anyo_defecto"></desy-select>
+                    <label >Red fija</label>
+                  
+                </li>
+                 <li >
+                  <input type="checkbox" checked id="red_15" (change)="this.changeTipoRed(15)"/> 
+                  
+                    <label >Red móvil</label>
+                  
+                </li>
+              </ul>
+              <hr/>
+              <li *ngFor="let index of this.tocService.capasWMSSeleccionadas" style="display: flex;align-items: baseline;">
+                <input type="checkbox" [id]="'input_'+index.pk" [attr.checked]="index.visible ? '' : null"
+                (change)="this.setVisibleLayer(index.pk,$event)"/> 
+                <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
+                  <div style="min-width: 170px;">{{index.caption}}</div>
+                  <desy-select *ngIf="this.tocService.items_anyos[index.pk]!=null" 
+                  [items]="this.tocService.items_anyos[index.pk]" [id]="'selanyo_'+index.pk" 
+                    style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index.pk,$event)"
+                    [(ngModel)]="index.anyo"></desy-select>
                 </div>
               </li>
             </ul>
@@ -53,20 +75,32 @@
               <div id="toc_expanded">
                 <h3 class="c-h3">Tabla de contenidos</h3>
                 <!--<desy-select id="municipio2" name="municipio" [items]="items" [(ngModel)]="municipio"></desy-select>-->
-
+ <ul id="toc_redes">
+                <li >
+                  <input type="checkbox" checked id="red_14" (change)="this.changeTipoRed(14)"/> 
+                  
+                    <label >Red fija</label>
+                  
+                </li>
+                 <li >
+                  <input type="checkbox" checked id="red_15" (change)="this.changeTipoRed(15)"/> 
+                  
+                    <label >Red móvil</label>
+                  
+                </li>
+              </ul>
                 <ul id="toc_layers">
-                  <li *ngFor="let index of this.tocService.capas_anadidas" style="display: flex;align-items: baseline;">
-                    <input type="checkbox"  [id]="'input_'+index" [attr.checked]="this.tocService.capas[index].visible=='t' ? '' : null"
-                    (change)="this.setVisibleLayer(index,$event)"/> 
-                    <div style="padding-left: 10px;display: flex;align-items: baseline;">
-                      <div >{{this.tocService.capas[index].titulo}}</div>
-
-                      <desy-select *ngIf="this.tocService.capas[index].anyos!=null" 
-                      [items]="items_anyos[index]"
-                        style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index,$event)"
-                        [(ngModel)]="this.tocService.capas[index].anyo_defecto"></desy-select>
-                    </div>
-                  </li>
+                 <li *ngFor="let index of this.tocService.capasWMSSeleccionadas" style="display: flex;align-items: baseline;">
+                <input type="checkbox" [id]="'input_'+index.pk" [attr.checked]="index.visible ? '' : null"
+                (change)="this.setVisibleLayer(index.pk,$event)"/> 
+                <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
+                  <div style="min-width: 170px;">{{index.caption}}</div>
+                  <desy-select *ngIf="this.tocService.items_anyos[index.pk]!=null" 
+                  [items]="this.tocService.items_anyos[index.pk]" [id]="'selanyo_'+index.pk" 
+                    style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index.pk,$event)"
+                    [(ngModel)]="index.anyo"></desy-select>
+                </div>
+              </li>
                 </ul>
     
     
@@ -95,13 +129,13 @@
 
         <div style="display: flex;flex-wrap: wrap; padding-bottom: 10px;">
           <desy-select
-          [items]="items_capas" (change)="changeCapa()" [classes]="'max_width_280'"
+          [items]="this.tocService.items_capas" (change)="changeCapa()" [classes]="'max_width_280'"
             [(ngModel)]="this.currentCapa"  ></desy-select>
 
           <desy-select *ngIf="showMunicipio" id="municipio2" name="municipio" [items]="municipios" 
           style="margin: 0px;padding-left: 10px;" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
 
-          <desy-select [items]="items_anyos[this.currentCapa]" *ngIf="showAnyo"
+          <desy-select [items]="this.tocService.items_anyos[this.currentCapa]" *ngIf="showAnyo"
           style="margin: 0px;padding-left: 10px;" (change)="changeAnyo()"
           [(ngModel)]="this.currentAnyo"></desy-select>
         </div>

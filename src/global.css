@@ -308,3 +308,29 @@ desy-collapsible >div>h3 >button{
 .c-form-group {
 	max-width:100%;	
 }
+
+#toc_redes li {
+    display: inline-block;
+}
+
+#toc_redes input {
+	margin-right: 10px;
+	margin-left: 20px;
+}
+
+#toc_redes  {
+   font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#tabla_datos{
+	margin-bottom: 30px;
+
+}
+
+#tabla_datos td, #tabla_datos th{
+	border:1px solid gray;
+	padding-left: 10px;
+    padding-right: 10px;
+}
