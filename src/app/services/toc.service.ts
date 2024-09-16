@@ -28,6 +28,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class TOCService {
+	stylesLayer: any;
 
   constructor(private mapService:MapService, private infoService: InfoService, public modalService: ModalService,) {
   }
@@ -37,14 +38,18 @@ export class TOCService {
 
   //server = "https://idearagondes.aragon.es";
   toc_group;
+  orden_capas : any[]= [];
   capas : any[]= [];
   grupos : any[]=[];
+  gruposClean : any[]=[];
   wmts_capabilities : any[] = [];
   serviciosWMTS : any[]= [];
-
+  capasWMSSeleccionadas : any[]=[];
   toc_nuevo = true;
   default_layers : any[]= [];
-
+	items_capas: any[] = [];
+	items_anyos: any[] =[];
+	items_anyo_defecto: any[] =[];
   idx_class_css = 0;
   list_class_css : any[]= [];
 
@@ -77,7 +82,19 @@ export class TOCService {
 
 	return entry;
 }
+  parseAnyos(anyos): any[]{
+    let res :any= [];
+    if(anyos!=null){
+      for(var i = 0; i<anyos.length;i++){
+          res.push({
+            value: anyos[i]+"",
+            text: anyos[i]+""
+           }) 
+       }
+    }
 
+    return res;
+  }
 get_class_css(titulo) {
 	if (titulo in this.list_class_css) {
 		return this.list_class_css[titulo];
@@ -94,6 +111,7 @@ get_class_css(titulo) {
 
 	var hiddenLayers=new Array();
 	for (var i = 0; i<listaCapas.length;i++) {
+		var capaOL = this.getOLLayer("caption", listaCapas[i].titulo);
 		var pk_current_capa = listaCapas[i].pk;
 		var current_class_css = (class_css != '' ? class_css : 'toc_other');
 
@@ -103,30 +121,60 @@ get_class_css(titulo) {
 		this.capas[pk_current_capa].temas = txt;
 		this.capas[pk_current_capa].oneVisLayerGroup = oneVisLayerGroup;
 		
-
-
-		var ollayer = this.addLayer(pk_current_capa, listaCapas[i].visible=="t");
-		ollayer.setZIndex(listaCapas.length-i+1);
+		if (capaOL){
+			var params = capaOL.getSource().getParams();
+			params.STYLES+=","+(listaCapas[i].styles ?listaCapas[i].styles:"");
+			params.LAYERS+=","+(listaCapas[i].layers ?listaCapas[i].layers:"");
+			capaOL.getSource().updateParams(params); 
+			capaOL.set("pk",capaOL.get("pk")+","+pk_current_capa);
+			capaOL.set("dobleGrupo",true);
+			this.capas_anadidas.splice(listaCapas[i].orden, 0, pk_current_capa);
+			
+		}
+		else{
+			var ollayer = this.addLayer(pk_current_capa, listaCapas[i].visible=="t");
+			ollayer.setZIndex(listaCapas.length-i+1);
+		 
+		}
 	}
 }
-
- parseTOC(data?, txt?, class_css?, oneVisLayerGroup?, current_theme?) {
+mergeAnyos(anyos1, anyos2){
+	var anyos=anyos1;
+	for (var i=0; i<anyos2.length; i++){
+     				if (anyos.indexOf(anyos2[i])<0) {
+     					anyos.push(anyos2[i]);
+     				}
+     }
+     anyos.sort();
+     return anyos;
+}
+ parseTOC(data?, txt?, class_css?, oneVisLayerGroup?, current_theme?, accesible?) {
+	
+	
 	if ('capasWMS' in data) {
-		this.includeListaCapas(data.capasWMS, txt, class_css, 'wms', oneVisLayerGroup, current_theme);
-	}
+		if (accesible){
+	     data.capasWMS.forEach(capa => {
+	     this.capas[capa.pk]=capa;
+	     if (capa.anyos){
+	     	this.items_anyos[capa.pk+""]=this.parseAnyos(capa.anyos);
+	     	this.items_anyo_defecto[capa.pk+""]=capa.anyo_defecto;
+	     }else if ((capa.grupo==16)&& capa.anyos_fija &&  capa.anyos_fija){
+		     this.items_anyos[capa.pk+""]=this.parseAnyos(this.mergeAnyos( capa.anyos_fija,  capa.anyos_fija));
+		     this.items_anyo_defecto[capa.pk+""]=capa.anyo_defecto;
 
-	if ('capasWMTS' in data) {
-		this.includeListaCapas(data.capasWMTS, txt, class_css, 'wmts', oneVisLayerGroup, current_theme);
+	     }
+	        		this.items_capas.splice(capa.orden,0,{
+        		value:capa.pk+"",
+        		grupo:capa.grupo+"",
+        		text: capa.titulo+(capa.grupo==16 ? "":" ("+data.titulo+")")
+       		})     
+    	})
+		}
+		else{
+			this.includeListaCapas(data.capasWMS, txt, class_css, 'wms', oneVisLayerGroup, current_theme);
+		}
+	
 	}
-
-	if ('capasEspeciales' in data) {
-    	this.includeListaCapas(data.capasEspeciales, txt, class_css, 'special', oneVisLayerGroup, current_theme);
-	}
-
-	if ('capasWFS' in data) {
-		this.includeListaCapas(data.capasWFS, txt, class_css, 'wfs', oneVisLayerGroup, current_theme);
-	}
-
 	for (var i = 0; i<data.grupos.length;i++) {
 		var current_class_css = '';
 
@@ -144,25 +192,35 @@ get_class_css(titulo) {
 		if ((grupo_excluyente == null) && (data.grupos[i].capas_excluyentes == "t")) {
 			grupo_excluyente = data.grupos[i].pk;
 		}
-		this.parseTOC(data.grupos[i], txt + ((txt != '')? " > " : '') + data.grupos[i].titulo, current_class_css, grupo_excluyente, current_theme);
+		this.parseTOC(data.grupos[i], txt + ((txt != '')? " > " : '') + data.grupos[i].titulo, current_class_css, grupo_excluyente, current_theme,accesible);
 	}
+
 }
 
 
 
- initTOC() {
+ initTOC(accesible) {
 
 	this.toc_group = new LayerGroup({ });
-	this.mapService.map.addLayer(this.toc_group);
-	
+	if (!accesible){
+		this.mapService.map.addLayer(this.toc_group);
+	}
 	$.ajax({
 		
 		url:    environment.url +"/ws-cobertura/config/toc",
 		type: 'GET',
 		async: false, //para asegurar que se inicializa la gui de la lista de capas
 		success: (data) => {
-			this.parseTOC(data, '', '')
-
+			console.log(data)
+		//	this.gruposClean = data.grupos
+			this.parseTOC(data, '', '',null,null, accesible);
+			if (!accesible){
+			var layers = this.toc_group.getLayers();
+	for (var i = 0; i < layers.getLength(); i++) {
+		var ollayer = layers.item(i);
+		this.capasWMSSeleccionadas = this.capasWMSSeleccionadas.concat(ollayer.getProperties());
+	}
+ 			}
 		},
 
 		error: 		function(data, textStatus, errorThrown) {
@@ -174,8 +232,193 @@ get_class_css(titulo) {
 
 }
 
+setStyles(styles){
+	this.stylesLayer = styles;
+}
 
+getStyle(capa, grupo_borrar){
+    var style="";
+ 	if (capa.grupo==16){
+ 		if (grupo_borrar==14){ // red fija
+ 			style = capa.styles_movil;
+ 		}
+ 		else{
+ 			style = capa.styles_fija;
+ 		}
+ 	}
+ 	return style;
+ }
+ 
+removeLayerWMS(capaOL,pks,indexToKeep, estilo){
+var params = capaOL.getSource().getParams();
+				params.STYLES=estilo;
 
+				params.LAYERS=params.LAYERS.split(",")[indexToKeep];
+				capaOL.getSource().updateParams(params); 
+				capaOL.set("pk",pks[indexToKeep]);
+				
+return capaOL.get("pk");
+}
+hideRed(grupo){
+var nuevas=[];
+this.capas_anadidas.forEach(idx => {
+ 	var capa = this.capas[idx];
+ 	var capaOL =this.getOLLayer("caption",capa.titulo);
+
+      if (capa.grupo==grupo){
+      		this.removeInteractiveLayer(capa.layers);
+      		if (capaOL.get("pk")==capa.pk){//exclusiva de este grupo 
+      			capaOL.setVisible(false);
+      			
+      		}
+      		else{
+      			var pks = capaOL.get("pk").split(",");
+      			if (pks.length>1){  // todavía no se había actualizado
+      				var idxpk=0;
+      				if (pks[0]==capa.pk){
+      					idxpk=1;
+      				}
+      	
+       				this.removeLayerWMS(capaOL,pks,idxpk, this.getStyle(capa, grupo));
+       				capaOL.set("visible",capaOL.getVisible());
+       				nuevas=nuevas.concat(capaOL.getProperties());
+      			}
+      		}
+      	}
+      else if (capa.grupo==16){// es de ambas
+      		
+      		var params = capaOL.getSource().getParams();
+			params.STYLES=this.getStyle(capa, grupo);
+      		capaOL.getSource().updateParams(params);
+      		capaOL.visible=capaOL.getVisible(); 
+      		nuevas=nuevas.concat(capaOL.getProperties());
+      	}
+      	else if (!capaOL.get("dobleGrupo")){  // la capa pertenece en exclusiva al otro grupo
+      		capaOL.visible=capaOL.getVisible(); 
+      		nuevas=nuevas.concat(capaOL.getProperties());
+      	
+      	}
+      	else{  // es compartida con el otro grupo
+      		var pks = capaOL.get("pk").split(",");
+      		if (pks.length>1){  // todavía no se había actualizado
+      			var idxpk=0;
+      			if (pks[0]!=capa.pk){
+      				idxpk=1;
+      			}
+       			this.removeLayerWMS(capaOL,pks,idxpk, this.getStyle(capa, grupo));
+       			capaOL.set("visible",capaOL.getVisible());
+       			nuevas=nuevas.concat(capaOL.getProperties());
+      		}
+      		
+      }
+    
+      
+    });
+     this.capasWMSSeleccionadas=nuevas;
+}
+
+changeRed(grupo){
+var nuevas=[];
+
+this.capas_anadidas.forEach(idx => {
+ 	var capa = this.capas[idx];
+      var capaOL ;
+     if (capa.grupo==16){ // ambas
+      	capaOL =this.getOLLayer("pk",capa.pk);
+      	var params = capaOL.getSource().getParams();
+      	if (grupo==14){ // red fija
+ 			params.STYLES = capa.styles_fija;
+ 		}
+ 		else{
+ 			params.STYLES = capa.styles_movil;
+ 		}
+		
+		capaOL.getSource().updateParams(params); 
+		capaOL.set("visible",capaOL.getVisible());
+		 nuevas=nuevas.concat(capaOL.getProperties());
+      	
+      }
+      
+      else{  // es de fija o móvil
+      	capaOL =this.getOLLayer("caption",capa.titulo);
+      	
+      	 if (capa.grupo==grupo){ 
+      	 	
+      		capaOL =this.getOLLayer("caption",capa.titulo);
+      		var anyo=capaOL.get("anyo");
+      		if (capaOL.get("pk")!=capa.pk){     			 // es capa que fusiona capa de red fija y capa de red móvil
+      			var params = capaOL.getSource().getParams();
+				params.STYLES="";
+				params.LAYERS=capa.layers;
+				capaOL.getSource().updateParams(params); 
+				capaOL.set("pk",capa.pk);
+				
+				
+			}
+			if (capaOL.getVisible()){ 
+      	 		this.changeInfoLayer(capaOL.get("pk"),anyo);
+      	 	}
+			capaOL.set("visible",capaOL.getVisible());
+      		 nuevas=nuevas.concat(capaOL.getProperties());
+      	}
+      	else{
+      		this.removeInteractiveLayer(capa.layers);
+      	if (!capaOL.get("dobleGrupo")){  // es exclusiva de la otra red 
+      		capaOL.setVisible(false);
+      	}
+      	}	 
+      }
+     
+     
+    });
+     this.capasWMSSeleccionadas=nuevas;
+}
+addRed(grupo){
+var nuevas=[];
+
+ this.capas_anadidas.forEach(idx => {
+ 	var capa = this.capas[idx];
+      console.log(capa)
+      var capaOL ;
+      if (capa.grupo==grupo){
+      		capaOL =this.getOLLayer("caption",capa.titulo);
+      		
+      		if (capaOL.get("pk")!=capa.pk){     			 // es capa que fusiona capa de red fija y capa de red móvil
+      			var params = capaOL.getSource().getParams();
+				params.STYLES=this.capas[capaOL.get("pk")].styles+","+capa.styles;
+				params.LAYERS+=","+capa.layers;
+				capaOL.getSource().updateParams(params); 
+				capaOL.set("pk",capaOL.get("pk")+","+capa.pk);
+				
+				
+			}
+      		if (capaOL.getVisible()){ 
+      			this.changeInfoLayer(capaOL.get("pk"),capaOL.get("anyo"));
+      		}
+      }
+      else if (capa.grupo==16){ // ambas
+      	capaOL =this.getOLLayer("pk",capa.pk);
+      	var params = capaOL.getSource().getParams();
+		params.STYLES=capa.styles;
+		capaOL.getSource().updateParams(params); 
+		
+      	
+      }
+     else{
+    
+      	capaOL =this.getOLLayer("pk",capa.pk);
+      	if (capaOL && capaOL.get("dobleGrupo")){  // no es exclusiva de la otra red
+      		capaOL=null; // no la añado pq se añadirá cuando coincidan los grupos
+      	}
+      	
+      }
+      if (capaOL){
+      capaOL.set("visible",capaOL.getVisible());
+      	nuevas=nuevas.concat(capaOL.getProperties());
+      }
+    });
+     this.capasWMSSeleccionadas=nuevas;
+}
 
 addLayer(index, visible) {
 	// volver a marcar el boton activo porque se desmarca al hacer click en otro button
@@ -186,7 +429,7 @@ addLayer(index, visible) {
 	var es_visible = (visible != null ? visible : capa.visible);
 	var buttonTitle = capa.type == "wfs" ? "Ver filtros" : "Ver leyenda";
 
-	this.capas_anadidas.push(index)
+	this.capas_anadidas.splice(capa.orden, 0, index);
 	if(visible){
 		this.capas_visibles.push(index);
 	}
@@ -222,11 +465,14 @@ addLayer(index, visible) {
 }
 
 
-addWMSLayer(index, layer_visible) {
+addWMSLayer(index, layer_visible, style: any = '') {
+
 	var caption = this.capas[index].titulo;
 	var url = this.capas[index].url ;
 	var layers = this.capas[index].layers;
-	var styles = (this.capas[index].styles?this.capas[index].styles:"");
+
+	var styles = (this.capas[index].styles==null?"":this.capas[index].styles);
+
 
 	var version = this.capas[index].version;
 	var format = this.capas[index].format;
@@ -254,7 +500,7 @@ addWMSLayer(index, layer_visible) {
 
 	layer.setVisible(visible);
 	//layer.setOpacity(opacity);
-	layer.set('idx', index);
+	layer.set('visible', visible);
 	layer.set('pk', this.capas[index].pk);
 	layer.set('caption', caption);
 	layer.set('legend', this.capas[index].leyenda);
@@ -268,7 +514,7 @@ addWMSLayer(index, layer_visible) {
 	return layer;
 }
 addQueryableLayer(layer){
-	var index = layer.get("idx");
+	var index = layer.get("pk");
 	var escala_info =layer.get("escala_info");
 	if (escala_info && layer.getVisible() && $("#info_layer_opt_"+index).length==0){
 			this.queryable.push(layer);
@@ -279,7 +525,7 @@ addQueryableLayer(layer){
 
 removeQueryableLayer(layer){
 	/** 
-	var index = layer.get("idx");
+	var index = layer.get("pk");
 	if ($("#info_layer").val()==index){
 		$("#info_layer").val("-1");
 		try{
@@ -407,9 +653,12 @@ addInteractiveLayer(url,layer,campos,anyo,campo_anyo,titulo){
 	this.mapService.map.addLayer(wfs_layer);
 	return wfs_layer;
 }
-changeInfoLayer(index, anyo){
+changeInfoLayer(pks, anyo){
 	
-	if (index!="-1"){
+	if (pks!="-1"){
+		var indexes=pks.split(",");
+		for (var k=0;k<indexes.length;k++){ 
+		var index=indexes[k];
 		this.removeInteractiveLayer(this.capas[index].layers);
 		var escala_info = this.capas[index].escala_info;
 		var escala = Math.round(this.mapService.map.getView().getResolution()!*this.mapService.DOTS_PER_M);
@@ -438,8 +687,8 @@ changeInfoLayer(index, anyo){
 					try{
 					var layer = this.getOLLayer("idx",index);
 					var features = layer.getSource().getFeatures();
-					for (var i=0; i<features.length;i++){
-						var feature = features[i];
+					for (var j=0; j<features.length;j++){
+						var feature = features[j];
 						feature.set("atributos",campos);
 					}
 					layer.set("keepLayer",true);
@@ -450,10 +699,13 @@ changeInfoLayer(index, anyo){
 					}
 				}
 				else{
-					this.mapService.interactiveLayers.push(this.addInteractiveLayer(this.capas[index].url,layerName,campos,anyo,this.capas[index].campo_anyo,this.capas[index].titulo));
+					var interactiveLayer = this.addInteractiveLayer(this.capas[index].url,layerName,campos,anyo,this.capas[index].campo_anyo,this.capas[index].titulo);
+					interactiveLayer.set("grupo",this.capas[index].grupo);
+					this.mapService.interactiveLayers.push(interactiveLayer);
 				}
 			}
 		}
+	}
 	}
 }
 
@@ -477,7 +729,8 @@ addWMTSLayer(index, visible) {
 		});
 		layer.setVisible(visible == null ? capa.visible: visible);
 		//layer.setOpacity(capa.opacidad);
-		layer.set('idx', index);
+		layer.set('visible', layer.getVisible());
+		
 		layer.set('pk', capa.pk);
 		layer.set('caption', capa.titulo);
 		layer.set('glg', capa.glg);
@@ -537,7 +790,7 @@ addSpecialLayer(index, layer_visible){
 
 	layer.setVisible(visible);
 	//layer.setOpacity(opacity);
-	layer.set('idx', index);
+	
 	layer.set('pk', this.capas[index].pk);
 	layer.set('caption', caption);
 	layer.set('legend', this.capas[index].leyenda);
@@ -568,7 +821,7 @@ isLayerAlreadyLoaded(layerId) {
 	let layer;
 	for (let i = 0; i < layers.getLength(); i++) {
 	  layer = layers.item(i);
-	  if (layer.get("idx") == layerId) {
+	  if (layer.get("pk") == layerId) {
 		return true;
 	  }
 	}
@@ -589,6 +842,7 @@ getOLLayer(campo, layerIdx) {
 
 setVisibleLayer(layer, visible) {
 	layer.setVisible(visible);
+	layer.set("visible",visible);
 	if(visible){
 		this.capas_visibles.push(layer.get("pk"));
 	}else{
@@ -605,7 +859,7 @@ setVisibleLayer(layer, visible) {
 setLayerTime(layer: any, time) {
 	let params = layer.getSource().getParams();
 	params.TIME = time
-
+	layer.set("anyo",time);
 	layer.getSource().updateParams(params);
 }
 

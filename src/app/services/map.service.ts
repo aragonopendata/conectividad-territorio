@@ -105,12 +105,7 @@ export class MapService {
       })
     });
 
-
-    
     layers.push(aragon)
-
-
-
      
     this.attributionControl = new Attribution({
       tipLabel:"Información capas visibles"
@@ -153,6 +148,57 @@ export class MapService {
   
 }
 
+initMapAccesible(){
+
+
+  var options = {
+    projection : this.map_projection,
+//			maxExtent : new OpenLayers.Bounds(WMS_BBOX_X_MIN, WMS_BBOX_Y_MIN, WMS_BBOX_X_MAX, WMS_BBOX_Y_MAX),
+    center : [675533, 4589000],
+    zoom:8
+
+};
+
+
+  this.wmtsBaseLayer=new TileLayer();
+  this.wmtsBaseLayer.setVisible(false);
+  this.bottomBaseLayer=new Image();
+  this.bottomBaseLayer.setVisible(false);
+
+  this.baseLayer =new Image({
+    source: new ImageWMS({
+      params: {'LAYERS': SATELITE_WMS_LAYERS[0],'VERSION':'1.1.1','FORMAT':'image/jpeg'},
+      url: SATELITE_WMS_URL[0],
+      projection: this.map_projection
+    })
+  });      
+  
+  var layers = new Array();
+  layers.push(this.baseLayer);
+  layers.push(this.wmtsBaseLayer)
+  layers.push(this.bottomBaseLayer)
+
+  var aragon =new Image({
+    source: new ImageWMS({
+      params: {'LAYERS': "LimAragon",'VERSION':'1.1.1','FORMAT':'image/png','TRANSPARENT':'TRUE'},
+      url: "https://icearagon.aragon.es/Visor2D?service=WMS&version=1.1.0&request=GetMap",
+      projection: this.map_projection
+    })
+  });
+
+  layers.push(aragon)
+   
+  this.attributionControl = new Attribution({
+    tipLabel:"Información capas visibles"
+  });
+  this.map = new Map({
+    layers: layers,
+    target: 'map',
+    view: new View(options),
+  });
+
+}
+
 addEvents(tocService){
 
   
@@ -189,26 +235,36 @@ overlay(evt){
   }
   document.body.style.cursor =  '';
   let isFirstOne = true;
-  var feature = this.map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-     if (featurePopup && (featurePopup==feature)) {
+  overlay.getElement().innerHTML = "";
+ // console.log("limpio");
+
+ this.map.forEachFeatureAtPixel(evt.pixel, function (feature,layer) {
+ 
+  /*   if (featurePopup && (featurePopup==feature)) {
       if (feature.getGeometry()!.getType()!='Point') {
         selectControl.getFeatures().clear();
         selectControl.getFeatures().push(feature);
       }
+         console.log("feature return");
       return feature;
-    }
+    }*/
 
     var mostrarPopup=false;
-    var textoHtmlAMostrar = '';
+    var textoHtmlAMostrar = overlay.getElement().innerHTML;
 
       var campos = feature.get("atributos");
       var titulo = feature.get("titulo");
-
+	if(layer.get("grupo")==14){
+		titulo+=" (Red fija)";
+		}
+		else if(layer.get("grupo")==15){
+		titulo+=" (Red móvil)";
+		} 
       if (campos) {
         mostrarPopup=true;
         var camposVis = Object.keys(campos);
 
-        textoHtmlAMostrar+='<div data-ex-content=".label" style="text-align: center;"><span><strong style="font-weight: bolder;">'+titulo+'</strong></span></div>';
+        textoHtmlAMostrar+='<div data-ex-content=".label" style="text-align: center;text-decoration: underline;"><span><strong style="font-weight: bolder;">'+titulo+'</strong></span></div>';
         for (var i=0; i<camposVis.length; i++) {
           if (feature.getProperties()[camposVis[i]]) {
             var _value = feature.getProperties()[camposVis[i]];
@@ -222,10 +278,11 @@ overlay(evt){
         }
       }
   
-
+//console.log("texto"+textoHtmlAMostrar);
 
 
     if (mostrarPopup) {
+   // console.log("mostrarPopup");
       var positioning = ''
       if(evt.pixel[1] > window.screen.height/2){
         positioning = 'bottom-';
@@ -243,28 +300,32 @@ overlay(evt){
       overlay.getElement().innerHTML = textoHtmlAMostrar;
       //overlay.getElement().innerHTML = "<div style='width:60px'>HOLAHOLA</div>";
       selectControl.getFeatures().clear();
-      if (feature.getGeometry()!.getType()!='Point') {
+      if (feature.getGeometry().getType()!='Point') {
         selectControl.getFeatures().push(feature);
       }
       featurePopup=feature;
-      return feature;
+    //  console.log("return feature popup");
+     // return feature;
     }else{
-      return null;
+  //  console.log("return null");
+    feature= null;
     }
-
-    
-  });
   if (feature) {
+
     overlay.getElement().style.display =  '';
   } else /*if(evt.type=='pointerclick')*/{
+
     selectControl.getFeatures().clear();
     overlay.getElement().style.display =  'none';
   }
   //overlay.getElement().className = feature ? 'summary' : 'none';*/
   document.body.style.cursor = feature ? 'pointer' : '';
+
+
+
+    
+  });
+
 }
-
-
-
 
 }

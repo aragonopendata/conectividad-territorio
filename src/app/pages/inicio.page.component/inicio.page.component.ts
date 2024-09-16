@@ -11,7 +11,9 @@ import { BaseLayerService } from '../../services/baseLayers.service';
 import VectorSource from 'ol/source/Vector';
 import {transformExtent} from 'ol/proj';
 import GeoJSON from 'ol/format/GeoJSON';
+import { Collection } from 'ol/Collection.js';
 import { InfoService } from '../../services/info.service';
+import ImageWMS from 'ol/source/ImageWMS.js';
 
 
 
@@ -23,6 +25,8 @@ import { InfoService } from '../../services/info.service';
 export class InicioPage implements OnInit {
 
   municipio: string = '';
+
+  grupo: string = "Red fija";
   
   bodyText = 'This text can be updated in modal 1';
 
@@ -47,15 +51,13 @@ export class InicioPage implements OnInit {
 
 datos_municipio = [];
 
-items_anyos: any[] =[];
+
+
 
 items_capas_mapa: any[] = [];
-items_capas: any[] = [];
+
 
 items_queryableLayer: any[] = [];
-
-
-
 
 municipios = new Array();
 
@@ -77,9 +79,19 @@ public showAnyo = false;
 public showMunicipio = false;
 aragon = true;
 
+public showDataNetwork = true;
+public showLandLine = true;
+public grupos;
+
 public accesible = false;
 
+value = 'selected';
 public init = true;
+gruposClean: any[] = [];
+visibleGrupo;
+tipoRedGrupo;
+
+  capasWMSreciprocas: any;
 
 constructor(public tocService: TOCService, public mapService: MapService, public modalService:ModalService, 
   public baseLayerService: BaseLayerService, public infoService: InfoService,public _sanitizer:DomSanitizer,){
@@ -90,43 +102,57 @@ constructor(public tocService: TOCService, public mapService: MapService, public
 
     if(window.location.href.includes('accesible')){
       this.accesible = true;
+    //  this.mapService.initMapAccesible();
+    //  this.infoService.initQueryableLayers();
+      this.tocService.initTOC(true);
+    }else{
+      this.mapService.initMap();
+      this.infoService.initQueryableLayers();
+      this.tocService.initTOC(false);
+
     }
 
+ /*   this.tocService.gruposClean.forEach(element => {
+      if(element){
+        this.gruposClean.push(element)
+      }
+      });
 
-    this.mapService.initMap();
-    this.infoService.initQueryableLayers();
-    this.tocService.initTOC();
-    
+      this.capasWMSreciprocas = this.gruposClean.find(item => item.pk == '16').capasWMS;
+*/
+  //  this.changeTipoRed(this.gruposClean.find(item => item.pk == '15').pk);
     this.getMunicipios();
 
     //Se preparan las opciones de los select
-    this.items_capas = this.parseCapas();
-    this.items_capas_mapa = this.parseCapas();
+   // this.items_capas = this.parseCapas();
+ /*   this.items_capas_mapa = this.parseCapas();
     this.items_capas_mapa.unshift({
       value: "NADA",
       text: "-- NINGUNA --",
       selected: true
-     })
-     this.tocService.capas_anadidas.forEach(capa => {
-      this.items_anyos[capa]=this.parseAnyos(this.tocService.capas[capa].anyos)
-    })
-
-
-
+     })*/
+     if (!this.accesible){
+    this.updateAnyos(16);
+    }
+	this.addInfoLayer();
     //Se prepara la tabla junto con las opciones por defecto del select
-    this.currentCapa = this.items_capas.find(el => el.value.includes("1053")).value;
-    this.changeMunicipio();
+    this.currentCapa = "1053";
+    if (this.accesible){
     this.changeCapa();
+    }
+    else{
+    this.changeMunicipio();
+    
 
 
     //Se preparan los queriableLayers
     this.mapService.addEvents(this.tocService)
-    this.tocService.capas_visibles.forEach(c =>{
-      this.tocService.changeInfoLayer(c,this.tocService.capas[c].anyo_defecto);
-    })
+  /*  this.tocService.capas_visibles.forEach(c =>{
+      this.tocService.changeInfoLayer(c,this.tocService.items_anyo_defecto[c]);
+    })*/
 
 
-    this.init = false;
+  
     //Se abre el toc en pantallas grandes
     setTimeout(() => {
       if(screen.width<1024){
@@ -136,11 +162,123 @@ constructor(public tocService: TOCService, public mapService: MapService, public
 
    }, 300);
 
+}
+console.log(this.tocService.items_anyos);
+console.log(this.currentCapa);
+  this.init = false;
+  }
+
+  changeTipoRed(grupo){
+  var el: HTMLInputElement = document.getElementById("red_"+grupo) as HTMLInputElement;
+var grupoAnyos;
+    if (el.checked){
+    	this.tocService.addRed(grupo);
+    	grupoAnyos=16;
+    }
+    else{
+    	
+    	var grupoContrario=15;
+    	if (grupo==grupoContrario){
+    		grupoContrario=14;
+    	}
+    	  var elOtro: HTMLInputElement = document.getElementById("red_"+grupoContrario) as HTMLInputElement;
+    	  if (elOtro.checked){
+    		this.tocService.hideRed(grupo);
+    		grupoAnyos=grupoContrario;  
+    	  }
+    	  else{
+    	  	elOtro.checked=true;
+    	  	this.tocService.changeRed(grupoContrario);
+    	  	grupoAnyos=grupoContrario;
+    	  }
+    
+    }
+    console.log(this.tocService.capas_anadidas);
+    console.log(this.tocService.capasWMSSeleccionadas);
+    this.updateAnyos(grupoAnyos);
+	console.log(this.tocService.items_anyos);
+    //console.log(this.items_anyo_defecto);
+  /*  this.capasWMSSeleccionadas = []
+    if(grupo == '16'){
+      this.gruposClean.forEach(element => {
+      this.capasWMSSeleccionadas = this.capasWMSSeleccionadas.concat(element.capasWMS);  
+      });
+    }else{
+
+      this.visibleGrupo = this.gruposClean.find(item => item.pk == grupo);
+      this.tocService.setStyles('fija')
+      this.tocService.initTOC
+      this.capasWMSSeleccionadas = this.visibleGrupo.capasWMS;
+      this.capasWMSSeleccionadas = this.capasWMSSeleccionadas.concat(this.capasWMSreciprocas);
+
+    }*/
+/*
+    var layers:ImageWMS[] = this.mapService.map;
+
+    console.log(layers)
+    
+    layers.forEach(f => {
+      console.log(f)
+    });
+    ImageWMS.getParams
+ */
+   // console.log(this.capasWMSSeleccionadas)
   }
 
 
+
+updateAnyos(grupo){
+this.tocService.items_anyos=[];
+ this.tocService.capasWMSSeleccionadas.forEach(capa => {
+     	var pks = capa.pk.split(",");
+     	var anyos = this.tocService.capas[pks[0]].anyos;
+
+     	if (this.tocService.capas[pks[0]].grupo==16){
+     		var anyos_fija = this.tocService.capas[pks[0]].anyos_fija;
+     		var anyos_movil = this.tocService.capas[pks[0]].anyos_movil;
+     		if (this.tocService.capas[pks[0]].grupo==grupo){
+     			
+     			if (anyos_fija && anyos_movil){
+     				anyos = this.tocService.mergeAnyos(anyos_fija,anyos_movil);
+     			}
+     		}
+     		else{
+     			if (grupo==14){
+     				anyos = anyos_fija; 
+     			}
+     			else{
+     				anyos = anyos_movil;
+     			}
+     		}
+     	}
+     	else if (anyos){
+     		if (pks.length>1){
+     			var anyos2 = this.tocService.capas[pks[1]].anyos;
+     			if(anyos2){
+     				anyos = this.tocService.mergeAnyos(anyos, anyos2)
+     			}
+     		}
+     	}
+     	if (anyos){
+     		if(anyos.indexOf(parseInt(capa.anyo))<0){
+     			capa.anyo = this.tocService.capas[pks[0]].anyo_defecto;
+     			this.changeLayerTime(capa.pk,capa.anyo, capa.visible);
+     		}
+     		this.tocService.items_anyos[capa.pk] =this.tocService.parseAnyos(anyos);
+     	}
+     	    })
+    }
+    
+addInfoLayer(){
+
+ this.tocService.capasWMSSeleccionadas.forEach(capa => {
+	if (capa.visible){
+		this.tocService.changeInfoLayer(capa.pk,capa.anyo);
+	}
+    });
+    }
   get_items_capas_visibles(){
-    return this.items_capas.filter(item => {
+    return this.tocService.items_capas.filter(item => {
       var vis = false;
       for(var i = 0; i<this.tocService.capas_visibles.length;i++){
         if(this.tocService.capas_visibles[i]==item.value){
@@ -184,10 +322,11 @@ constructor(public tocService: TOCService, public mapService: MapService, public
   }
 
   changeMunicipio(){
+  
     for(var i = 0;i<this.municipios.length;i++){
       if(this.municipios[i].value==this.municipio){
         var ine = this.municipios[i].ine;
-
+		if (!this.accesible){
         if(ine=="ARAGON"){
           this.tocService.removeFeature();
           var bbox_aragon = [571580, 4400803, 812351,
@@ -214,38 +353,20 @@ constructor(public tocService: TOCService, public mapService: MapService, public
             }
           });
         }
+         this.getData(ine);
+}
+else{
 
-
-        this.getData(ine);
+       
         if(this.accesible && !this.init){
           this.getTableData(this.tocService.capas[this.currentCapa].layers,ine,this.currentAnyo)
         }
-        
+        }
       }
     } 
     this.aragon = false;
   }
 
-  changeQueryable(){
-    if(this.mapService.queryableLayer=="NADA"){
-      this.tocService.removeInteractiveLayer();
-    }else{
-      if(!(this.mapService.queryableLayer in this.tocService.capas_visibles)){
-        this.tocService.setVisibleLayer(this.tocService.getOLLayer("idx", this.mapService.queryableLayer),true)
-
-
-        for(var i = 0; i< this.items_capas.length;i++){
-          if(this.items_capas[i].value == this.mapService.queryableLayer){
-              var el: HTMLInputElement = document.getElementById("input_"+this.mapService.queryableLayer) as HTMLInputElement;
-
-              el.checked = true;
-          }
-        }
-      }
-      //this.tocService.changeInfoLayer(this.mapService.queryableLayer,this.tocService.capas[this.mapService.queryableLayer].anyo_defecto);
-    }
-    
-  }
 
 
 
@@ -312,6 +433,7 @@ constructor(public tocService: TOCService, public mapService: MapService, public
       },
 
       error: 		function(data, textStatus, errorThrown) {
+      console.log("Error recuperando los datos "+errorThrown)
         return false;
       }
     });
@@ -319,19 +441,7 @@ constructor(public tocService: TOCService, public mapService: MapService, public
 
 
 
-  parseAnyos(anyos): any[]{
-    let res :any= [];
-    if(anyos!=null){
-      for(var i = 0; i<anyos.length;i++){
-          res.push({
-            value: anyos[i]+"",
-            text: anyos[i]+""
-           }) 
-       }
-    }
 
-    return res;
-  }
 
   parseCapas(){
     let res :any= [];
@@ -339,6 +449,7 @@ constructor(public tocService: TOCService, public mapService: MapService, public
     this.tocService.capas_anadidas.forEach(ind => {
       res.push({
         value:this.tocService.capas[ind].pk+"",
+        grupo:this.tocService.capas[ind].grupo+"",
         text: this.tocService.capas[ind].titulo+"",
        }) 
       
@@ -346,6 +457,20 @@ constructor(public tocService: TOCService, public mapService: MapService, public
 
     
     return res;
+  }
+
+  selectNetworkType(networkIdx: any){   
+  
+    if(networkIdx == "1050"){
+      this.showDataNetwork = !this.showDataNetwork; 
+      console.log("DN")
+      console.log(this.showDataNetwork)
+    }else if(networkIdx == "1051"){
+      this.showLandLine = !this.showLandLine;
+      console.log("LL")
+      console.log(this.showLandLine)
+    }
+
   }
 
   parseQueryable(){
@@ -362,12 +487,10 @@ constructor(public tocService: TOCService, public mapService: MapService, public
 
   changeCapa(){
     this.showMunicipio = this.tocService.capas[this.currentCapa].filtro_muni;
-    if(this.tocService.capas[this.currentCapa].anyos){
-      this.showAnyo = true;
-    }else{
-      this.showAnyo = false;
-    }
-    this.currentAnyo = this.tocService.capas[this.currentCapa].anyo_defecto
+    
+      this.showAnyo = this.tocService.items_anyos[this.currentCapa] && this.tocService.items_anyos[this.currentCapa].length>0;
+    
+    this.currentAnyo = this.tocService.items_anyo_defecto[this.currentCapa];
     this.changeAnyo();
   }
 
@@ -384,7 +507,7 @@ constructor(public tocService: TOCService, public mapService: MapService, public
         }
       }
     }
-    if(this.tocService.capas[this.currentCapa].anyos){
+    if( this.tocService.items_anyos[this.currentCapa] && this.tocService.items_anyos[this.currentCapa].length>0){
       anyo=this.currentAnyo
     }
 
@@ -395,13 +518,18 @@ constructor(public tocService: TOCService, public mapService: MapService, public
   }
 
   setVisibleLayer(layerIdx, event) {
+	var olLayer = this.tocService.getOLLayer("pk", layerIdx)
     if(event.currentTarget.checked){
-      this.tocService.changeInfoLayer(layerIdx,this.tocService.capas[layerIdx].anyo_defecto);
-    }else{
-      this.tocService.removeInteractiveLayer(this.tocService.capas[layerIdx].layers);
-    }
     
-    this.tocService.setVisibleLayer(this.tocService.getOLLayer("idx", layerIdx),event.currentTarget.checked)
+      this.tocService.changeInfoLayer(layerIdx,olLayer.get("anyo"));
+    }else{
+    	var pks = layerIdx.split(",");
+    	for (var i=0; i<pks.length; i++){
+     	 	this.tocService.removeInteractiveLayer(this.tocService.capas[pks[i]].layers);
+      	}
+    }
+    this.selectNetworkType(layerIdx);
+    this.tocService.setVisibleLayer(olLayer,event.currentTarget.checked)
   }
 
 
@@ -409,14 +537,24 @@ constructor(public tocService: TOCService, public mapService: MapService, public
 
     var el: HTMLInputElement = document.getElementById("input_"+layerIdx) as HTMLInputElement;
     el.checked = true;
-    this.tocService.setVisibleLayer(this.tocService.getOLLayer("idx", layerIdx),true)
-    this.tocService.removeInteractiveLayer(this.tocService.capas[layerIdx].layers);
-    this.tocService.changeInfoLayer(layerIdx,this.tocService.capas[layerIdx].anyo_defecto);
-    this.tocService.setLayerTime(this.tocService.getOLLayer("idx", layerIdx),this.tocService.capas[layerIdx].anyo_defecto)
+    this.tocService.setVisibleLayer(this.tocService.getOLLayer("pk", layerIdx),true)
+    this.changeLayerTime(layerIdx,event.target.value, true);
+  
   }
 
+changeLayerTime(layerIdx,time, visible){
+if (visible){
+    var pks = layerIdx.split(",");
+    for (var i=0; i<pks.length; i++){
+      	this.tocService.removeInteractiveLayer(this.tocService.capas[pks[i]].layers);
+    }
+    
+    this.tocService.changeInfoLayer(layerIdx,time);
+    }
+    var olLayer = this.tocService.getOLLayer("pk", layerIdx)
+    this.tocService.setLayerTime(olLayer,time);
  
-
+}
   
 
 }
