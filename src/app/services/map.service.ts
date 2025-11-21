@@ -237,31 +237,22 @@ overlay(evt){
   let isFirstOne = true;
   overlay.getElement().innerHTML = "";
  // console.log("limpio");
-
+ var mostrarPopup=false;
  this.map.forEachFeatureAtPixel(evt.pixel, function (feature,layer) {
- 
-  /*   if (featurePopup && (featurePopup==feature)) {
-      if (feature.getGeometry()!.getType()!='Point') {
-        selectControl.getFeatures().clear();
-        selectControl.getFeatures().push(feature);
-      }
-         console.log("feature return");
-      return feature;
-    }*/
-
-    var mostrarPopup=false;
+   var ft_interes=false;
     var textoHtmlAMostrar = overlay.getElement().innerHTML;
 
-      var campos = feature.get("atributos");
-      var titulo = feature.get("titulo");
+    var campos = feature.get("atributos");
+    var titulo = feature.get("titulo");
 	if(layer.get("grupo")==14){
 		titulo+=" (Red fija)";
-		}
-		else if(layer.get("grupo")==15){
+	}
+	else if(layer.get("grupo")==15){
 		titulo+=" (Red móvil)";
-		} 
-      if (campos) {
+	} 
+    if (campos) {
         mostrarPopup=true;
+        ft_interes=true;
         var camposVis = Object.keys(campos);
 
         textoHtmlAMostrar+='<div data-ex-content=".label" style="text-align: center;text-decoration: underline;"><span><strong style="font-weight: bolder;">'+titulo+'</strong></span></div>';
@@ -276,13 +267,9 @@ overlay(evt){
             textoHtmlAMostrar+='<div data-ex-content=".label"><span><b>'+campos[camposVis[i]]+':&nbsp;</b><span>'+ _value +'</span></div></strong>';
           }
         }
-      }
-  
-//console.log("texto"+textoHtmlAMostrar);
-
-
+    }
+   
     if (mostrarPopup) {
-   // console.log("mostrarPopup");
       var positioning = ''
       if(evt.pixel[1] > window.screen.height/2){
         positioning = 'bottom-';
@@ -299,31 +286,27 @@ overlay(evt){
       overlay.setPosition(evt.coordinate);
       overlay.getElement().innerHTML = textoHtmlAMostrar;
       //overlay.getElement().innerHTML = "<div style='width:60px'>HOLAHOLA</div>";
-      selectControl.getFeatures().clear();
-      if (feature.getGeometry().getType()!='Point') {
-        selectControl.getFeatures().push(feature);
+      if (ft_interes){
+      	selectControl.getFeatures().clear();
+      	if (feature.getGeometry().getType()!='Point') {
+        	selectControl.getFeatures().push(feature);
+      	}
+      	featurePopup=feature;
       }
-      featurePopup=feature;
-    //  console.log("return feature popup");
-     // return feature;
+      
     }else{
-  //  console.log("return null");
-    feature= null;
+  	  feature= null;
     }
-  if (feature) {
+  	if (feature) {
 
-    overlay.getElement().style.display =  '';
-  } else /*if(evt.type=='pointerclick')*/{
+    	overlay.getElement().style.display =  '';
+  	} else /*if(evt.type=='pointerclick')*/{
 
-    selectControl.getFeatures().clear();
-    overlay.getElement().style.display =  'none';
-  }
-  //overlay.getElement().className = feature ? 'summary' : 'none';*/
-  document.body.style.cursor = feature ? 'pointer' : '';
-
-
-
-    
+    	selectControl.getFeatures().clear();
+    	overlay.getElement().style.display =  'none';
+  	}
+  
+    document.body.style.cursor = feature ? 'pointer' : '';
   });
 
 }

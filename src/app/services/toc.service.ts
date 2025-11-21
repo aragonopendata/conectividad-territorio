@@ -86,9 +86,13 @@ export class TOCService {
     let res :any= [];
     if(anyos!=null){
       for(var i = 0; i<anyos.length;i++){
+      	var texto=anyos[i]+"";
+      	if (texto.length==6){
+      		texto=texto.substr(0,4)+"-"+texto.substr(4,6);
+      	}
           res.push({
-            value: anyos[i]+"",
-            text: anyos[i]+""
+            value:texto,
+            text: texto
            }) 
        }
     }
@@ -111,6 +115,9 @@ get_class_css(titulo) {
 
 	var hiddenLayers=new Array();
 	for (var i = 0; i<listaCapas.length;i++) {
+		if (listaCapas[i].layers.indexOf("weplan")>0){
+			listaCapas[i].titulo= listaCapas[i].titulo.replace(/\([^)]*\)/g, '').trim();
+		}
 		var capaOL = this.getOLLayer("caption", listaCapas[i].titulo);
 		var pk_current_capa = listaCapas[i].pk;
 		var current_class_css = (class_css != '' ? class_css : 'toc_other');
@@ -120,15 +127,31 @@ get_class_css(titulo) {
 		this.capas[pk_current_capa].class_css = current_class_css;
 		this.capas[pk_current_capa].temas = txt;
 		this.capas[pk_current_capa].oneVisLayerGroup = oneVisLayerGroup;
-		
+		var default_time=this.capas[pk_current_capa].anyo_defecto+'';
+	    if (default_time.length==6){
+      			default_time=default_time.substr(0,4)+"-"+default_time.substr(4,6);
+      			this.capas[pk_current_capa].anyo_defecto=default_time;
+      			this.capas[pk_current_capa].campo_anyo='fecha';
+      	}
 		if (capaOL){
+			
 			var params = capaOL.getSource().getParams();
-			params.STYLES+=","+(listaCapas[i].styles ?listaCapas[i].styles:"");
-			params.LAYERS+=","+(listaCapas[i].layers ?listaCapas[i].layers:"");
-			capaOL.getSource().updateParams(params); 
-			capaOL.set("pk",capaOL.get("pk")+","+pk_current_capa);
-			capaOL.set("dobleGrupo",true);
-			this.capas_anadidas.splice(listaCapas[i].orden, 0, pk_current_capa);
+			if (listaCapas[i].layers.indexOf("weplan")>0){
+				capaOL.set("weplan",true);
+				var ollayer = this.addLayer(pk_current_capa, false);
+				ollayer.setZIndex(listaCapas.length-i+1);
+				ollayer.set("weplan",true);
+				ollayer.set("weplan_hidden",true);
+				this.capas[pk_current_capa].weplan_hidden=true;
+			}
+			else{
+				params.STYLES+=","+(listaCapas[i].styles ?listaCapas[i].styles:"");
+				params.LAYERS+=","+(listaCapas[i].layers ?listaCapas[i].layers:"");
+				capaOL.getSource().updateParams(params); 
+				capaOL.set("pk",capaOL.get("pk")+","+pk_current_capa);
+				capaOL.set("dobleGrupo",true);
+				this.capas_anadidas.splice(listaCapas[i].orden, 0, pk_current_capa);
+			}
 			
 		}
 		else{
@@ -157,18 +180,28 @@ mergeAnyos(anyos1, anyos2){
 	     this.capas[capa.pk]=capa;
 	     if (capa.anyos){
 	     	this.items_anyos[capa.pk+""]=this.parseAnyos(capa.anyos);
-	     	this.items_anyo_defecto[capa.pk+""]=capa.anyo_defecto;
+	     	var default_time=capa.anyo_defecto+'';
+	     	if (default_time.length==6){
+      			default_time=default_time.substr(0,4)+"-"+default_time.substr(4,6);
+      			this.capas[capa.pk].anyo_defecto=default_time;
+      		}
+	     	this.items_anyo_defecto[capa.pk+""]=default_time;
 	     }else if ((capa.grupo==16)&& capa.anyos_fija &&  capa.anyos_fija){
 		     this.items_anyos[capa.pk+""]=this.parseAnyos(this.mergeAnyos( capa.anyos_fija,  capa.anyos_fija));
 		     this.items_anyo_defecto[capa.pk+""]=capa.anyo_defecto;
 
 	     }
-	        		this.items_capas.splice(capa.orden,0,{
+	     var titulo=capa.titulo;
+	     titulo=(titulo.indexOf("(")>0 ? titulo.replace(/\(([^)]*)\)/g, (match, contenido) => {
+  						return `(${contenido} - ${data.titulo})`;
+					}):titulo+" ("+data.titulo+")");
+	        		this.items_capas.push({
         		value:capa.pk+"",
         		grupo:capa.grupo+"",
-        		text: capa.titulo+(capa.grupo==16 ? "":" ("+data.titulo+")")
+        		text: (capa.grupo==16 ? capa.titulo:titulo)
        		})     
     	})
+    	this.items_capas.sort((a, b) => a.text.localeCompare(b.text));
 		}
 		else{
 			this.includeListaCapas(data.capasWMS, txt, class_css, 'wms', oneVisLayerGroup, current_theme);
@@ -218,7 +251,9 @@ mergeAnyos(anyos1, anyos2){
 			var layers = this.toc_group.getLayers();
 	for (var i = 0; i < layers.getLength(); i++) {
 		var ollayer = layers.item(i);
-		this.capasWMSSeleccionadas = this.capasWMSSeleccionadas.concat(ollayer.getProperties());
+		if (!ollayer.get("weplan_hidden")){
+			this.capasWMSSeleccionadas = this.capasWMSSeleccionadas.concat(ollayer.getProperties());
+		}
 	}
  			}
 		},
@@ -259,6 +294,16 @@ var params = capaOL.getSource().getParams();
 				
 return capaOL.get("pk");
 }
+
+hideWeplan(){
+	var layers = this.toc_group.getLayers();
+	for (var i = 0; i < layers.getLength(); i++) {
+		var layer = layers.item(i);
+		if (layer.get("weplan")) {
+			layer.setVisible(false);
+		}
+	}
+}
 hideRed(grupo){
 var nuevas=[];
 this.capas_anadidas.forEach(idx => {
@@ -270,6 +315,9 @@ this.capas_anadidas.forEach(idx => {
       		if (capaOL.get("pk")==capa.pk){//exclusiva de este grupo 
       			capaOL.setVisible(false);
       			
+      		}
+      		else if(capaOL.get("weplan")){
+    			this.hideWeplan();  		
       		}
       		else{
       			var pks = capaOL.get("pk").split(",");
@@ -295,7 +343,9 @@ this.capas_anadidas.forEach(idx => {
       	}
       	else if (!capaOL.get("dobleGrupo")){  // la capa pertenece en exclusiva al otro grupo
       		capaOL.visible=capaOL.getVisible(); 
-      		nuevas=nuevas.concat(capaOL.getProperties());
+      		if (!capa.weplan_hidden){
+      			nuevas=nuevas.concat(capaOL.getProperties());
+      		}
       	
       	}
       	else{  // es compartida con el otro grupo
@@ -314,7 +364,8 @@ this.capas_anadidas.forEach(idx => {
     
       
     });
-     this.capasWMSSeleccionadas=nuevas;
+     this.capasWMSSeleccionadas=nuevas.filter(capa => !capa.weplan_hidden);
+     
 }
 
 changeRed(grupo){
@@ -344,9 +395,9 @@ this.capas_anadidas.forEach(idx => {
       	
       	 if (capa.grupo==grupo){ 
       	 	
-      		capaOL =this.getOLLayer("caption",capa.titulo);
+      	
       		var anyo=capaOL.get("anyo");
-      		if (capaOL.get("pk")!=capa.pk){     			 // es capa que fusiona capa de red fija y capa de red móvil
+      		if (!capaOL.get("weplan") && (capaOL.get("pk")!=capa.pk)){     			 // es capa que fusiona capa de red fija y capa de red móvil
       			var params = capaOL.getSource().getParams();
 				params.STYLES="";
 				params.LAYERS=capa.layers;
@@ -359,19 +410,26 @@ this.capas_anadidas.forEach(idx => {
       	 		this.changeInfoLayer(capaOL.get("pk"),anyo);
       	 	}
 			capaOL.set("visible",capaOL.getVisible());
+			if (capaOL.get("weplan")){
+      			capaOL =this.getOLLayer("pk",capa.pk);
+      		}
       		 nuevas=nuevas.concat(capaOL.getProperties());
       	}
       	else{
       		this.removeInteractiveLayer(capa.layers);
       	if (!capaOL.get("dobleGrupo")){  // es exclusiva de la otra red 
+      	
       		capaOL.setVisible(false);
+      		if(capaOL.get("weplan")){
+    			this.hideWeplan();  		
+      		}
       	}
       	}	 
       }
      
      
     });
-     this.capasWMSSeleccionadas=nuevas;
+   this.capasWMSSeleccionadas=nuevas.filter(capa => !capa.weplan_hidden);
 }
 addRed(grupo){
 var nuevas=[];
@@ -383,7 +441,7 @@ var nuevas=[];
       if (capa.grupo==grupo){
       		capaOL =this.getOLLayer("caption",capa.titulo);
       		
-      		if (capaOL.get("pk")!=capa.pk){     			 // es capa que fusiona capa de red fija y capa de red móvil
+      		if (!capaOL.get("weplan") && (capaOL.get("pk")!=capa.pk)){     	     			 // es capa que fusiona capa de red fija y capa de red móvil
       			var params = capaOL.getSource().getParams();
 				params.STYLES=this.capas[capaOL.get("pk")].styles+","+capa.styles;
 				params.LAYERS+=","+capa.layers;
@@ -413,11 +471,14 @@ var nuevas=[];
       	
       }
       if (capaOL){
-      capaOL.set("visible",capaOL.getVisible());
+      	capaOL.set("visible",capaOL.getVisible());
+      	if (capaOL.get("weplan")){
+      		capaOL =this.getOLLayer("pk",capa.pk);
+      	}
       	nuevas=nuevas.concat(capaOL.getProperties());
       }
     });
-     this.capasWMSSeleccionadas=nuevas;
+   this.capasWMSSeleccionadas=nuevas.filter(capa => !capa.weplan_hidden);
 }
 
 addLayer(index, visible) {
@@ -502,6 +563,7 @@ addWMSLayer(index, layer_visible, style: any = '') {
 	//layer.setOpacity(opacity);
 	layer.set('visible', visible);
 	layer.set('pk', this.capas[index].pk);
+	layer.set('layers', layers);
 	layer.set('caption', caption);
 	layer.set('legend', this.capas[index].leyenda);
 	layer.set('glg', this.capas[index].glg);
@@ -545,6 +607,10 @@ removeInteractiveLayer(layer?){
 		if(layer){
 			if(layer==this.mapService.interactiveLayers[i].values_.layer){
 				this.mapService.map.removeLayer(this.mapService.interactiveLayers[i]);
+			}
+			else if(layer.indexOf("weplan")>0 && this.mapService.interactiveLayers[i].values_.layer.indexOf("weplan")>0){
+				this.mapService.map.removeLayer(this.mapService.interactiveLayers[i]);
+				layer=this.mapService.interactiveLayers[i].values_.layer;
 			}
 		}else{
 			this.mapService.map.removeLayer(this.mapService.interactiveLayers[i]);
@@ -607,7 +673,8 @@ addInteractiveLayer(url,layer,campos,anyo,campo_anyo,titulo){
 
 	var time = "";
 	if(anyo && campo_anyo){
-		time = "&CQL_FILTER="+campo_anyo+"="+anyo+""
+		
+		time = "&CQL_FILTER="+campo_anyo+"='"+anyo+"'";
 	}
 
 	var vectorSource = new VectorSource({
@@ -653,29 +720,30 @@ addInteractiveLayer(url,layer,campos,anyo,campo_anyo,titulo){
 	this.mapService.map.addLayer(wfs_layer);
 	return wfs_layer;
 }
+
+
+/*changeInfoLayerWeplanNetwork(network){
+	for (var i=0; i<this.mapService.interactiveLayers.length ;i++){
+		if(this.mapService.interactiveLayers[i].values_.layer.indexOf("weplan")>0){
+			var url = this.mapService.interactiveLayers[i].getSource().getUrl();
+			this.mapService.interactiveLayers[i].getSource().setUrl(url.replaceAll(this.mapService.interactiveLayers[i].values_.layer,network));
+				this.mapService.interactiveLayers[i].values_.layer=network;
+				this.mapService.interactiveLayers[i].getSource().refresh()
+				return;
+		}
+	
+	}
+}*/
 changeInfoLayer(pks, anyo){
 	
 	if (pks!="-1"){
 		var indexes=pks.split(",");
 		for (var k=0;k<indexes.length;k++){ 
-		var index=indexes[k];
-		this.removeInteractiveLayer(this.capas[index].layers);
-		var escala_info = this.capas[index].escala_info;
-		var escala = Math.round(this.mapService.map.getView().getResolution()!*this.mapService.DOTS_PER_M);
-		if (false){
-			//this.modalService.open("aviso_escala")
-			this.modalService.open('aviso_escala')
-			//creaVentanaAviso("La capa seleccionada no se puede consultar a la escala actual (disponible a partir de 1:"+escala_info+")",false,"tocDialog");
-			/**$("#info_layer").val("-1");
-			try{
-				$("#info_layer").selectmenu("refresh");
-				}
-				catch(err){
-					console.log(err);
-				}*/
-				console.log("error con la escala")
-		}
-		else{
+			var index=indexes[k];
+			this.removeInteractiveLayer(this.capas[index].layers);
+			var escala_info = this.capas[index].escala_info;
+			var escala = Math.round(this.mapService.map.getView().getResolution()!*this.mapService.DOTS_PER_M);
+	
 
 			var projection = new Projection({code:"EPSG:25830"});
 			var layers = this.infoService.queryableLayers[index];
@@ -705,7 +773,7 @@ changeInfoLayer(pks, anyo){
 				}
 			}
 		}
-	}
+
 	}
 }
 
@@ -861,6 +929,14 @@ setLayerTime(layer: any, time) {
 	params.TIME = time
 	layer.set("anyo",time);
 	layer.getSource().updateParams(params);
+	
 }
+
+/*setLayerWeplanNetwork(layer: any, network) {
+	let params = layer.getSource().getParams();
+	params.LAYERS = network;
+	
+	layer.getSource().updateParams(params);
+}*/
 
 }

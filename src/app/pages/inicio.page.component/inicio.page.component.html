@@ -33,16 +33,16 @@
                 </li>
             </ul> -->
 
-             <ul style="overflow-y: scroll; height: 410px; width: 330px;">
+             <ul style="overflow-y: auto; height: 410px; width: 480px;">
               <ul id="toc_redes">
                 <li >
-                  <input type="checkbox" checked id="red_14" (change)="this.changeTipoRed(14)"/> 
+                  <input type="checkbox" checked id="red_14" (change)="this.changeTipoRed(14,$event)"/> 
                   
                     <label >Red fija</label>
                   
                 </li>
                  <li >
-                  <input type="checkbox" checked id="red_15" (change)="this.changeTipoRed(15)"/> 
+                  <input type="checkbox" checked id="red_15" (change)="this.changeTipoRed(15,$event)"/> 
                   
                     <label >Red móvil</label>
                   
@@ -53,7 +53,18 @@
                 <input type="checkbox" [id]="'input_'+index.pk" [attr.checked]="index.visible ? '' : null"
                 (change)="this.setVisibleLayer(index.pk,$event)"/> 
                 <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
-                  <div style="min-width: 170px;">{{index.caption}}</div>
+                  <div  [ngStyle]="{'min-width': (index.weplan) ? '170px' : '334px'}" >{{index.caption}}</div>
+                   <desy-select *ngIf="index.weplan" [(ngModel)]="index.source.getParams().LAYERS"
+                 id="selred2" 
+                    style="margin: 0px;padding-left: 10px;width:140px;" (change)="setWeplanNetwork(index.pk,$event)"
+                    ><desy-option value="t_cobertura_weplan_2g">2G</desy-option>
+                    <desy-option value="t_cobertura_weplan_3g">3G</desy-option>
+                    <desy-option value="t_cobertura_weplan_4g">4G</desy-option>
+                    <desy-option value="t_cobertura_weplan_5g_sa">5G_SA</desy-option>
+                    <desy-option value="t_cobertura_weplan_5g_nsa_not_restr">5G_NSA_NOT_RESTRICTED</desy-option>
+                    <desy-option value="t_cobertura_weplan_5g_nsa_conn">5G_NSA_CONNECTED</desy-option>
+                   </desy-select>
+                                      
                   <desy-select *ngIf="this.tocService.items_anyos[index.pk]!=null" 
                   [items]="this.tocService.items_anyos[index.pk]" [id]="'selanyo_'+index.pk" 
                     style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index.pk,$event)"
@@ -77,13 +88,13 @@
                 <!--<desy-select id="municipio2" name="municipio" [items]="items" [(ngModel)]="municipio"></desy-select>-->
  <ul id="toc_redes">
                 <li >
-                  <input type="checkbox" checked id="red_14" (change)="this.changeTipoRed(14)"/> 
+                  <input type="checkbox" checked id="red1_14" (change)="this.changeTipoRed(14,$event)"/> 
                   
                     <label >Red fija</label>
                   
                 </li>
                  <li >
-                  <input type="checkbox" checked id="red_15" (change)="this.changeTipoRed(15)"/> 
+                  <input type="checkbox" checked id="red1_15" (change)="this.changeTipoRed(15,$event)"/> 
                   
                     <label >Red móvil</label>
                   
@@ -91,12 +102,22 @@
               </ul>
                 <ul id="toc_layers">
                  <li *ngFor="let index of this.tocService.capasWMSSeleccionadas" style="display: flex;align-items: baseline;">
-                <input type="checkbox" [id]="'input_'+index.pk" [attr.checked]="index.visible ? '' : null"
+                <input type="checkbox" [id]="'input1_'+index.pk" [attr.checked]="index.visible ? '' : null"
                 (change)="this.setVisibleLayer(index.pk,$event)"/> 
                 <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
                   <div style="min-width: 170px;">{{index.caption}}</div>
+ 				<desy-select *ngIf="index.weplan" [(ngModel)]="index.source.getParams().LAYERS"
+                 id="selred1" 
+                    style="margin: 0px;padding-left: 10px;width:140px;" (change)="setWeplanNetwork(index.pk,$event)"
+                    ><desy-option value="t_cobertura_weplan_2g">2G</desy-option>
+                    <desy-option value="t_cobertura_weplan_3g">3G</desy-option>
+                    <desy-option value="t_cobertura_weplan_4g">4G</desy-option>
+                    <desy-option value="t_cobertura_weplan_5g_sa">5G_SA</desy-option>
+                    <desy-option value="t_cobertura_weplan_5g_nsa_not_restr">5G_NSA_NOT_RESTRICTED</desy-option>
+                    <desy-option value="t_cobertura_weplan_5g_nsa_conn">5G_NSA_CONNECTED</desy-option>
+                   </desy-select>
                   <desy-select *ngIf="this.tocService.items_anyos[index.pk]!=null" 
-                  [items]="this.tocService.items_anyos[index.pk]" [id]="'selanyo_'+index.pk" 
+                  [items]="this.tocService.items_anyos[index.pk]" [id]="'selanyo1_'+index.pk" 
                     style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index.pk,$event)"
                     [(ngModel)]="index.anyo"></desy-select>
                 </div>

@@ -168,8 +168,16 @@ console.log(this.currentCapa);
   this.init = false;
   }
 
-  changeTipoRed(grupo){
-  var el: HTMLInputElement = document.getElementById("red_"+grupo) as HTMLInputElement;
+checkTipoRed(grupo,checked){
+	var el: HTMLInputElement = document.getElementById("red_"+grupo) as HTMLInputElement;
+    el.checked = checked;
+    el = document.getElementById("red1_"+grupo) as HTMLInputElement;
+    el.checked = checked;
+  
+}
+  changeTipoRed(grupo,event){
+  this.checkTipoRed(grupo,event.currentTarget.checked);
+   var el: HTMLInputElement = document.getElementById("red_"+grupo) as HTMLInputElement;
 var grupoAnyos;
     if (el.checked){
     	this.tocService.addRed(grupo);
@@ -187,7 +195,7 @@ var grupoAnyos;
     		grupoAnyos=grupoContrario;  
     	  }
     	  else{
-    	  	elOtro.checked=true;
+    	  	this.checkTipoRed(grupoContrario,true);
     	  	this.tocService.changeRed(grupoContrario);
     	  	grupoAnyos=grupoContrario;
     	  }
@@ -198,31 +206,7 @@ var grupoAnyos;
     this.updateAnyos(grupoAnyos);
 	console.log(this.tocService.items_anyos);
     //console.log(this.items_anyo_defecto);
-  /*  this.capasWMSSeleccionadas = []
-    if(grupo == '16'){
-      this.gruposClean.forEach(element => {
-      this.capasWMSSeleccionadas = this.capasWMSSeleccionadas.concat(element.capasWMS);  
-      });
-    }else{
-
-      this.visibleGrupo = this.gruposClean.find(item => item.pk == grupo);
-      this.tocService.setStyles('fija')
-      this.tocService.initTOC
-      this.capasWMSSeleccionadas = this.visibleGrupo.capasWMS;
-      this.capasWMSSeleccionadas = this.capasWMSSeleccionadas.concat(this.capasWMSreciprocas);
-
-    }*/
-/*
-    var layers:ImageWMS[] = this.mapService.map;
-
-    console.log(layers)
-    
-    layers.forEach(f => {
-      console.log(f)
-    });
-    ImageWMS.getParams
- */
-   // console.log(this.capasWMSSeleccionadas)
+ 
   }
 
 
@@ -262,7 +246,8 @@ this.tocService.items_anyos=[];
      	if (anyos){
      		if(anyos.indexOf(parseInt(capa.anyo))<0){
      			capa.anyo = this.tocService.capas[pks[0]].anyo_defecto;
-     			this.changeLayerTime(capa.pk,capa.anyo, capa.visible);
+     			var ollayer=this.tocService.getOLLayer("layers", capa.source.getParams().LAYERS);
+     			this.changeLayerTime(ollayer.get("pk"),capa.anyo, capa.visible);
      		}
      		this.tocService.items_anyos[capa.pk] =this.tocService.parseAnyos(anyos);
      	}
@@ -277,7 +262,7 @@ addInfoLayer(){
 	}
     });
     }
-  get_items_capas_visibles(){
+ /* get_items_capas_visibles(){
     return this.tocService.items_capas.filter(item => {
       var vis = false;
       for(var i = 0; i<this.tocService.capas_visibles.length;i++){
@@ -287,7 +272,7 @@ addInfoLayer(){
       }
       return false;
     })
-  }
+  }*/
 
 
   getMunicipios(){
@@ -400,7 +385,7 @@ else{
     
     var server = environment.url+"/ws-cobertura/api/getData/"+capa;
     if(anyo){
-      server+="?anyo="+anyo;
+      server+="?anyo="+anyo.replaceAll('-','');
     }
     if(ine && ine!="ARAGON"){
       if(anyo){
@@ -520,8 +505,13 @@ else{
   setVisibleLayer(layerIdx, event) {
 	var olLayer = this.tocService.getOLLayer("pk", layerIdx)
     if(event.currentTarget.checked){
-    
+      if (olLayer.get("weplan")){
+       	olLayer=this.tocService.getOLLayer("layers", olLayer.getSource().getParams().LAYERS);
+    	this.tocService.changeInfoLayer(olLayer.get("pk"),olLayer.get("anyo"));
+       }
+  		else{
       this.tocService.changeInfoLayer(layerIdx,olLayer.get("anyo"));
+      }
     }else{
     	var pks = layerIdx.split(",");
     	for (var i=0; i<pks.length; i++){
@@ -532,29 +522,63 @@ else{
     this.tocService.setVisibleLayer(olLayer,event.currentTarget.checked)
   }
 
-
+  checkVisible(layerIdx){
+   var el: HTMLInputElement = document.getElementById("input_"+layerIdx) as HTMLInputElement;
+    el.checked = true;
+     el = document.getElementById("input1_"+layerIdx) as HTMLInputElement;
+    el.checked = true;
+  }	
   setLayerTime(layerIdx, event) {
 
-    var el: HTMLInputElement = document.getElementById("input_"+layerIdx) as HTMLInputElement;
-    el.checked = true;
-    this.tocService.setVisibleLayer(this.tocService.getOLLayer("pk", layerIdx),true)
-    this.changeLayerTime(layerIdx,event.target.value, true);
+    this.checkVisible(layerIdx);
+    var ollayer=this.tocService.getOLLayer("pk", layerIdx);
+    this.tocService.setVisibleLayer(ollayer,true)
+    if (ollayer.get("weplan")){
+    	this.changeLayerTime(this.tocService.getOLLayer("layers", ollayer.getSource().getParams().LAYERS).get("pk"),event.target.value, true);
+		ollayer.getSource().refresh();
+    }
+    else{
+	    this.changeLayerTime(ollayer.get("pk"),event.target.value, true);
+    }
+  }
+
+ setWeplanNetwork(layerIdx, event) {
+   this.checkVisible(layerIdx);
+    var ollayer=this.tocService.getOLLayer("pk", layerIdx);
+    this.tocService.setVisibleLayer(ollayer,true);
+    ollayer.getSource().refresh();
+    ollayer=this.tocService.getOLLayer("layers", ollayer.getSource().getParams().LAYERS);
+    this.changeLayerTime(ollayer.get("pk"),ollayer.get("anyo"), true);
   
   }
 
 changeLayerTime(layerIdx,time, visible){
-if (visible){
-    var pks = layerIdx.split(",");
-    for (var i=0; i<pks.length; i++){
-      	this.tocService.removeInteractiveLayer(this.tocService.capas[pks[i]].layers);
+	if (visible){
+    	var pks = layerIdx.split(",");
+    	for (var i=0; i<pks.length; i++){
+      		this.tocService.removeInteractiveLayer(this.tocService.capas[pks[i]].layers);
+    	}
+        this.tocService.changeInfoLayer(layerIdx,time);
     }
-    
-    this.tocService.changeInfoLayer(layerIdx,time);
-    }
-    var olLayer = this.tocService.getOLLayer("pk", layerIdx)
+    var olLayer = this.tocService.getOLLayer("pk", layerIdx);
     this.tocService.setLayerTime(olLayer,time);
- 
+	 if (olLayer.get("weplan")){
+		var layers = this.tocService.toc_group.getLayers();
+		for (var i = 0; i < layers.getLength(); i++) {
+			var layer = layers.item(i);
+			if (layer.get("weplan")) {
+				 this.tocService.setLayerTime(layer,time);
+			}
+		}
+	}
 }
   
+  
+/*changeLayerWeplanNetwork(layerIdx,network){
+    this.tocService.changeInfoLayerWeplanNetwork(network);
+    var olLayer = this.tocService.getOLLayer("pk", layerIdx)
+    this.tocService.setLayerWeplanNetwork(olLayer,network);
+ 
+}*/
 
 }
