@@ -127,7 +127,8 @@ export class MapService {
 
     selectControl =new Select({
       filter: function (feature, layer) {
-        return (feature.getGeometry()!.getType()!='Point');
+      console.log("filter");
+        return layer.get("interactiva");
       }});
     this.map.addInteraction(selectControl);
 
@@ -204,15 +205,15 @@ addEvents(tocService){
   
 
   this.map.on('pointerclick', evt => {
-    this.overlay(evt)
+    this.overlay(evt,tocService)
   });
 
   this.map.on('pointermove', evt => {
-    this.overlay(evt)
+    this.overlay(evt,tocService)
   });
 
   this.map.on('singleclick', evt => {
-    this.overlay(evt)
+    this.overlay(evt,tocService)
   });
 
   this.map.getView().on('change:resolution', () => {
@@ -228,7 +229,7 @@ addEvents(tocService){
   });
 }
 
-overlay(evt){
+overlay(evt,tocService){
 
   if (pointerOnPopup) {
     return ;
@@ -239,17 +240,26 @@ overlay(evt){
  // console.log("limpio");
  var mostrarPopup=false;
  this.map.forEachFeatureAtPixel(evt.pixel, function (feature,layer) {
+ if (!layer.get("interactiva")){
+ 	return;
+ }
    var ft_interes=false;
     var textoHtmlAMostrar = overlay.getElement().innerHTML;
-
-    var campos = feature.get("atributos");
+     var campos = feature.get("atributos");
     var titulo = feature.get("titulo");
-	if(layer.get("grupo")==14){
-		titulo+=" (Red fija)";
+	if (tocService.layer=="t_cobertura_weplan"){
+		campos=new Object();
+		titulo="";	
+		if (textoHtmlAMostrar==""){
+				
+			campos.municipio="Municipio";
+			
+		}
+		campos.categoria="Conectividad "+feature.getProperties().tipo_cobertura;
 	}
-	else if(layer.get("grupo")==15){
-		titulo+=" (Red móvil)";
-	} 
+	
+   
+
     if (campos) {
         mostrarPopup=true;
         ft_interes=true;
@@ -285,7 +295,7 @@ overlay(evt){
       overlay.setPositioning(positioning);
       overlay.setPosition(evt.coordinate);
       overlay.getElement().innerHTML = textoHtmlAMostrar;
-      //overlay.getElement().innerHTML = "<div style='width:60px'>HOLAHOLA</div>";
+
       if (ft_interes){
       	selectControl.getFeatures().clear();
       	if (feature.getGeometry().getType()!='Point') {

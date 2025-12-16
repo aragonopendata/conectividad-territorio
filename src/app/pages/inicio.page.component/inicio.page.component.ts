@@ -12,7 +12,6 @@ import VectorSource from 'ol/source/Vector';
 import {transformExtent} from 'ol/proj';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Collection } from 'ol/Collection.js';
-import { InfoService } from '../../services/info.service';
 import ImageWMS from 'ol/source/ImageWMS.js';
 
 
@@ -24,30 +23,12 @@ import ImageWMS from 'ol/source/ImageWMS.js';
 })
 export class InicioPage implements OnInit {
 
-  municipio: string = '';
+  municipio;
 
-  grupo: string = "Red fija";
-  
+ 
   bodyText = 'This text can be updated in modal 1';
 
-  items = [
-    {
-    value: "Huesca",
-    text: "Huesca"
-  },
-  {
-    value: "Zaragoza",
-    text: "Zaragoza"
-  },
-  {
-    value: "Teruel",
-    text: "Teruel"
-  },
-  {
-    value: "Jaca",
-    text: "Jaca"
-  },
-]
+
 
 datos_municipio = [];
 
@@ -62,7 +43,7 @@ items_queryableLayer: any[] = [];
 municipios = new Array();
 
 
-currentCapa;
+currentCapa="t_cobertura_weplan";
 currentAnyo;
 
 public wrapper = {
@@ -94,7 +75,7 @@ tipoRedGrupo;
   capasWMSreciprocas: any;
 
 constructor(public tocService: TOCService, public mapService: MapService, public modalService:ModalService, 
-  public baseLayerService: BaseLayerService, public infoService: InfoService,public _sanitizer:DomSanitizer,){
+  public baseLayerService: BaseLayerService, public _sanitizer:DomSanitizer,){
 
 }
 
@@ -105,9 +86,10 @@ constructor(public tocService: TOCService, public mapService: MapService, public
     //  this.mapService.initMapAccesible();
     //  this.infoService.initQueryableLayers();
       this.tocService.initTOC(true);
+      this.changeCapa();
+			
     }else{
       this.mapService.initMap();
-      this.infoService.initQueryableLayers();
       this.tocService.initTOC(false);
 
     }
@@ -123,33 +105,18 @@ constructor(public tocService: TOCService, public mapService: MapService, public
   //  this.changeTipoRed(this.gruposClean.find(item => item.pk == '15').pk);
     this.getMunicipios();
 
-    //Se preparan las opciones de los select
-   // this.items_capas = this.parseCapas();
- /*   this.items_capas_mapa = this.parseCapas();
-    this.items_capas_mapa.unshift({
-      value: "NADA",
-      text: "-- NINGUNA --",
-      selected: true
-     })*/
-     if (!this.accesible){
-    this.updateAnyos(16);
-    }
-	this.addInfoLayer();
+
+	//this.addInfoLayer();
     //Se prepara la tabla junto con las opciones por defecto del select
-    this.currentCapa = "1053";
-    if (this.accesible){
-    this.changeCapa();
-    }
-    else{
+  
+
+     if (!this.accesible){
     this.changeMunicipio();
     
 
 
     //Se preparan los queriableLayers
     this.mapService.addEvents(this.tocService)
-  /*  this.tocService.capas_visibles.forEach(c =>{
-      this.tocService.changeInfoLayer(c,this.tocService.items_anyo_defecto[c]);
-    })*/
 
 
   
@@ -163,116 +130,12 @@ constructor(public tocService: TOCService, public mapService: MapService, public
    }, 300);
 
 }
-console.log(this.tocService.items_anyos);
+
 console.log(this.currentCapa);
   this.init = false;
   }
 
-checkTipoRed(grupo,checked){
-	var el: HTMLInputElement = document.getElementById("red_"+grupo) as HTMLInputElement;
-    el.checked = checked;
-    el = document.getElementById("red1_"+grupo) as HTMLInputElement;
-    el.checked = checked;
-  
-}
-  changeTipoRed(grupo,event){
-  this.checkTipoRed(grupo,event.currentTarget.checked);
-   var el: HTMLInputElement = document.getElementById("red_"+grupo) as HTMLInputElement;
-var grupoAnyos;
-    if (el.checked){
-    	this.tocService.addRed(grupo);
-    	grupoAnyos=16;
-    }
-    else{
-    	
-    	var grupoContrario=15;
-    	if (grupo==grupoContrario){
-    		grupoContrario=14;
-    	}
-    	  var elOtro: HTMLInputElement = document.getElementById("red_"+grupoContrario) as HTMLInputElement;
-    	  if (elOtro.checked){
-    		this.tocService.hideRed(grupo);
-    		grupoAnyos=grupoContrario;  
-    	  }
-    	  else{
-    	  	this.checkTipoRed(grupoContrario,true);
-    	  	this.tocService.changeRed(grupoContrario);
-    	  	grupoAnyos=grupoContrario;
-    	  }
-    
-    }
-    console.log(this.tocService.capas_anadidas);
-    console.log(this.tocService.capasWMSSeleccionadas);
-    this.updateAnyos(grupoAnyos);
-	console.log(this.tocService.items_anyos);
-    //console.log(this.items_anyo_defecto);
- 
-  }
 
-
-
-updateAnyos(grupo){
-this.tocService.items_anyos=[];
- this.tocService.capasWMSSeleccionadas.forEach(capa => {
-     	var pks = capa.pk.split(",");
-     	var anyos = this.tocService.capas[pks[0]].anyos;
-
-     	if (this.tocService.capas[pks[0]].grupo==16){
-     		var anyos_fija = this.tocService.capas[pks[0]].anyos_fija;
-     		var anyos_movil = this.tocService.capas[pks[0]].anyos_movil;
-     		if (this.tocService.capas[pks[0]].grupo==grupo){
-     			
-     			if (anyos_fija && anyos_movil){
-     				anyos = this.tocService.mergeAnyos(anyos_fija,anyos_movil);
-     			}
-     		}
-     		else{
-     			if (grupo==14){
-     				anyos = anyos_fija; 
-     			}
-     			else{
-     				anyos = anyos_movil;
-     			}
-     		}
-     	}
-     	else if (anyos){
-     		if (pks.length>1){
-     			var anyos2 = this.tocService.capas[pks[1]].anyos;
-     			if(anyos2){
-     				anyos = this.tocService.mergeAnyos(anyos, anyos2)
-     			}
-     		}
-     	}
-     	if (anyos){
-     		if(anyos.indexOf(parseInt(capa.anyo))<0){
-     			capa.anyo = this.tocService.capas[pks[0]].anyo_defecto;
-     			var ollayer=this.tocService.getOLLayer("layers", capa.source.getParams().LAYERS);
-     			this.changeLayerTime(ollayer.get("pk"),capa.anyo, capa.visible);
-     		}
-     		this.tocService.items_anyos[capa.pk] =this.tocService.parseAnyos(anyos);
-     	}
-     	    })
-    }
-    
-addInfoLayer(){
-
- this.tocService.capasWMSSeleccionadas.forEach(capa => {
-	if (capa.visible){
-		this.tocService.changeInfoLayer(capa.pk,capa.anyo);
-	}
-    });
-    }
- /* get_items_capas_visibles(){
-    return this.tocService.items_capas.filter(item => {
-      var vis = false;
-      for(var i = 0; i<this.tocService.capas_visibles.length;i++){
-        if(this.tocService.capas_visibles[i]==item.value){
-          return true;
-        }
-      }
-      return false;
-    })
-  }*/
 
 
   getMunicipios(){
@@ -285,7 +148,7 @@ addInfoLayer(){
       success: (data: any) => {
         for(var i = 0; i<data.results.bindings.length;i++){
           this.municipios.push({
-            value: data.results.bindings[i].nombre.value+"",
+            value: data.results.bindings[i].ine.value+"",
             text: data.results.bindings[i].nombre.value+"",
             wfs: data.results.bindings[i].wfs.value+"",
             ine: data.results.bindings[i].ine.value+"",
@@ -307,7 +170,6 @@ addInfoLayer(){
   }
 
   changeMunicipio(){
-  
     for(var i = 0;i<this.municipios.length;i++){
       if(this.municipios[i].value==this.municipio){
         var ine = this.municipios[i].ine;
@@ -338,19 +200,21 @@ addInfoLayer(){
             }
           });
         }
-         this.getData(ine);
+        
 }
 else{
 
        
         if(this.accesible && !this.init){
-          this.getTableData(this.tocService.capas[this.currentCapa].layers,ine,this.currentAnyo)
+          this.changeCapa();
         }
         }
       }
     } 
     this.aragon = false;
   }
+
+
 
 
 
@@ -428,35 +292,8 @@ else{
 
 
 
-  parseCapas(){
-    let res :any= [];
 
-    this.tocService.capas_anadidas.forEach(ind => {
-      res.push({
-        value:this.tocService.capas[ind].pk+"",
-        grupo:this.tocService.capas[ind].grupo+"",
-        text: this.tocService.capas[ind].titulo+"",
-       }) 
-      
-    })
-
-    
-    return res;
-  }
-
-  selectNetworkType(networkIdx: any){   
-  
-    if(networkIdx == "1050"){
-      this.showDataNetwork = !this.showDataNetwork; 
-      console.log("DN")
-      console.log(this.showDataNetwork)
-    }else if(networkIdx == "1051"){
-      this.showLandLine = !this.showLandLine;
-      console.log("LL")
-      console.log(this.showLandLine)
-    }
-
-  }
+ 
 
   parseQueryable(){
     let res :any= [];
@@ -470,115 +307,42 @@ else{
     return res;
   }
 
-  changeCapa(){
-    this.showMunicipio = this.tocService.capas[this.currentCapa].filtro_muni;
-    
-      this.showAnyo = this.tocService.items_anyos[this.currentCapa] && this.tocService.items_anyos[this.currentCapa].length>0;
-    
-    this.currentAnyo = this.tocService.items_anyo_defecto[this.currentCapa];
-    this.changeAnyo();
+
+
+ setLayerTime( event) {
+    var source = this.tocService.ollayer.getSource();
+    var params = source.getParams();
+    params.TIME=this.tocService.fecha;
+	source.updateParams(params); 
+	Object.keys(this.tocService.interactiveLayers).forEach(key => {
+  		var layer= this.tocService.interactiveLayers[key];
+  		/*var url = layer.getSource().getUrl();
+		layer.getSource().url_=url.replaceAll("fecha='"+layer.get("fecha")+"'","fecha='"+params.TIME+"'");
+		layer.getSource().changed();*/
+		
+		layer.getSource().refresh();
+		
+		layer.set("fecha",params.TIME);
+
+	});
+	
   }
-
-  changeAnyo(){
-    var capa = this.tocService.capas[this.currentCapa]
-
-    var ine = null;
-    var anyo = null;
-    if(this.tocService.capas[this.currentCapa].filtro_muni && !this.aragon){
-      for(var i = 0;i<this.municipios.length;i++){
-        if(this.municipios[i].value==this.municipio){
-          ine = this.municipios[i].ine;
-          
-        }
-      }
-    }
-    if( this.tocService.items_anyos[this.currentCapa] && this.tocService.items_anyos[this.currentCapa].length>0){
-      anyo=this.currentAnyo
-    }
-
-    if(this.accesible){
-      this.getTableData(capa.layers,ine,anyo)
-    }
-    
-  }
-
-  setVisibleLayer(layerIdx, event) {
-	var olLayer = this.tocService.getOLLayer("pk", layerIdx)
-    if(event.currentTarget.checked){
-      if (olLayer.get("weplan")){
-       	olLayer=this.tocService.getOLLayer("layers", olLayer.getSource().getParams().LAYERS);
-    	this.tocService.changeInfoLayer(olLayer.get("pk"),olLayer.get("anyo"));
-       }
-  		else{
-      this.tocService.changeInfoLayer(layerIdx,olLayer.get("anyo"));
-      }
-    }else{
-    	var pks = layerIdx.split(",");
-    	for (var i=0; i<pks.length; i++){
-     	 	this.tocService.removeInteractiveLayer(this.tocService.capas[pks[i]].layers);
-      	}
-    }
-    this.selectNetworkType(layerIdx);
-    this.tocService.setVisibleLayer(olLayer,event.currentTarget.checked)
-  }
-
-  checkVisible(layerIdx){
-   var el: HTMLInputElement = document.getElementById("input_"+layerIdx) as HTMLInputElement;
-    el.checked = true;
-     el = document.getElementById("input1_"+layerIdx) as HTMLInputElement;
-    el.checked = true;
-  }	
-  setLayerTime(layerIdx, event) {
-
-    this.checkVisible(layerIdx);
-    var ollayer=this.tocService.getOLLayer("pk", layerIdx);
-    this.tocService.setVisibleLayer(ollayer,true)
-    if (ollayer.get("weplan")){
-    	this.changeLayerTime(this.tocService.getOLLayer("layers", ollayer.getSource().getParams().LAYERS).get("pk"),event.target.value, true);
-		ollayer.getSource().refresh();
-    }
-    else{
-	    this.changeLayerTime(ollayer.get("pk"),event.target.value, true);
-    }
-  }
-
- setWeplanNetwork(layerIdx, event) {
-   this.checkVisible(layerIdx);
-    var ollayer=this.tocService.getOLLayer("pk", layerIdx);
-    this.tocService.setVisibleLayer(ollayer,true);
-    ollayer.getSource().refresh();
-    ollayer=this.tocService.getOLLayer("layers", ollayer.getSource().getParams().LAYERS);
-    this.changeLayerTime(ollayer.get("pk"),ollayer.get("anyo"), true);
-  
-  }
-
-changeLayerTime(layerIdx,time, visible){
-	if (visible){
-    	var pks = layerIdx.split(",");
-    	for (var i=0; i<pks.length; i++){
-      		this.tocService.removeInteractiveLayer(this.tocService.capas[pks[i]].layers);
-    	}
-        this.tocService.changeInfoLayer(layerIdx,time);
-    }
-    var olLayer = this.tocService.getOLLayer("pk", layerIdx);
-    this.tocService.setLayerTime(olLayer,time);
-	 if (olLayer.get("weplan")){
-		var layers = this.tocService.toc_group.getLayers();
-		for (var i = 0; i < layers.getLength(); i++) {
-			var layer = layers.item(i);
-			if (layer.get("weplan")) {
-				 this.tocService.setLayerTime(layer,time);
-			}
-		}
-	}
-}
-  
-  
-/*changeLayerWeplanNetwork(layerIdx,network){
-    this.tocService.changeInfoLayerWeplanNetwork(network);
-    var olLayer = this.tocService.getOLLayer("pk", layerIdx)
-    this.tocService.setLayerWeplanNetwork(olLayer,network);
  
-}*/
 
+ setWeplanNetwork( event) {
+    var source = this.tocService.ollayer.getSource();
+    var params = source.getParams();
+    params.LAYERS=this.tocService.layer;
+	source.updateParams(params);
+	Object.keys(this.tocService.interactiveLayers).forEach(key => {
+  		var layer= this.tocService.interactiveLayers[key];
+  		layer.setVisible(params.LAYERS=='t_cobertura_weplan' || params.LAYERS==key);
+
+	});
+	 
+  }
+
+changeCapa(){
+ this.getTableData(this.currentCapa,this.municipio,this.tocService.fecha);
+ }
 }
