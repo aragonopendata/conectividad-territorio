@@ -8,59 +8,50 @@
         <desy-select id="municipio2" name="municipio" [items]="municipios" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
 
 
-        <table id="tabla_datos" style="list-style-type: disc; padding: 10px;">
-        <tr><th style="border:none"></th><th>Red fija</th><th>Red móvil</th></tr>
-          <tr *ngFor="let d of datos_municipio" [innerHTML]="_sanitizer.bypassSecurityTrustHtml(d)">
-            
-          </tr>
-        </table>
-
-
         <div id="toc" class="rotate-north ol-unselectable ol-control" 
         style="background-color:white; display: flex;border-radius: 10px;">
           
           <button id="button_toc" (click)="modalService.open('modal-1')" style="opacity: 0.7;"></button>
           <div id="toc_expanded" style="display: block;padding-left: 10px;padding-bottom: 10px;padding-right: 10px;">
-            <h3 class="c-h3">Tabla de contenidos</h3>
-<!--        <desy-select #tipoRed name="name" [(ngModel)]="grupo" (change)="changeTipoRed(tipoRed.value)">
-              <desy-option *ngFor="let grupo of this.gruposClean" [value]="grupo.pk">{{grupo.titulo}} </desy-option>
-            </desy-select> 
-            <ul style="overflow-y: scroll; height: 410px; width: 330px;">
-                <li *ngFor="let index of this.capasWMSSeleccionadas" style="display: flex;align-items: baseline;">
-                  <input type="checkbox" [id]="'input_'+index" [attr.checked]="index.visible=='t' ? '' : null"
-                  (change)="this.setVisibleLayer(index.pk,$event)"/> 
-                  <div style="min-width: 170px;">{{index.titulo}}</div>
-                </li>
-            </ul> -->
+            
+             <ul style="overflow-y: auto;">
 
-             <ul style="overflow-y: scroll; height: 410px; width: 330px;">
-              <ul id="toc_redes">
-                <li >
-                  <input type="checkbox" checked id="red_14" (change)="this.changeTipoRed(14)"/> 
-                  
-                    <label >Red fija</label>
-                  
-                </li>
-                 <li >
-                  <input type="checkbox" checked id="red_15" (change)="this.changeTipoRed(15)"/> 
-                  
-                    <label >Red móvil</label>
-                  
-                </li>
-              </ul>
-              <hr/>
-              <li *ngFor="let index of this.tocService.capasWMSSeleccionadas" style="display: flex;align-items: baseline;">
-                <input type="checkbox" [id]="'input_'+index.pk" [attr.checked]="index.visible ? '' : null"
-                (change)="this.setVisibleLayer(index.pk,$event)"/> 
-                <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
-                  <div style="min-width: 170px;">{{index.caption}}</div>
-                  <desy-select *ngIf="this.tocService.items_anyos[index.pk]!=null" 
-                  [items]="this.tocService.items_anyos[index.pk]" [id]="'selanyo_'+index.pk" 
-                    style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index.pk,$event)"
-                    [(ngModel)]="index.anyo"></desy-select>
-                </div>
-              </li>
-            </ul>
+				<li style=" align-items: baseline;">
+
+					<div
+						style="padding-left: 10px; display: flex; align-items: baseline;">
+						<div>Intensidad de la señal</div>
+						<desy-select style="margin: 0px;padding-left: 10px;"
+							[items]="this.tocService.items_fechas" id="selfecha"
+							(change)="setLayerTime($event)"
+							[(ngModel)]="this.tocService.fecha"></desy-select>
+					</div>
+					<div class="button-radio-group" style="margin-top: 10px;">
+						<label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan">
+							<span>Todas</span>
+						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_2g">
+							<span>2G</span>
+						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_3g">
+							<span>3G</span>
+						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_4g">
+							<span>4G</span>
+						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_5g">
+							<span>5G</span>
+						</label>
+					</div>
+
+				</li>
+			</ul>
 
 
 
@@ -71,43 +62,44 @@
 
           <jw-modal id="modal-1">
             <div style="background-color:white; display: flex;border-radius: 10px;">
-              
-              <div id="toc_expanded">
-                <h3 class="c-h3">Tabla de contenidos</h3>
-                <!--<desy-select id="municipio2" name="municipio" [items]="items" [(ngModel)]="municipio"></desy-select>-->
- <ul id="toc_redes">
-                <li >
-                  <input type="checkbox" checked id="red_14" (change)="this.changeTipoRed(14)"/> 
-                  
-                    <label >Red fija</label>
-                  
-                </li>
-                 <li >
-                  <input type="checkbox" checked id="red_15" (change)="this.changeTipoRed(15)"/> 
-                  
-                    <label >Red móvil</label>
-                  
-                </li>
-              </ul>
-                <ul id="toc_layers">
-                 <li *ngFor="let index of this.tocService.capasWMSSeleccionadas" style="display: flex;align-items: baseline;">
-                <input type="checkbox" [id]="'input_'+index.pk" [attr.checked]="index.visible ? '' : null"
-                (change)="this.setVisibleLayer(index.pk,$event)"/> 
-                <div style="padding-left: 10px;display: flex;align-items: baseline; max-width: 280px;">
-                  <div style="min-width: 170px;">{{index.caption}}</div>
-                  <desy-select *ngIf="this.tocService.items_anyos[index.pk]!=null" 
-                  [items]="this.tocService.items_anyos[index.pk]" [id]="'selanyo_'+index.pk" 
-                    style="margin: 0px;padding-left: 10px;" (change)="setLayerTime(index.pk,$event)"
-                    [(ngModel)]="index.anyo"></desy-select>
-                </div>
-              </li>
-                </ul>
-    
-    
-    
-              </div>
-              
-    
+               <ul style="overflow-y: auto;">
+
+				<li style=" align-items: baseline;">
+
+					<div
+						style="padding-left: 10px;  align-items: baseline;">
+						<div>Intensidad de la señal</div>
+						<desy-select style="margin: 0px;padding-left: 10px;"
+							[items]="this.tocService.items_fechas" id="selfecha"
+							(change)="setLayerTime($event)"
+							[(ngModel)]="this.tocService.fecha"></desy-select>
+					</div>
+					<div class="button-radio-group" style="margin-top: 10px;display:block;margin-right: 8px;">
+						<label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion2" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan">
+							<span>Todas</span>
+						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion2" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_2g">
+							<span>2G</span>
+						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion2" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_3g">
+							<span>3G</span>
+						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion2" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_4g">
+							<span>4G</span>
+						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+							name="opcion2" (change)="setWeplanNetwork($event)"
+							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_5g">
+							<span>5G</span>
+						</label>
+					</div>
+
+				</li>
+			</ul>
             </div>
         </jw-modal>
 
@@ -128,16 +120,22 @@
       <div [hidden]="!accesible">
 
         <div style="display: flex;flex-wrap: wrap; padding-bottom: 10px;">
-          <desy-select
-          [items]="this.tocService.items_capas" (change)="changeCapa()" [classes]="'max_width_280'"
-            [(ngModel)]="this.currentCapa"  ></desy-select>
+          <desy-select id="capas" (change)="this.changeCapa()" [classes]="'max_width_280'"
+            [(ngModel)]="this.currentCapa"  >
+                 <desy-option value="t_cobertura_weplan">Intensidad de la señal</desy-option>
+                 <desy-option value="t_cobertura_weplan_2g">Intensidad de la señal 2G</desy-option>
+                 <desy-option value="t_cobertura_weplan_3g">Intensidad de la señal 3G</desy-option>
+                 <desy-option value="t_cobertura_weplan_4g">Intensidad de la señal 4G</desy-option>
+                 <desy-option value="t_cobertura_weplan_5g">Intensidad de la señal 5G</desy-option>
+            
+            </desy-select>
 
-          <desy-select *ngIf="showMunicipio" id="municipio2" name="municipio" [items]="municipios" 
-          style="margin: 0px;padding-left: 10px;" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
+          <desy-select  id="municipio2" name="municipio" [items]="municipios" 
+          style="margin: 0px;padding-left: 10px;" [(ngModel)]="this.municipio" (change)="this.changeCapa()"></desy-select>
 
-          <desy-select [items]="this.tocService.items_anyos[this.currentCapa]" *ngIf="showAnyo"
-          style="margin: 0px;padding-left: 10px;" (change)="changeAnyo()"
-          [(ngModel)]="this.currentAnyo"></desy-select>
+          <desy-select [items]="this.tocService.items_fechas"
+          style="margin: 0px;padding-left: 10px;" (change)="this.changeCapa()"
+          [(ngModel)]="this.tocService.fecha"></desy-select>
         </div>
 
         <div *ngIf="rows.length>0">

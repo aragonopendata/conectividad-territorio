@@ -42,3 +42,36 @@ span > .contenedor-medidas{
  }
 
 
+.button-radio-group {
+  display: flex;
+  gap: 8px;
+}
+
+.button-radio {
+  /*border: 2px solid #007bff;
+  border-radius: 6px;
+  padding: 10px 16px;*/
+  cursor: pointer;
+  transition: 0.2s;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+/*.button-radio:hover {
+  background-color: #e7f1ff;
+}*/
+
+.button-radio input[type="radio"] {
+  display: none;
+}
+
+.button-radio:has(input[type="radio"]:checked) {
+  background-color: #D6EAF0;
+  color: #00607A;
+  border-radius: 4px;
+}
+
+.button-radio span{
+	margin:auto;
+}
