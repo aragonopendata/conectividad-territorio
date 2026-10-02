@@ -45,7 +45,6 @@ export class TOCService {
 
   featureLayer;
 interactiveLayers;
-campos={/*"municipio": "Municipio","tipo_cobertura": "Tipo de red",*/"categoria": "Intensidad de la señal", "cobertura_media": "Intensidad media", "cobertura_mediciones": "Nº de medidas" };
 
   parseAnyos(anyos): any[]{
     let res :any= [];
@@ -80,7 +79,7 @@ var texto=fecha+"";
 	}
 	$.ajax({
 		
-		url:    environment.url +"/ws-cobertura/config/toc",
+		url:    environment.url +"/ws-visor-cobertura/config/toc",
 		type: 'GET',
 		async: false, //para asegurar que se inicializa la gui de la lista de capas
 		success: (data) => {
@@ -90,10 +89,10 @@ var texto=fecha+"";
 			if (!accesible){
 			this.addWMSLayer(capa.url,capa.layers,this.fecha,true);
 			this.interactiveLayers=new Object();
-			this.interactiveLayers[capa.layers+"_2g"]=this.addInteractiveLayer(capa.url,capa.layers+"_2g",this.campos,this.fecha,'fecha',"Intensidad de la señal 2G")
-			this.interactiveLayers[capa.layers+"_3g"]=this.addInteractiveLayer(capa.url,capa.layers+"_3g",this.campos,this.fecha,'fecha',"Intensidad de la señal 3G")
-			this.interactiveLayers[capa.layers+"_4g"]=this.addInteractiveLayer(capa.url,capa.layers+"_4g",this.campos,this.fecha,'fecha',"Intensidad de la señal 4G")
-			this.interactiveLayers[capa.layers+"_5g"]=this.addInteractiveLayer(capa.url,capa.layers+"_5g",this.campos,this.fecha,'fecha',"Intensidad de la señal 5G")
+			this.interactiveLayers[capa.layers+"_2g"]=this.addInteractiveLayer(capa.url,capa.layers+"_2g",this.fecha,'fecha',"Intensidad de la señal 2G")
+			this.interactiveLayers[capa.layers+"_3g"]=this.addInteractiveLayer(capa.url,capa.layers+"_3g",this.fecha,'fecha',"Intensidad de la señal 3G")
+			this.interactiveLayers[capa.layers+"_4g"]=this.addInteractiveLayer(capa.url,capa.layers+"_4g",this.fecha,'fecha',"Intensidad de la señal 4G")
+			this.interactiveLayers[capa.layers+"_5g"]=this.addInteractiveLayer(capa.url,capa.layers+"_5g",this.fecha,'fecha',"Intensidad de la señal 5G")
 			}
 			
 		},
@@ -166,7 +165,7 @@ removeFeature(){
 	
 }
 
-addInteractiveLayer(url,layer,campos,anyo,campo_anyo,titulo){
+addInteractiveLayer(url,layer,anyo,campo_anyo,titulo){
 	var projection = new Projection({code:"EPSG:25830"});
 
 
@@ -193,7 +192,7 @@ addInteractiveLayer(url,layer,campos,anyo,campo_anyo,titulo){
 	
 	vectorSource.on('addfeature',(ev) => {
 		ev.feature!.set("layer", layer+"_interactive");
-		ev.feature!.set("atributos",campos);
+		
 		if(anyo){
 			ev.feature!.set('titulo', titulo+" ("+this.fecha+")");
 		}else{

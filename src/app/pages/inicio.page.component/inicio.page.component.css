@@ -1,45 +1,46 @@
-.ancho{
-    width: 100%;
-    display: inline-flex;
+.ancho {
+  width: 100%;
+  display: inline-flex;
 }
 
 
-.sin_bordes{
-    border-collapse: unset;
-    border-width: 0px;
- }
+.sin_bordes {
+  border-collapse: unset;
+  border-width: 0px;
+}
 
- ul > li {
-    border-width: 0px !important;
- }
+ul>li {
+  border-width: 0px !important;
+}
 
- [hidden] {
-    display: none !important;
-  }
+[hidden] {
+  display: none !important;
+}
 
 
-span > .contenedor-medidas{
+span>.contenedor-medidas {
   height: fit-content;
 }
-.contenedor-medidas{
-   text-align: center;
-   color: #00475c;
-   list-style-type: none;
-   width: 100%;
-   
+
+.contenedor-medidas {
+  text-align: center;
+  color: #00475c;
+  list-style-type: none;
+  width: 100%;
+
 }
 
-.medidas{
+.medidas {
 
- 
-   display: block;
-   font-size: 40px;
-   font-weight: bold;
-  
-   margin-bottom: 20px;
-   transition: all 0.3s;
-   position: relative;
- }
+
+  display: block;
+  font-size: 40px;
+  font-weight: bold;
+
+  margin-bottom: 20px;
+  transition: all 0.3s;
+  position: relative;
+}
 
 
 .button-radio-group {
@@ -72,6 +73,30 @@ span > .contenedor-medidas{
   border-radius: 4px;
 }
 
-.button-radio span{
-	margin:auto;
+.button-radio span {
+  margin: auto;
+}
+
+#overlay {
+  pointer-events: none;
+}
+
+#searchbarmini ::ng-deep button {
+      margin: 1px;
+}
+
+.searchbar {
+  position: relative;
+  max-width: 350px;
+}
+
+.searchOptions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: white;
+  max-height: 300px;
+  overflow: auto;
 }

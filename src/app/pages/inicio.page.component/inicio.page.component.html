@@ -1,164 +1,210 @@
+<main id="content" class="container mx-auto px-base">
 
-    <main id="content" class="container mx-auto px-base">
+  <div [hidden]="accesible">
+    <div  class="searchbar c-form-group" style="max-width: 350px;">
+      <h3 class="c-h3" style="padding-top: 10px;">Municipio</h3>
+      <desy-search-bar #searchBar [placeholder]="'Todo Aragón'" [(ngModel)]="municipio" (click)="showMuniList()" (input)="onInputSearch($event)">
 
-        <div [hidden]="accesible">
+      </desy-search-bar>
+      <div class="searchOptions" *ngIf="mostrarMunis">
 
-        <h3 class="c-h3" style="padding-top: 10px;">Entidad Territorial</h3>
-
-        <desy-select id="municipio2" name="municipio" [items]="municipios" [(ngModel)]="municipio" (change)="changeMunicipio()"></desy-select>
-
-
-        <div id="toc" class="rotate-north ol-unselectable ol-control" 
-        style="background-color:white; display: flex;border-radius: 10px;">
-          
-          <button id="button_toc" (click)="modalService.open('modal-1')" style="opacity: 0.7;"></button>
-          <div id="toc_expanded" style="display: block;padding-left: 10px;padding-bottom: 10px;padding-right: 10px;">
-            
-             <ul style="overflow-y: auto;">
-
-				<li style=" align-items: baseline;">
-
-					<div
-						style="padding-left: 10px; display: flex; align-items: baseline;">
-						<div>Intensidad de la señal</div>
-						<desy-select style="margin: 0px;padding-left: 10px;"
-							[items]="this.tocService.items_fechas" id="selfecha"
-							(change)="setLayerTime($event)"
-							[(ngModel)]="this.tocService.fecha"></desy-select>
-					</div>
-					<div class="button-radio-group" style="margin-top: 10px;">
-						<label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan">
-							<span>Todas</span>
-						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_2g">
-							<span>2G</span>
-						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_3g">
-							<span>3G</span>
-						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_4g">
-							<span>4G</span>
-						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_5g">
-							<span>5G</span>
-						</label>
-					</div>
-
-				</li>
-			</ul>
+        <ul>
+          <li *ngFor="let muni of municipiosCandidatos">
+            <a (click)="changeMunicipio(muni.ine)" id="nav-item"
+              class="flex items-center px-base py-sm hover:bg-primary-base hover:text-white focus:bg-warning-base focus:outline-none focus:shadow-outline-focus focus:text-black">
+              {{ muni.text }}
+            </a>
+          </li>
+        </ul>
+      </div>
 
 
+    </div>
+    <div id="toc" class="ol-rotate ol-unselectable ol-control" style="background-color:white; border-radius: 10px;">
 
-          </div>
-          
-
-        </div>
-
-          <jw-modal id="modal-1">
-            <div style="background-color:white; display: flex;border-radius: 10px;">
-               <ul style="overflow-y: auto;">
-
-				<li style=" align-items: baseline;">
-
-					<div
-						style="padding-left: 10px;  align-items: baseline;">
-						<div>Intensidad de la señal</div>
-						<desy-select style="margin: 0px;padding-left: 10px;"
-							[items]="this.tocService.items_fechas" id="selfecha"
-							(change)="setLayerTime($event)"
-							[(ngModel)]="this.tocService.fecha"></desy-select>
-					</div>
-					<div class="button-radio-group" style="margin-top: 10px;display:block;margin-right: 8px;">
-						<label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion2" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan">
-							<span>Todas</span>
-						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion2" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_2g">
-							<span>2G</span>
-						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion2" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_3g">
-							<span>3G</span>
-						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion2" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_4g">
-							<span>4G</span>
-						</label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
-							name="opcion2" (change)="setWeplanNetwork($event)"
-							[(ngModel)]="this.tocService.layer" value="t_cobertura_weplan_5g">
-							<span>5G</span>
-						</label>
-					</div>
-
-				</li>
-			</ul>
-            </div>
-        </jw-modal>
-
-        <jw-modal id="aviso_escala">
-          La capa seleccionada no se puede consultar a la escala actual
-          
-
-        </jw-modal>
+      <button id="button_toc" (click)="modalService.open('modal-1')" style="opacity: 0.7;"></button>
+      <div id="toc_expanded" style="display: block;padding-left: 10px;padding-bottom: 10px;padding-right: 10px;">
         
-        <div id="map" class="imgCenter map">
+        <h3 class="text-lg font-bold"  mt-base>Datos</h3>
+        <ul>
 
-          
+          <li style=" align-items: baseline;">
+
+            <div style="padding-left: 10px; display: flex; align-items: baseline;">
+              <div>Intensidad de la señal</div>
+              <desy-select style="margin: 0px;padding-left: 10px;" [items]="this.tocService.items_fechas" id="selfecha"
+                (change)="setLayerTime($event)" [(ngModel)]="this.tocService.fecha"></desy-select>
+            </div>
+            <div class="button-radio-group" style="margin-top: 10px;">
+              <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan">
+                <span>Todas</span>
+              </label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan_2g">
+                <span>2G</span>
+              </label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan_3g">
+                <span>3G</span>
+              </label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan_4g">
+                <span>4G</span>
+              </label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan_5g">
+                <span>5G</span>
+              </label>
+            </div>
+
+          </li>
+        </ul>
+<h3 class="text-lg font-bold mt-base">Fondos</h3>
+        <div id="gis-background-container">
+          <label class="radio-img">
+            <input type="radio" [(ngModel)]="fondo" (change)="changeBackground()" value="s" name="gis-background"
+              id="satellite" />
+            <div class="img-wrapper" [class.checked]="fondo === 's'">
+              <img src="assets/satellite.jpg" alt="Topográfico" width="60" height="60" />
+              <span>Satélite</span>
+            </div>
+          </label>
+          <label class="radio-img">
+            <input type="radio" [(ngModel)]="fondo" (change)="changeBackground()" value="o" name="gis-background"
+              id="topo" />
+            <div class="img-wrapper" [class.checked]="fondo === 'o'">
+              <img src="assets/openstreetmap.jpg" alt="OpenStreetMap" width="60" height="60" />
+              <span>OpenStreetMap</span>
+            </div>
+          </label>
+          <label class="radio-img">
+            <input type="radio" [(ngModel)]="fondo" (change)="changeBackground()" value="t" name="gis-background"
+              id="topo" />
+            <div class="img-wrapper" [class.checked]="fondo === 't'">
+              <img src="assets/topografico.jpg" alt="Topográfico" width="60" height="60" />
+              <span>Topográfico</span>
+            </div>
+          </label>
         </div>
 
 
-      </div> 
-
-      <div [hidden]="!accesible">
-
-        <div style="display: flex;flex-wrap: wrap; padding-bottom: 10px;">
-          <desy-select id="capas" (change)="this.changeCapa()" [classes]="'max_width_280'"
-            [(ngModel)]="this.currentCapa"  >
-                 <desy-option value="t_cobertura_weplan">Intensidad de la señal</desy-option>
-                 <desy-option value="t_cobertura_weplan_2g">Intensidad de la señal 2G</desy-option>
-                 <desy-option value="t_cobertura_weplan_3g">Intensidad de la señal 3G</desy-option>
-                 <desy-option value="t_cobertura_weplan_4g">Intensidad de la señal 4G</desy-option>
-                 <desy-option value="t_cobertura_weplan_5g">Intensidad de la señal 5G</desy-option>
-            
-            </desy-select>
-
-          <desy-select  id="municipio2" name="municipio" [items]="municipios" 
-          style="margin: 0px;padding-left: 10px;" [(ngModel)]="this.municipio" (change)="this.changeCapa()"></desy-select>
-
-          <desy-select [items]="this.tocService.items_fechas"
-          style="margin: 0px;padding-left: 10px;" (change)="this.changeCapa()"
-          [(ngModel)]="this.tocService.fecha"></desy-select>
-        </div>
-
-        <div *ngIf="rows.length>0">
-          <desy-table id="table" [wrapper]="wrapper" 
-          [head]="labels"
-          [rows]="this.rows.slice((this.page-1)*10, (this.page-1)*10 + 10)">
-          </desy-table>
-
-          <desy-pagination 
-            [itemsPerPage]="10" [totalItems]="totalItems" [hasSelect]="true" [hasNext]="page<(totalItems/10)" [hasPrevious]="page!=1" 
-            [idPrefix]="'selector'" previousText="Anterior" nextText="Siguiente" [(currentPage)]="page">
-          </desy-pagination>
-        </div>
-
-        <div *ngIf="rows.length==0" style="text-align: center;">
-          No hay datos disponibles
       </div>
+
+
+    </div>
+
+    <jw-modal id="modal-1">
+      <div style="background-color:white; display: flex;border-radius: 10px;">
+        <ul style="overflow-y: auto;">
+
+          <li style=" align-items: baseline;">
+
+            <div style="padding-left: 10px;  align-items: baseline;">
+              <div>Intensidad de la señal</div>
+              <desy-select style="margin: 0px;padding-left: 10px;" [items]="this.tocService.items_fechas" id="selfecha"
+                (change)="setLayerTime($event)" [(ngModel)]="this.tocService.fecha"></desy-select>
+            </div>
+            <div class="button-radio-group" style="margin-top: 10px;display:block;margin-right: 8px;">
+              <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion2" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan">
+                <span>Todas</span>
+              </label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion2" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan_2g">
+                <span>2G</span>
+              </label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion2" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan_3g">
+                <span>3G</span>
+              </label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion2" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan_4g">
+                <span>4G</span>
+              </label> <label class="button-radio c-button c-button--primary margin_bottom ml-sm"> <input type="radio"
+                  name="opcion2" (change)="setWeplanNetwork($event)" [(ngModel)]="this.tocService.layer"
+                  value="t_cobertura_weplan_5g">
+                <span>5G</span>
+              </label>
+            </div>
+
+          </li>
+        </ul>
+      </div>
+    </jw-modal>
+
+    <jw-modal id="aviso_escala">
+      La capa seleccionada no se puede consultar a la escala actual
+
+
+    </jw-modal>
+
+    <div id="map" class="imgCenter map">
+
+
+    </div>
+
+
+  </div>
+
+  <div [hidden]="!accesible">
+
+    <div style="display: flex;flex-wrap: wrap; padding-bottom: 10px;">
+      <desy-select id="capas" (change)="this.changeCapa()" [classes]="'max_width_280'" [(ngModel)]="this.currentCapa">
+        <desy-option value="t_cobertura_weplan">Intensidad de la señal</desy-option>
+        <desy-option value="t_cobertura_weplan_2g">Intensidad de la señal 2G</desy-option>
+        <desy-option value="t_cobertura_weplan_3g">Intensidad de la señal 3G</desy-option>
+        <desy-option value="t_cobertura_weplan_4g">Intensidad de la señal 4G</desy-option>
+        <desy-option value="t_cobertura_weplan_5g">Intensidad de la señal 5G</desy-option>
+
+      </desy-select>
+
+     
+    <div class="searchbar c-form-group mt-sm" style="max-width: 350px;padding-left: 10px;">
+      
+      <desy-search-bar #searchBar id="searchbarmini" [classes]="'c-input--sm'" [(ngModel)]="municipio" (click)="showMuniList()" (input)="onInputSearch($event)">
+
+      </desy-search-bar>
+      <div class="searchOptions" *ngIf="mostrarMunis">
+
+        <ul>
+          <li *ngFor="let muni of municipiosCandidatos">
+            <a (click)="changeMunicipio(muni.ine)" id="nav-item"
+              class="flex items-center px-base py-sm hover:bg-primary-base hover:text-white focus:bg-warning-base focus:outline-none focus:shadow-outline-focus focus:text-black">
+              {{ muni.text }}
+            </a>
+          </li>
+        </ul>
       </div>
 
 
+    </div>
+      <desy-select [items]="this.tocService.items_fechas" style="margin: 0px;padding-left: 10px;"
+        (change)="this.changeCapa()" [(ngModel)]="this.tocService.fecha"></desy-select>
+    </div>
+
+    <div *ngIf="rows.length>0">
+      <desy-table id="table" [wrapper]="wrapper" [head]="labels"
+        [rows]="this.rows.slice((this.page-1)*10, (this.page-1)*10 + 10)">
+      </desy-table>
+
+      <desy-pagination [itemsPerPage]="10" [totalItems]="totalItems" [hasSelect]="true" [hasNext]="page<(totalItems/10)"
+        [hasPrevious]="page!=1" [idPrefix]="'selector'" previousText="Anterior" nextText="Siguiente"
+        [(currentPage)]="page">
+      </desy-pagination>
+    </div>
+
+    <div *ngIf="rows.length==0" style="text-align: center;">
+      No hay datos disponibles
+    </div>
+  </div>
 
 
-          <div class="overlay" id="overlay"></div>
 
 
-    </main>
+  <div class="overlay" id="overlay"></div>
+
+
+</main>
