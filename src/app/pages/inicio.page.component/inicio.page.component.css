@@ -90,6 +90,11 @@ span>.contenedor-medidas {
   max-width: 350px;
 }
 
+/* ODA-1949: posiciona la lupa a la derecha */
+.searchbar desy-search-bar {
+  display: block;
+}
+
 .searchOptions {
   position: absolute;
   top: 100%;
